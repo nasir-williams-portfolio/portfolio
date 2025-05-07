@@ -9,6 +9,9 @@ namespace test_movement
         private GraphicsDeviceManager _graphics;
         private SpriteBatch _spriteBatch;
 
+        private Texture2D spritesheet;
+        private Character player;
+
         public Game1()
         {
             _graphics = new GraphicsDeviceManager(this);
@@ -18,8 +21,6 @@ namespace test_movement
 
         protected override void Initialize()
         {
-            // TODO: Add your initialization logic here
-
             base.Initialize();
         }
 
@@ -27,7 +28,8 @@ namespace test_movement
         {
             _spriteBatch = new SpriteBatch(GraphicsDevice);
 
-            // TODO: use this.Content to load your game content here
+            spritesheet = Content.Load<Texture2D>("Prototype_Character");
+            player = new Character(spritesheet);
         }
 
         protected override void Update(GameTime gameTime)
@@ -35,7 +37,7 @@ namespace test_movement
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
 
-            // TODO: Add your update logic here
+            player.Update(gameTime);
 
             base.Update(gameTime);
         }
@@ -44,7 +46,9 @@ namespace test_movement
         {
             GraphicsDevice.Clear(Color.CornflowerBlue);
 
-            // TODO: Add your drawing code here
+            _spriteBatch.Begin();
+            player.Draw(_spriteBatch);
+            _spriteBatch.End();
 
             base.Draw(gameTime);
         }
