@@ -19,6 +19,7 @@ namespace test_movement
         private double timeCounter;
         private double fps;
         private double secondsPerFrame;
+        private int pixelsInRow;
 
         private KeyboardState currKbState;
         private KeyboardState prevKbState;
@@ -55,12 +56,11 @@ namespace test_movement
         {
             timeCounter += gameTime.ElapsedGameTime.TotalSeconds;
 
-            int pixelsInRow = 64;
-
             if (timeCounter >= secondsPerFrame)
             {
                 sourceRectangle.X += 32;
-                if (sourceRectangle.X >= pixelsInRow)
+
+                if (sourceRectangle.X >= 128)
                 {
                     sourceRectangle.X = 0;
                 }
@@ -68,11 +68,16 @@ namespace test_movement
                 timeCounter -= secondsPerFrame;
             }
 
+            MovePlayer();
+            
+        }
+
+        public void MovePlayer()
+        {
             currKbState = Keyboard.GetState();
 
             if (currKbState.IsKeyDown(Keys.D))
             {
-                pixelsInRow = 128;
                 sourceRectangle.Y = 128;
                 destinationRectangle.X += 1;
                 flip = SpriteEffects.None;
@@ -80,14 +85,12 @@ namespace test_movement
 
             else if (prevKbState.IsKeyDown(Keys.D))
             {
-                pixelsInRow = 64;
                 sourceRectangle.Y = 32;
                 flip = SpriteEffects.None;
             }
 
             else if (currKbState.IsKeyDown(Keys.A))
             {
-                pixelsInRow = 128;
                 sourceRectangle.Y = 128;
                 destinationRectangle.X -= 1;
                 flip = SpriteEffects.FlipHorizontally;
@@ -95,34 +98,29 @@ namespace test_movement
 
             else if (prevKbState.IsKeyDown(Keys.A))
             {
-                pixelsInRow = 64;
                 sourceRectangle.Y = 32;
                 flip = SpriteEffects.FlipHorizontally;
             }
 
             else if (currKbState.IsKeyDown(Keys.W))
             {
-                pixelsInRow = 128;
                 sourceRectangle.Y = 160;
                 destinationRectangle.Y -= 1;
             }
 
             else if (prevKbState.IsKeyDown(Keys.W))
             {
-                pixelsInRow = 64;
                 sourceRectangle.Y = 64;
             }
 
             else if (currKbState.IsKeyDown(Keys.S))
             {
-                pixelsInRow = 128;
                 sourceRectangle.Y = 96;
                 destinationRectangle.Y += 1;
             }
 
             else if (prevKbState.IsKeyDown(Keys.S))
             {
-                pixelsInRow = 64;
                 sourceRectangle.Y = 0;
             }
 
