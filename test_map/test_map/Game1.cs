@@ -11,6 +11,7 @@ namespace test_map
         private SpriteBatch _spriteBatch;
 
         private Texture2D pixel;
+        private SpriteFont font;
 
         private Rectangle player;
 
@@ -37,7 +38,6 @@ namespace test_map
             boundaries.Add(new Rectangle(350, 165, 100, 25));
             boundaries.Add(new Rectangle(325, 190, 25, 100));
             boundaries.Add(new Rectangle(350, 290, 100, 25));
-
             boundaries.Add(new Rectangle(450, 265, 50, 25));
             boundaries.Add(new Rectangle(500, 215, 25, 50));
             boundaries.Add(new Rectangle(450, 190, 50, 25));
@@ -50,6 +50,7 @@ namespace test_map
             _spriteBatch = new SpriteBatch(GraphicsDevice);
 
             pixel = Content.Load<Texture2D>("single_pixel");
+            font = Content.Load<SpriteFont>("arial12");
         }
 
         protected override void Update(GameTime gameTime)
@@ -68,8 +69,8 @@ namespace test_map
             GraphicsDevice.Clear(Color.CornflowerBlue);
             _spriteBatch.Begin();
 
-            //_spriteBatch.Draw(pixel, firstRect, Color.Red);
-            //_spriteBatch.Draw(pixel, secondRect, Color.Blue);
+            _spriteBatch.Draw(pixel, firstRect, Color.Red);
+            _spriteBatch.Draw(pixel, secondRect, Color.Red);
 
             foreach (Rectangle boundary in boundaries)
             {
