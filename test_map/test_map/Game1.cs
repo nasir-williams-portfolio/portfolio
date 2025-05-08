@@ -1,6 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using System.Collections.Generic;
 
 namespace test_map
 {
@@ -11,10 +12,15 @@ namespace test_map
 
         private Texture2D pixel;
 
-        private Rectangle[] squareSides;
         private Rectangle player;
 
-        private Rectangle baseSquare;
+        private List<Rectangle> tops;
+        private List<Rectangle> lefts;
+        private List<Rectangle> bottoms;
+        private List<Rectangle> rights;
+
+        private Rectangle firstRoom;
+        private Rectangle secondRoom;
 
         public Game1()
         {
@@ -29,16 +35,26 @@ namespace test_map
                 $"Window Width: {_graphics.PreferredBackBufferWidth}" +
                 $"\nWindow Height: {_graphics.PreferredBackBufferHeight}");
 
-            squareSides = new Rectangle[4];
+            tops = new List<Rectangle>();
+            tops.Add(new Rectangle(350, 240, 100, 1));
+            tops.Add(new Rectangle(450, 265, 50, 1));
 
-            squareSides[0] = new Rectangle(350, 240, 100, 1); // top
-            squareSides[1] = new Rectangle(350, 240, 1, 100); // left
-            squareSides[2] = new Rectangle(450, 240, 1, 100); // right
-            squareSides[3] = new Rectangle(350, 340, 100, 1); // bottom
+            lefts = new List<Rectangle>();
+            lefts.Add(new Rectangle(350, 240, 1, 100));
 
-            baseSquare = new Rectangle(350, 240, 100, 100);
+            bottoms = new List<Rectangle>();
+            bottoms.Add(new Rectangle(350, 340, 100, 1));
+            bottoms.Add(new Rectangle(450, 315, 50, 1));
 
-            player = new Rectangle(360, 250, 5, 5);
+            rights = new List<Rectangle>();
+            rights.Add(new Rectangle(450, 240, 1, 25));
+            rights.Add(new Rectangle(450, 315, 1, 25));
+            rights.Add(new Rectangle(500, 265, 1, 50));
+
+            firstRoom = new Rectangle(350, 240, 100, 100);
+            secondRoom = new Rectangle(450, 265, 50, 50);
+
+            player = new Rectangle(360, 250, 1, 1);
 
             base.Initialize();
         }
@@ -46,6 +62,7 @@ namespace test_map
         protected override void LoadContent()
         {
             _spriteBatch = new SpriteBatch(GraphicsDevice);
+
             pixel = Content.Load<Texture2D>("single_pixel");
         }
 
@@ -56,35 +73,51 @@ namespace test_map
 
             if (Keyboard.GetState().IsKeyDown(Keys.W))
             {
-                if (player.Top >= baseSquare.Top)
+                foreach(Rectangle side in tops)
                 {
-                    player.Y -= 1;
+                    if (player.Top >= side.Top)
+                    {
+                        player.Y -= 1;
+                    }
                 }
             }
 
             else if (Keyboard.GetState().IsKeyDown(Keys.A))
             {
-                if (player.Left >= baseSquare.Left)
+                foreach (Rectangle side in lefts)
                 {
-                    player.X -= 1;
+                    if (player.Left >= side.Left)
+                    {
+                        player.X -= 1;
+                    }
                 }
             }
 
             else if (Keyboard.GetState().IsKeyDown(Keys.S))
             {
-                if (player.Bottom <= baseSquare.Bottom)
+                foreach (Rectangle side in bottoms)
                 {
-                    player.Y += 1;
-                }
+                    if (player.Bottom <= side.Bottom)
+                    {
+                        player.Y += 1;
+                    }
+                }    
             }
 
             else if (Keyboard.GetState().IsKeyDown(Keys.D))
             {
-                if (player.Right <= baseSquare.Right)
+                if (
+                    (player.Right <= rights[0].Right && 
+                    player.Right <= rights[1].Right) ||  
+                    player.Right <= rights[2].Right)
                 {
                     player.X += 1;
                 }
             }
+
+            System.Diagnostics.Debug.WriteLine(
+                $"player right: {player.Right}" +
+                $"\ntop third right: {rights[0].Right}");
 
             base.Update(gameTime);
         }
@@ -94,12 +127,28 @@ namespace test_map
             GraphicsDevice.Clear(Color.CornflowerBlue);
             _spriteBatch.Begin();
 
-            //foreach (Rectangle side in squareSides)
-            //{
-            //    _spriteBatch.Draw(pixel, side, Color.Black);
-            //}
+            _spriteBatch.Draw(pixel, firstRoom, Color.White);
+            _spriteBatch.Draw(pixel, secondRoom, Color.White);
 
-            _spriteBatch.Draw(pixel, baseSquare, Color.White);
+            foreach (Rectangle side in tops)
+            {
+                _spriteBatch.Draw(pixel, side, Color.Black);
+            }
+
+            foreach (Rectangle side in lefts)
+            {
+                _spriteBatch.Draw(pixel, side, Color.Black);
+            }
+
+            foreach (Rectangle side in bottoms)
+            {
+                _spriteBatch.Draw(pixel, side, Color.Black);
+            }
+
+            foreach (Rectangle side in rights)
+            {
+                _spriteBatch.Draw(pixel, side, Color.Black);
+            }
 
             _spriteBatch.Draw(pixel, player, Color.Red);
 
