@@ -11,7 +11,7 @@ namespace test_map
         private SpriteBatch _spriteBatch;
 
         private Texture2D pixel;
-        private SpriteFont font;
+        private SpriteFont arial;
 
         private Rectangle player;
 
@@ -50,6 +50,7 @@ namespace test_map
             _spriteBatch = new SpriteBatch(GraphicsDevice);
 
             pixel = Content.Load<Texture2D>("single_pixel");
+            arial = Content.Load<SpriteFont>("arial");
         }
 
         protected override void Update(GameTime gameTime)

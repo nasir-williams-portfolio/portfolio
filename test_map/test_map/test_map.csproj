@@ -25,6 +25,9 @@
     <PackageReference Include="MonoGame.Content.Builder.Task" Version="3.8.*" />
   </ItemGroup>
   <ItemGroup>
+    <None Update="Content\arial.spritefont">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Update="Content\single_pixel.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
