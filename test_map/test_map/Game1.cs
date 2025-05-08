@@ -50,7 +50,6 @@ namespace test_map
             _spriteBatch = new SpriteBatch(GraphicsDevice);
 
             pixel = Content.Load<Texture2D>("single_pixel");
-            font = Content.Load<SpriteFont>("arial12");
         }
 
         protected override void Update(GameTime gameTime)
