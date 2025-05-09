@@ -22,8 +22,8 @@ namespace test_tileset
 
         protected override void Initialize()
         {
-            sourceRect = new Rectangle(0, 0, 32, 32);
-            destinationRect = new Rectangle(400, 240, 32, 32);
+            
+            destinationRect = new Rectangle(400, 240, 16, 16);
 
             base.Initialize();
         }
@@ -33,6 +33,8 @@ namespace test_tileset
             _spriteBatch = new SpriteBatch(GraphicsDevice);
 
             tileset = Content.Load<Texture2D>("prototype_tileset");
+
+            sourceRect = new Rectangle(0, tileset.Height - 16, 16, 16);
         }
 
         protected override void Update(GameTime gameTime)
