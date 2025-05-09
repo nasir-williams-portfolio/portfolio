@@ -9,6 +9,10 @@ namespace test_tileset
         private GraphicsDeviceManager _graphics;
         private SpriteBatch _spriteBatch;
 
+        private Rectangle sourceRect;
+        private Rectangle destinationRect;
+        private Texture2D tileset;
+
         public Game1()
         {
             _graphics = new GraphicsDeviceManager(this);
@@ -18,7 +22,8 @@ namespace test_tileset
 
         protected override void Initialize()
         {
-            // TODO: Add your initialization logic here
+            sourceRect = new Rectangle(0, 0, 32, 32);
+            destinationRect = new Rectangle(400, 240, 32, 32);
 
             base.Initialize();
         }
@@ -27,15 +32,13 @@ namespace test_tileset
         {
             _spriteBatch = new SpriteBatch(GraphicsDevice);
 
-            // TODO: use this.Content to load your game content here
+            tileset = Content.Load<Texture2D>("prototype_tileset");
         }
 
         protected override void Update(GameTime gameTime)
         {
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
-
-            // TODO: Add your update logic here
 
             base.Update(gameTime);
         }
@@ -44,7 +47,11 @@ namespace test_tileset
         {
             GraphicsDevice.Clear(Color.CornflowerBlue);
 
-            // TODO: Add your drawing code here
+            _spriteBatch.Begin();
+
+            _spriteBatch.Draw(tileset, destinationRect, sourceRect, Color.White);
+
+            _spriteBatch.End();
 
             base.Draw(gameTime);
         }
