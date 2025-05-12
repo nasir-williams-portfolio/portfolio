@@ -1,6 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using System;
 
 namespace interactive_graph
 {
@@ -8,6 +9,13 @@ namespace interactive_graph
     {
         private GraphicsDeviceManager _graphics;
         private SpriteBatch _spriteBatch;
+
+        private Texture2D arrow;
+        private Texture2D room_blue;
+        private SpriteFont font;
+
+        private Vector2 room_origin;
+        private Vector2 arrow_origin;
 
         public Game1()
         {
@@ -18,8 +26,6 @@ namespace interactive_graph
 
         protected override void Initialize()
         {
-            // TODO: Add your initialization logic here
-
             base.Initialize();
         }
 
@@ -27,25 +33,76 @@ namespace interactive_graph
         {
             _spriteBatch = new SpriteBatch(GraphicsDevice);
 
-            // TODO: use this.Content to load your game content here
+            arrow = Content.Load<Texture2D>("arrow");
+            room_blue = Content.Load<Texture2D>("button_blue");
+            font = Content.Load<SpriteFont>("daydream_12");
+
+            room_origin = new Vector2(room_blue.Width / 2, room_blue.Height / 2); // room_blue.Width / 2, room_blue.Height / 2
+            arrow_origin = new Vector2(arrow.Width / 2, arrow.Height / 2); // arrow.Width / 2, arrow.Height / 2
         }
 
         protected override void Update(GameTime gameTime)
         {
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
-
-            // TODO: Add your update logic here
-
             base.Update(gameTime);
         }
 
         protected override void Draw(GameTime gameTime)
         {
             GraphicsDevice.Clear(Color.CornflowerBlue);
+            _spriteBatch.Begin();
 
-            // TODO: Add your drawing code here
+            _spriteBatch.DrawString(
+                font,
+                $"Room Dimensions: {room_blue.Width}, {room_blue.Height}" +
+                $"\nArrow Dimensions: {arrow.Width}, {arrow.Height}",
+                new Vector2(10, 10),
+                Color.White);
 
+            _spriteBatch.Draw(
+                room_blue,
+                new Rectangle(
+                    400,
+                    240,
+                    room_blue.Width,
+                    room_blue.Height),
+                new Rectangle(0, 0, room_blue.Width, room_blue.Height),
+                Color.White,
+                (float)Math.PI / 2,
+                room_origin,
+                SpriteEffects.None,
+                0f);
+
+            _spriteBatch.Draw(
+                arrow,
+                new Rectangle(
+                    421,
+                    225,
+                    arrow.Width,
+                    arrow.Height),
+                new Rectangle(0, 0, arrow.Width, arrow.Height),
+                Color.White,
+                0f,
+                arrow_origin,
+                SpriteEffects.None,
+                0f);
+
+            _spriteBatch.Draw(
+                arrow,
+                new Rectangle(
+                    421,
+                    255,
+                    arrow.Width,
+                    arrow.Height),
+                new Rectangle(0, 0, arrow.Width, arrow.Height),
+                Color.White,
+                0f,
+                arrow_origin,
+                SpriteEffects.None,
+                0f);
+
+            _spriteBatch.End();
             base.Draw(gameTime);
         }
     }
