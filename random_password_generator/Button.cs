@@ -11,14 +11,16 @@ namespace random_password_generator
     {
         private Texture2D sprite;
         private Texture2D sprite_hover;
-        private Rectangle dest_rectangle;
-
         private Texture2D current_sprite;
+
+        private Rectangle dest_rectangle;
 
         private MouseState curr_mouse;
         private MouseState prev_mouse;
 
         public event OnButtonClickDelegate OnButtonClick;
+
+        public Rectangle Rectangle { get { return dest_rectangle; } }
 
         public Button(Texture2D sprite, Texture2D sprite_hover, Vector2 dest_vector)
         {
@@ -49,7 +51,7 @@ namespace random_password_generator
 
             Rectangle mouse_rectangle = new Rectangle(curr_mouse.X, curr_mouse.Y, 1, 1);
 
-            if ((curr_mouse.LeftButton == ButtonState.Pressed && prev_mouse.LeftButton == ButtonState.Released))
+            if (dest_rectangle.Contains(mouse_rectangle) && (curr_mouse.LeftButton == ButtonState.Pressed && prev_mouse.LeftButton == ButtonState.Released))
             {
                 if (OnButtonClick != null)
                 {
