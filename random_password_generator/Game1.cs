@@ -9,6 +9,8 @@ namespace random_password_generator
         private GraphicsDeviceManager _graphics;
         private SpriteBatch _spriteBatch;
 
+        private SpriteFont font;
+
         public Game1()
         {
             _graphics = new GraphicsDeviceManager(this);
@@ -24,6 +26,8 @@ namespace random_password_generator
         protected override void LoadContent()
         {
             _spriteBatch = new SpriteBatch(GraphicsDevice);
+
+            font = Content.Load<SpriteFont>("daydream_8");
         }
 
         protected override void Update(GameTime gameTime)
@@ -36,7 +40,16 @@ namespace random_password_generator
         protected override void Draw(GameTime gameTime)
         {
             GraphicsDevice.Clear(Color.CornflowerBlue);
+            _spriteBatch.Begin();
+            _spriteBatch.DrawString(font, "Hello, World!", Vector2.Zero, Color.Black);
+            _spriteBatch.End();
             base.Draw(gameTime);
+        }
+
+        public string RandomizePassword()
+        {
+            string password = "";
+            return password;
         }
     }
 }
