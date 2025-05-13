@@ -51,7 +51,7 @@ namespace random_password_generator
 
             Rectangle mouse_rectangle = new Rectangle(curr_mouse.X, curr_mouse.Y, 1, 1);
 
-            if (dest_rectangle.Contains(mouse_rectangle) && (curr_mouse.LeftButton == ButtonState.Pressed && prev_mouse.LeftButton == ButtonState.Released))
+            if ((curr_mouse.LeftButton == ButtonState.Pressed && prev_mouse.LeftButton == ButtonState.Released))
             {
                 if (OnButtonClick != null)
                 {

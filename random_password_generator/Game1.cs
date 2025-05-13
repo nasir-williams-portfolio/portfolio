@@ -113,11 +113,6 @@ namespace random_password_generator
                 text,
                 position,
                 Color.Black);
-            _spriteBatch.DrawString(
-                font,
-                $"{password_length}",
-                new Vector2(rng_button.Rectangle.X + (rng_button.Rectangle.Width / 2) - font.MeasureString($"{password_length}").X / 2, rng_button.Rectangle.Y + 4),
-                Color.Black);
 
             _spriteBatch.End();
             base.Draw(gameTime);
