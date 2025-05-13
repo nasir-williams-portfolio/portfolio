@@ -68,7 +68,7 @@ namespace random_password_generator
                 button_blue_hover,
                 new Vector2(
                     window_width / 2 - button_blue.Width / 2,
-                    window_height / 2));
+                    window_height / 2 + 10));
             decrease_button = new Button(
                 button_red,
                 button_red_hover,
@@ -104,15 +104,20 @@ namespace random_password_generator
 
             _spriteBatch.Begin();
 
+            rng_button.Draw(_spriteBatch);
+            increase_button.Draw(_spriteBatch);
+            decrease_button.Draw(_spriteBatch);
+
             _spriteBatch.DrawString(
                 font,
                 text,
                 position,
                 Color.Black);
-
-            rng_button.Draw(_spriteBatch);
-            increase_button.Draw(_spriteBatch);
-            decrease_button.Draw(_spriteBatch);
+            _spriteBatch.DrawString(
+                font,
+                $"{password_length}",
+                new Vector2(rng_button.Rectangle.X + (rng_button.Rectangle.Width / 2) - font.MeasureString($"{password_length}").X / 2, rng_button.Rectangle.Y + 4),
+                Color.Black);
 
             _spriteBatch.End();
             base.Draw(gameTime);
