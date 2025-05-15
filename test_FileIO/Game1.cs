@@ -15,8 +15,9 @@ namespace test_FileIO
         private SpriteFont font;
         private List<Rectangle> squares;
         private Texture2D sprite;
-        private Random rng;
+        private Color[] colors;
 
+        private Random rng;
         private string text;
 
         public Game1()
@@ -30,6 +31,8 @@ namespace test_FileIO
         {
             rng = new Random();
             squares = new List<Rectangle>();
+            colors = [Color.Red, Color.Orange, Color.Yellow, Color.Green, Color.Blue, Color.Purple, Color.Black];
+
             StreamReader textReader = null;
             textReader = new StreamReader("C:\\Users\\QuizM\\Desktop\\Personal\\Programming Portfolio\\portfolio\\test_FileIO\\text.txt");
             while ((text = textReader.ReadLine()!) != null)
@@ -41,10 +44,7 @@ namespace test_FileIO
                     int.Parse(rectangle_info[2]),
                     int.Parse(rectangle_info[3])));
             }
-
             textReader.Close();
-
-
 
             base.Initialize();
         }
@@ -68,10 +68,12 @@ namespace test_FileIO
             GraphicsDevice.Clear(Color.CornflowerBlue);
 
             _spriteBatch.Begin();
+            int color = 0;
 
             foreach (Rectangle square in squares)
             {
-                _spriteBatch.Draw(sprite, square, new Color((float)rng.NextDouble(), (float)rng.NextDouble(), (float)rng.NextDouble()));
+                _spriteBatch.Draw(sprite, square, colors[color]);
+                color++;
             }
 
             _spriteBatch.End();
