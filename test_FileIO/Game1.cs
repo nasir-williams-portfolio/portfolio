@@ -1,6 +1,9 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using System;
+using System.Collections.Generic;
+using System.IO;
 
 namespace test_FileIO
 {
@@ -10,6 +13,10 @@ namespace test_FileIO
         private SpriteBatch _spriteBatch;
 
         private SpriteFont font;
+        private List<Rectangle> squares;
+        private Texture2D sprite;
+        private Random rng;
+
         private string text;
 
         public Game1()
@@ -21,7 +28,23 @@ namespace test_FileIO
 
         protected override void Initialize()
         {
-            text = "Hello, World!";
+            rng = new Random();
+            squares = new List<Rectangle>();
+            StreamReader textReader = null;
+            textReader = new StreamReader("C:\\Users\\QuizM\\Desktop\\Personal\\Programming Portfolio\\portfolio\\test_FileIO\\text.txt");
+            while ((text = textReader.ReadLine()!) != null)
+            {
+                string[] rectangle_info = text.Split(",");
+                squares.Add(new Rectangle(
+                    int.Parse(rectangle_info[0]),
+                    int.Parse(rectangle_info[1]),
+                    int.Parse(rectangle_info[2]),
+                    int.Parse(rectangle_info[3])));
+            }
+
+            textReader.Close();
+
+
 
             base.Initialize();
         }
@@ -30,6 +53,7 @@ namespace test_FileIO
         {
             _spriteBatch = new SpriteBatch(GraphicsDevice);
             font = Content.Load<SpriteFont>("arial_8");
+            sprite = Content.Load<Texture2D>("single_pixel");
         }
 
         protected override void Update(GameTime gameTime)
@@ -45,7 +69,10 @@ namespace test_FileIO
 
             _spriteBatch.Begin();
 
-            _spriteBatch.DrawString(font, text, Vector2.Zero, Color.Black);
+            foreach (Rectangle square in squares)
+            {
+                _spriteBatch.Draw(sprite, square, new Color((float)rng.NextDouble(), (float)rng.NextDouble(), (float)rng.NextDouble()));
+            }
 
             _spriteBatch.End();
 
