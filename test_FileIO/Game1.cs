@@ -31,7 +31,11 @@ namespace test_FileIO
         {
             rng = new Random();
             squares = new List<Rectangle>();
-            colors = [Color.Red, Color.Orange, Color.Yellow, Color.Green, Color.Blue, Color.Purple, Color.Black];
+            colors = new Color[7];
+            for (int i = 0; i < 7; i++)
+            {
+                colors[i] = new Color((float)rng.NextDouble(), (float)rng.NextDouble(), (float)rng.NextDouble());
+            }
 
             StreamReader textReader = null;
             textReader = new StreamReader("C:\\Users\\QuizM\\Desktop\\Personal\\Programming Portfolio\\portfolio\\test_FileIO\\text.txt");
