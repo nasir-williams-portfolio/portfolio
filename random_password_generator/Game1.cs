@@ -124,7 +124,14 @@ namespace random_password_generator
 
             for (int i = 0; i < password_length; i++)
             {
-                text += letters[rng.Next(0, 26)];
+                if (rng.Next(0, 101) % 3 == 0)
+                {
+                    text += numbers[rng.Next(0, 10)];
+                }
+                else
+                {
+                    text += letters[rng.Next(0, 26)];
+                }
             }
         }
 
