@@ -1,6 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using random_password_generator_POLISHED.Content;
 
 namespace random_password_generator_POLISHED
 {
@@ -9,16 +10,14 @@ namespace random_password_generator_POLISHED
         private GraphicsDeviceManager _graphics;
         private SpriteBatch _spriteBatch;
 
-        private Texture2D ui_spritesheet;
-        private Texture2D background_spritesheet;
+        private Texture2D characters;
+        private Character d;
 
         public Game1()
         {
             _graphics = new GraphicsDeviceManager(this);
             Content.RootDirectory = "Content";
             IsMouseVisible = true;
-            _graphics.PreferredBackBufferWidth = 960; // you made the background the wrong size :(
-            _graphics.IsFullScreen = true;
         }
 
         protected override void Initialize()
@@ -29,9 +28,8 @@ namespace random_password_generator_POLISHED
         protected override void LoadContent()
         {
             _spriteBatch = new SpriteBatch(GraphicsDevice);
-
-            ui_spritesheet = Content.Load<Texture2D>("random password generator ui spritesheet");
-            background_spritesheet = Content.Load<Texture2D>("random password generator ui background");
+            characters = Content.Load<Texture2D>("ui letters and numbers spritesheet");
+            d = new Character('D', characters, Vector2.Zero);
         }
 
         protected override void Update(GameTime gameTime)
@@ -48,10 +46,7 @@ namespace random_password_generator_POLISHED
 
             _spriteBatch.Begin();
 
-            _spriteBatch.Draw(
-                background_spritesheet,
-                Vector2.Zero,
-                Color.White);
+            d.Draw(_spriteBatch);
 
             _spriteBatch.End();
 
