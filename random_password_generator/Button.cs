@@ -17,6 +17,7 @@ namespace random_password_generator
 
         private MouseState curr_mouse;
         private MouseState prev_mouse;
+        private Rectangle click_position;
 
         public event OnButtonClickDelegate OnButtonClick;
 
@@ -36,6 +37,7 @@ namespace random_password_generator
 
             prev_mouse = curr_mouse;
             current_sprite = sprite;
+            click_position = new Rectangle(0, 0, 1, 1);
         }
 
         public void Draw(SpriteBatch sb)
@@ -52,22 +54,27 @@ namespace random_password_generator
 
             Rectangle mouse_rectangle = new Rectangle(curr_mouse.X, curr_mouse.Y, 1, 1);
 
+            if (curr_mouse.LeftButton == ButtonState.Pressed && prev_mouse.LeftButton == ButtonState.Released)
+            {
+                click_position = new Rectangle((int)curr_mouse.X, (int)curr_mouse.Y, 1, 1);
+            }
+
             if (dest_rectangle.Contains(mouse_rectangle))
             {
                 if ((curr_mouse.LeftButton == ButtonState.Pressed && prev_mouse.LeftButton == ButtonState.Released) && OnButtonClick != null)
                 {
                     OnButtonClick();
                 }
-            }
 
-            if (curr_mouse.LeftButton == ButtonState.Pressed && dest_rectangle.Contains(mouse_rectangle))
-            {
-                current_sprite = sprite_hover;
-            }
+                if (curr_mouse.LeftButton == ButtonState.Pressed && dest_rectangle.Contains(click_position))
+                {
+                    current_sprite = sprite_hover;
+                }
 
-            else
-            {
-                current_sprite = sprite;
+                else
+                {
+                    current_sprite = sprite;
+                }
             }
 
             prev_mouse = curr_mouse;
