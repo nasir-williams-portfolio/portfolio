@@ -2,6 +2,7 @@
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using random_password_generator_POLISHED.Content;
+using System.Collections.Generic;
 
 namespace random_password_generator_POLISHED
 {
@@ -11,7 +12,6 @@ namespace random_password_generator_POLISHED
         private SpriteBatch _spriteBatch;
 
         private Texture2D characters;
-        private Character d;
 
         public Game1()
         {
@@ -29,7 +29,6 @@ namespace random_password_generator_POLISHED
         {
             _spriteBatch = new SpriteBatch(GraphicsDevice);
             characters = Content.Load<Texture2D>("ui letters and numbers spritesheet");
-            d = new Character('D', characters, Vector2.Zero);
         }
 
         protected override void Update(GameTime gameTime)
@@ -46,7 +45,21 @@ namespace random_password_generator_POLISHED
 
             _spriteBatch.Begin();
 
-            d.Draw(_spriteBatch);
+            List<Character> character_list = new List<Character>();
+
+            character_list.Add(new Character('S', characters, Vector2.Zero));
+            character_list.Add(new Character('P', characters, new Vector2(10, 0)));
+            character_list.Add(new Character('I', characters, new Vector2(20, 0)));
+            character_list.Add(new Character('D', characters, new Vector2(30, 0)));
+            character_list.Add(new Character('E', characters, new Vector2(40, 0)));
+            character_list.Add(new Character('Y', characters, new Vector2(50, 0)));
+
+            foreach (Character letter in character_list)
+            {
+                letter.Draw(_spriteBatch);
+            }
+
+
 
             _spriteBatch.End();
 
