@@ -17,7 +17,7 @@ namespace random_password_generator_POLISHED
             _graphics = new GraphicsDeviceManager(this);
             Content.RootDirectory = "Content";
             IsMouseVisible = true;
-            _graphics.PreferredBackBufferWidth = 960;
+            _graphics.PreferredBackBufferWidth = 960; // you made the background the wrong size :(
             _graphics.IsFullScreen = true;
         }
 
