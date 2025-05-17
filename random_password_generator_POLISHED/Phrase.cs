@@ -3,7 +3,7 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace random_password_generator_POLISHED
 {
-    internal static class Character
+    internal static class Phrase
     {
         public static Rectangle[] TranslateString(string phrase, Texture2D spritesheet)
         {
@@ -75,7 +75,7 @@ namespace random_password_generator_POLISHED
                     sb.Draw(
                     spritesheet,
                     new Rectangle(
-                        ((int)location.X + (phrase_sources[i].Width * i)) - half_phrase_width,
+                        (int)location.X + (phrase_sources[i].Width * i) - half_phrase_width,
                         (int)location.Y,
                         phrase_sources[i].Width,
                         phrase_sources[i].Height),

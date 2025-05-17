@@ -43,10 +43,10 @@ namespace random_password_generator_POLISHED
 
             _spriteBatch.Begin();
 
-            Character.Draw(
+            Phrase.Draw(
                 _spriteBatch,
                 characters,
-                Character.TranslateString("The quick brown fox jumps over the lazy dog", characters),
+                Phrase.TranslateString("nasir is the smartest guy in the whole wide world", characters),
                 new Vector2(400, 240),
                 true);
 
