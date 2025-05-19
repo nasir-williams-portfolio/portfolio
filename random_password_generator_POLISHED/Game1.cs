@@ -10,6 +10,11 @@ namespace random_password_generator_POLISHED
         private SpriteBatch _spriteBatch;
 
         private Texture2D characters;
+        private Texture2D menu_spritesheet;
+        private Rectangle source_rectangle;
+        private double fps;
+        private double secondsPerFrame;
+        private double timeCounter;
 
         public Game1()
         {
@@ -20,6 +25,10 @@ namespace random_password_generator_POLISHED
 
         protected override void Initialize()
         {
+            source_rectangle = new Rectangle(0, 0, 100, 60);
+            fps = 4;
+            secondsPerFrame = 1 / fps;
+            timeCounter = 0;
             base.Initialize();
         }
 
@@ -27,6 +36,7 @@ namespace random_password_generator_POLISHED
         {
             _spriteBatch = new SpriteBatch(GraphicsDevice);
             characters = Content.Load<Texture2D>("ui letters and numbers spritesheet");
+            menu_spritesheet = Content.Load<Texture2D>("application main menu spritesheet");
         }
 
         protected override void Update(GameTime gameTime)
@@ -41,13 +51,50 @@ namespace random_password_generator_POLISHED
         {
             GraphicsDevice.Clear(Color.CornflowerBlue);
 
-            _spriteBatch.Begin();
+            _spriteBatch.Begin(SpriteSortMode.Deferred, null, SamplerState.PointClamp, null, null);
+
+            timeCounter += gameTime.ElapsedGameTime.TotalSeconds;
+
+            if (timeCounter >= secondsPerFrame)
+            {
+                source_rectangle.X += 100;
+                if (source_rectangle.X >= 300)
+                {
+                    source_rectangle.X = 0;
+                }
+                timeCounter -= secondsPerFrame;
+            }
+
+            _spriteBatch.Draw(
+                menu_spritesheet,
+                Vector2.Zero,
+                source_rectangle,
+                Color.White,
+                0f,
+                Vector2.Zero,
+                8f,
+                SpriteEffects.None,
+                0f);
 
             Phrase.Draw(
                 _spriteBatch,
                 characters,
-                Phrase.TranslateString("nasir is the smartest guy in the whole wide world", characters),
-                new Vector2(400, 240),
+                Phrase.TranslateString("welcome to", characters),
+                new Vector2(400, 253),
+                true);
+
+            Phrase.Draw(
+                _spriteBatch,
+                characters,
+                Phrase.TranslateString("random password", characters),
+                new Vector2(400, 266),
+                true);
+
+            Phrase.Draw(
+                _spriteBatch,
+                characters,
+                Phrase.TranslateString("generator", characters),
+                new Vector2(400, 279),
                 true);
 
             _spriteBatch.End();
