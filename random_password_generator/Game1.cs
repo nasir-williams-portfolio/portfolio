@@ -2,6 +2,7 @@
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using System;
+using System.Collections.Generic;
 
 namespace random_password_generator
 {
@@ -21,14 +22,20 @@ namespace random_password_generator
         private Button rng_button;
         private Button increase_button;
         private Button decrease_button;
+        private Button toggle_capitals;
+        private Button toggle_symbols;
+        private List<Button> button_list;
 
         private string text;
-        private string[] letters;
-        private int[] numbers;
+        private List<string> letters;
+        private List<int> numbers;
+        private List<char> symbols;
         private Random rng;
         private int window_height;
         private int window_width;
         private int password_length;
+        private bool usingCapitals;
+        private bool usingSymbols;
 
         public Game1()
         {
@@ -41,11 +48,13 @@ namespace random_password_generator
         {
             letters = ["a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z"];
             numbers = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9];
+            symbols = ['!', '?', '_'];
             text = "";
             rng = new Random();
             window_height = _graphics.PreferredBackBufferHeight;
             window_width = _graphics.PreferredBackBufferWidth;
             password_length = 10;
+            button_list = new List<Button>();
 
             base.Initialize();
         }
@@ -54,7 +63,7 @@ namespace random_password_generator
         {
             _spriteBatch = new SpriteBatch(GraphicsDevice);
 
-            font = Content.Load<SpriteFont>("daydream_8");
+            font = Content.Load<SpriteFont>("arial_8");
 
             button_blue = Content.Load<Texture2D>("button");
             button_blue_hover = Content.Load<Texture2D>("button_hover");
@@ -77,10 +86,20 @@ namespace random_password_generator
                 button_green,
                 button_green_hover,
                 new Vector2(rng_button.Rectangle.X + 67, rng_button.Rectangle.Y));
+            toggle_capitals = new Button(button_green, button_green_hover, Vector2.Zero);
+            toggle_symbols = new Button(button_red, button_red_hover, new Vector2(0, 32));
 
             rng_button.OnButtonClick += this.RandomizePassword;
             decrease_button.OnButtonClick += this.ShortenPassword;
             increase_button.OnButtonClick += this.LengthenPassword;
+            toggle_capitals.OnButtonClick += this.ToggleCaptials;
+            toggle_symbols.OnButtonClick += this.ToggleSymbols;
+
+            button_list.Add(rng_button);
+            button_list.Add(decrease_button);
+            button_list.Add(increase_button);
+            button_list.Add(toggle_capitals);
+            button_list.Add(toggle_symbols);
         }
 
         protected override void Update(GameTime gameTime)
@@ -88,9 +107,10 @@ namespace random_password_generator
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
 
-            rng_button.Update();
-            decrease_button.Update();
-            increase_button.Update();
+            foreach (Button btn in button_list)
+            {
+                btn.Update();
+            }
 
             base.Update(gameTime);
         }
@@ -104,15 +124,23 @@ namespace random_password_generator
 
             _spriteBatch.Begin();
 
-            rng_button.Draw(_spriteBatch);
-            increase_button.Draw(_spriteBatch);
-            decrease_button.Draw(_spriteBatch);
+            foreach (Button btn in button_list)
+            {
+                btn.Draw(_spriteBatch);
+            }
 
             _spriteBatch.DrawString(
                 font,
                 text,
                 position,
                 Color.Black);
+
+            _spriteBatch.DrawString(
+                font,
+                $"the password will have capital letters: {usingCapitals}" +
+                $"\nthe password will have symbols: {usingSymbols}" +
+                $"\nlength of password: {password_length}",
+                new Vector2(0, 100), Color.White);
 
             _spriteBatch.End();
             base.Draw(gameTime);
@@ -124,13 +152,29 @@ namespace random_password_generator
 
             for (int i = 0; i < password_length; i++)
             {
-                if (rng.Next(0, 101) % 3 == 0)
+                int probability = rng.Next(0, 101);
+
+                if (probability <= 10 && i > 0 && !symbols.Contains(text[i - 1]) && usingSymbols)
+                {
+                    text += symbols[rng.Next(0, 3)];
+                }
+
+                else if (probability <= 30 && probability >= 11)
                 {
                     text += numbers[rng.Next(0, 10)];
                 }
+
                 else
                 {
-                    text += letters[rng.Next(0, 26)];
+                    if (usingCapitals && rng.Next(0, 11) > 7 && usingCapitals)
+                    {
+                        text += letters[rng.Next(0, 26)].ToUpper();
+                    }
+
+                    else
+                    {
+                        text += letters[rng.Next(0, 26)].ToLower();
+                    }
                 }
             }
         }
@@ -146,6 +190,16 @@ namespace random_password_generator
             {
                 password_length--;
             }
+        }
+
+        public void ToggleCaptials()
+        {
+            usingCapitals = !usingCapitals;
+        }
+
+        public void ToggleSymbols()
+        {
+            usingSymbols = !usingSymbols;
         }
     }
 }
