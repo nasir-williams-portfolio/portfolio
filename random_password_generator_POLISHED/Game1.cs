@@ -12,6 +12,8 @@ namespace random_password_generator_POLISHED
         private Texture2D characters;
         private Texture2D menu_spritesheet;
         private Rectangle source_rectangle;
+        private Vector2 scale;
+
         private double fps;
         private double secondsPerFrame;
         private double timeCounter;
@@ -21,6 +23,9 @@ namespace random_password_generator_POLISHED
             _graphics = new GraphicsDeviceManager(this);
             Content.RootDirectory = "Content";
             IsMouseVisible = true;
+            //_graphics.PreferredBackBufferWidth = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Width;
+            //_graphics.PreferredBackBufferHeight = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Height;
+            //_graphics.IsFullScreen = true;
         }
 
         protected override void Initialize()
@@ -29,6 +34,8 @@ namespace random_password_generator_POLISHED
             fps = 4;
             secondsPerFrame = 1 / fps;
             timeCounter = 0;
+
+            scale = new Vector2(_graphics.PreferredBackBufferWidth / source_rectangle.Width, _graphics.PreferredBackBufferHeight / source_rectangle.Height);
             base.Initialize();
         }
 
@@ -67,12 +74,12 @@ namespace random_password_generator_POLISHED
 
             _spriteBatch.Draw(
                 menu_spritesheet,
-                Vector2.Zero,
+                new Vector2(_graphics.PreferredBackBufferWidth / 2, _graphics.PreferredBackBufferHeight / 2),
                 source_rectangle,
                 Color.White,
                 0f,
-                Vector2.Zero,
-                8f,
+                new Vector2(((menu_spritesheet.Width / 4) / 2), menu_spritesheet.Height / 2),
+                scale,
                 SpriteEffects.None,
                 0f);
 
