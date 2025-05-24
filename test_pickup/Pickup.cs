@@ -1,5 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using System;
 
 namespace test_pickup
 {
@@ -24,9 +25,18 @@ namespace test_pickup
             this.spritesheet = spritesheet;
             this.key_spritesheet = key_spritesheet;
 
-            source_rectangle = new Rectangle(133, 4, 7, 7);
-            destination_rectangle = new Rectangle((int)position.X, (int)position.Y, 7, 7);
-            bounds = new Rectangle((int)position.X - 2, (int)position.Y - 2, 11, 11);
+            Random rng = new Random();
+
+            Rectangle[] rectangles = {
+                new Rectangle(213, 4, 7, 7),
+                new Rectangle(163, 195, 10, 10),
+                new Rectangle(293, 4, 7, 7),
+                new Rectangle(294, 35, 9, 9),
+                new Rectangle(164, 4, 8, 8)};
+
+            source_rectangle = rectangles[rng.Next(0, rectangles.Length)];
+            destination_rectangle = new Rectangle((int)position.X, (int)position.Y, source_rectangle.Width, source_rectangle.Height);
+            bounds = new Rectangle((int)position.X - 2, (int)position.Y - 2, destination_rectangle.Width + 4, destination_rectangle.Height + 4);
 
             scale = 1;
         }
@@ -48,11 +58,11 @@ namespace test_pickup
             {
                 sb.Draw(
                     key_spritesheet,
-                    new Vector2(destination_rectangle.X - 3, destination_rectangle.Y - 15),
+                    new Vector2(destination_rectangle.X + source_rectangle.Width / 2, destination_rectangle.Y - 10),
                     new Rectangle(65, 34, 13, 12),
                     Color.White,
                     0f,
-                    Vector2.Zero,
+                    new Vector2(6, 6),
                     scale,
                     SpriteEffects.None,
                     0f);

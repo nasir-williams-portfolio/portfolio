@@ -15,16 +15,17 @@ namespace test_pickup
         private Texture2D item_spritesheet;
         private Texture2D key_spritesheet;
         private Texture2D tile_spritesheet;
+        private SpriteFont font;
 
         private Character player;
-
-        private List<Pickup> oranges;
+        private List<Pickup> fruits;
         private Tile[,] map;
 
         private KeyboardState currKbState;
         private KeyboardState prevKbState;
 
         private Random rng;
+        private int fruit_count;
 
         public Game1()
         {
@@ -40,6 +41,7 @@ namespace test_pickup
             _graphics.PreferredBackBufferWidth = 1920;
             _graphics.PreferredBackBufferHeight = 1080;
             _graphics.ApplyChanges();
+            fruit_count = 0;
             base.Initialize();
         }
 
@@ -48,15 +50,16 @@ namespace test_pickup
             _spriteBatch = new SpriteBatch(GraphicsDevice);
 
             player_spritesheet = Content.Load<Texture2D>("Prototype_Character_Red");
-            item_spritesheet = Content.Load<Texture2D>("SpriteAtlas_TheBanquet_pt1_Outline_BigWander");
+            item_spritesheet = Content.Load<Texture2D>("TheBanquet_SpriteAtlas_Master");
             key_spritesheet = Content.Load<Texture2D>("Keyboard Letters and Symbols");
             tile_spritesheet = Content.Load<Texture2D>("zeo254-completed-commission");
+            font = Content.Load<SpriteFont>("daydream_8");
 
             player = new Character(player_spritesheet);
-            oranges = new List<Pickup>();
+            fruits = new List<Pickup>();
             rng = new Random();
 
-            map = new Tile[125, 125];
+            map = new Tile[_graphics.PreferredBackBufferHeight / 15, _graphics.PreferredBackBufferWidth / 16];
 
             int[] column = { 3, 5, 7, 3, 3, 5, 3, 3, 3, 3, 3, 3 };
 
@@ -68,12 +71,12 @@ namespace test_pickup
                 }
             }
 
-            for (int i = 0; i < 15; i++)
+            for (int i = 0; i < rng.Next(10, 100); i++)
             {
-                oranges.Add(new Pickup(
+                fruits.Add(new Pickup(
                     item_spritesheet,
                     key_spritesheet,
-                    new Vector2(rng.Next(1, 125) * 16, rng.Next(1, 125) * 16)));
+                    new Vector2(rng.Next(1, map.GetLength(1)) * 16, rng.Next(1, map.GetLength(0)) * 16)));
             }
         }
 
@@ -88,11 +91,12 @@ namespace test_pickup
 
             Collide();
 
-            foreach (Pickup fruit in oranges)
+            foreach (Pickup fruit in fruits)
             {
                 if (fruit.Colliding == true && currKbState.IsKeyDown(Keys.E) && !prevKbState.IsKeyDown(Keys.E))
                 {
                     fruit.Scale = 0;
+                    fruit_count++;
                 }
             }
 
@@ -107,18 +111,21 @@ namespace test_pickup
 
             _spriteBatch.Begin(SpriteSortMode.Deferred, null, SamplerState.PointClamp, null, null);
 
+
+
             foreach (Tile tile in map)
             {
                 tile.Draw(_spriteBatch);
             }
 
-            foreach (Pickup fruit in oranges)
+            foreach (Pickup fruit in fruits)
             {
                 fruit.Draw(_spriteBatch);
-                //DebugLib.DrawRectOutline(_spriteBatch, fruit.Bounds, 1f, Color.Red);
             }
+
             player.Draw(_spriteBatch);
 
+            _spriteBatch.DrawString(font, $"Fruits Collected: {fruit_count} / {fruits.Count}", new Vector2(10, 10), Color.Black);
 
             _spriteBatch.End();
 
@@ -127,7 +134,7 @@ namespace test_pickup
 
         protected void Collide()
         {
-            foreach (Pickup fruit in oranges)
+            foreach (Pickup fruit in fruits)
             {
                 if (fruit.Bounds.Intersects(player.Bounds))
                 {
