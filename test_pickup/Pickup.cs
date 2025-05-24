@@ -35,8 +35,17 @@ namespace test_pickup
                 new Rectangle(164, 4, 8, 8)};
 
             source_rectangle = rectangles[rng.Next(0, rectangles.Length)];
-            destination_rectangle = new Rectangle((int)position.X, (int)position.Y, source_rectangle.Width, source_rectangle.Height);
-            bounds = new Rectangle((int)position.X - 2, (int)position.Y - 2, destination_rectangle.Width + 4, destination_rectangle.Height + 4);
+
+            destination_rectangle = new Rectangle(
+                (int)position.X,
+                (int)position.Y,
+                source_rectangle.Width,
+                source_rectangle.Height);
+            bounds = new Rectangle(
+                (int)position.X - 2,
+                (int)position.Y - 2,
+                destination_rectangle.Width + 4,
+                destination_rectangle.Height + 4);
 
             scale = 1;
         }

@@ -13,6 +13,24 @@
 
 #---------------------------------- Content ---------------------------------#
 
+#begin [no copyright music] 'Taiyaki' cute background music.mp3
+/importer:Mp3Importer
+/processor:SongProcessor
+/processorParam:Quality=Best
+/build:[no copyright music] 'Taiyaki' cute background music.mp3
+
+#begin 326543__sqeeeek__wetfootsteps.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:326543__sqeeeek__wetfootsteps.wav
+
+#begin 446129__justinvoke__collect-1.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:446129__justinvoke__collect-1.wav
+
 #begin daydream_8.spritefont
 /importer:FontDescriptionImporter
 /processor:FontDescriptionProcessor
@@ -55,6 +73,18 @@
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
 /build:TheBanquet_SpriteAtlas_Master.png
+
+#begin tile_0200.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:tile_0200.png
 
 #begin zeo254-completed-commission.png
 /importer:TextureImporter

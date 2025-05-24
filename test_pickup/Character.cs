@@ -15,22 +15,34 @@ namespace test_pickup
         private double fps;
         private double secondsPerFrame;
         private float scale;
+        private int speed;
 
         private KeyboardState currKbState;
         private KeyboardState prevKbState;
 
         public Rectangle Bounds { get { return destinationRectangle; } }
 
-        public Character(Texture2D spritesheet)
+        public Character(Texture2D spritesheet, GraphicsDeviceManager graphics)
         {
-            scale = 1;
             this.spritesheet = spritesheet;
-            sourceRectangle = new Rectangle(0, 0, 12, 14);
-            destinationRectangle = new Rectangle(388, 236, (12 * (int)scale), (14 * (int)scale));
+
+            sourceRectangle = new Rectangle(
+                0,
+                0,
+                12,
+                14);
+            destinationRectangle = new Rectangle(
+                graphics.PreferredBackBufferWidth / 2 - sourceRectangle.Width / 2,
+                graphics.PreferredBackBufferHeight / 2 - sourceRectangle.Height / 2,
+                (12 * (int)scale),
+                (14 * (int)scale));
+
             flip = SpriteEffects.None;
+            speed = 1;
+            scale = 1;
 
             timeCounter = 0.0;
-            fps = 4.0;
+            fps = 6.0;
             secondsPerFrame = 1.0 / fps;
 
             currKbState = Keyboard.GetState();
@@ -74,10 +86,24 @@ namespace test_pickup
         {
             currKbState = Keyboard.GetState();
 
+            if (currKbState.IsKeyDown(Keys.LeftShift))
+            {
+                speed = 2;
+                fps = 12.0;
+                secondsPerFrame = 1.0 / fps;
+            }
+
+            else
+            {
+                speed = 1;
+                fps = 6.0;
+                secondsPerFrame = 1.0 / fps;
+            }
+
             if (currKbState.IsKeyDown(Keys.D))
             {
                 sourceRectangle.Y = 56;
-                destinationRectangle.X += 1;
+                destinationRectangle.X += speed;
                 flip = SpriteEffects.None;
             }
 
@@ -90,7 +116,7 @@ namespace test_pickup
             else if (currKbState.IsKeyDown(Keys.A))
             {
                 sourceRectangle.Y = 56;
-                destinationRectangle.X -= 1;
+                destinationRectangle.X -= speed;
                 flip = SpriteEffects.FlipHorizontally;
             }
 
@@ -103,7 +129,7 @@ namespace test_pickup
             else if (currKbState.IsKeyDown(Keys.W))
             {
                 sourceRectangle.Y = 70;
-                destinationRectangle.Y -= 1;
+                destinationRectangle.Y -= speed;
             }
 
             else if (prevKbState.IsKeyDown(Keys.W))
@@ -114,7 +140,7 @@ namespace test_pickup
             else if (currKbState.IsKeyDown(Keys.S))
             {
                 sourceRectangle.Y = 42;
-                destinationRectangle.Y += 1;
+                destinationRectangle.Y += speed;
             }
 
             else if (prevKbState.IsKeyDown(Keys.S))
@@ -126,3 +152,5 @@ namespace test_pickup
         }
     }
 }
+
+// https://freesound.org/people/JustInvoke/sounds/446134/
