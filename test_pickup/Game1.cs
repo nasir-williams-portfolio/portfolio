@@ -37,6 +37,7 @@ namespace test_pickup
         private Random rng;
         private int fruit_count;
         private bool toggleDebug;
+        private const string TitleBar = "Fruit Collector";
 
         public Game1()
         {
@@ -54,14 +55,13 @@ namespace test_pickup
             _graphics.ApplyChanges();
             fruit_count = 0;
             toggleDebug = false;
+            Window.Title = TitleBar;
             base.Initialize();
         }
 
         protected override void LoadContent()
         {
             _spriteBatch = new SpriteBatch(GraphicsDevice);
-
-
 
             player_spritesheet = Content.Load<Texture2D>("Prototype_Character_Red");
             item_spritesheet = Content.Load<Texture2D>("TheBanquet_SpriteAtlas_Master");
@@ -102,7 +102,7 @@ namespace test_pickup
             }
 
             // populate the fruit list with a random number and assortment of pickup type objects
-            int fruit_capacity = rng.Next(1, 26);
+            int fruit_capacity = rng.Next(10, 26);
             for (int i = 0; i < fruit_capacity; i++)
             {
                 fruits.Add(new Pickup(
@@ -192,7 +192,9 @@ namespace test_pickup
                     DebugLib.DrawRectOutline(_spriteBatch, fruit.Bounds, 1, Color.Black);
                 }
 
-                _spriteBatch.DrawString(font, "DEBUG ACTIVATED", new Vector2(1, 16), Color.Black);
+                DebugLib.DrawRectOutline(_spriteBatch, player.Bounds, 1, Color.Black);
+
+                _spriteBatch.DrawString(font, $"DEBUG ACTIVATED", new Vector2(1, 16), Color.Black);
             }
 
             cursor.Draw(_spriteBatch);

@@ -26,20 +26,21 @@ namespace test_pickup
         {
             this.spritesheet = spritesheet;
 
+            flip = SpriteEffects.None;
+            speed = 1;
+            scale = 1;
+
             sourceRectangle = new Rectangle(
                 0,
                 0,
                 12,
                 14);
+
             destinationRectangle = new Rectangle(
                 graphics.PreferredBackBufferWidth / 2 - sourceRectangle.Width / 2,
                 graphics.PreferredBackBufferHeight / 2 - sourceRectangle.Height / 2,
                 (12 * (int)scale),
                 (14 * (int)scale));
-
-            flip = SpriteEffects.None;
-            speed = 1;
-            scale = 1;
 
             timeCounter = 0.0;
             fps = 6.0;
@@ -86,7 +87,7 @@ namespace test_pickup
         {
             currKbState = Keyboard.GetState();
 
-            if (currKbState.IsKeyDown(Keys.LeftShift))
+            if (currKbState.GetPressedKeyCount() > 1 && currKbState.IsKeyDown(Keys.LeftShift))
             {
                 speed = 2;
                 fps = 12.0;
