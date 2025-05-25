@@ -8,6 +8,14 @@ using System.Collections.Generic;
 
 namespace test_pickup
 {
+    public enum GameState
+    {
+        TitleScreen,
+        SettingsMenu,
+        PauseMenu,
+        LevelScreen
+    }
+
     public class Game1 : Game
     {
         private GraphicsDeviceManager _graphics;
@@ -19,17 +27,20 @@ namespace test_pickup
         private Texture2D tile_spritesheet;
         private Texture2D cursor_sprite;
 
-        private SoundEffect soundEffect;
-        private SoundEffect walk_sound;
-        private Song song;
-        private SpriteFont font;
-
         private SoundEffectInstance sfx;
+        private SoundEffect collect_sfx_one;
+        private SoundEffect collect_sfx_two;
+        private SoundEffect walk_sfx;
+        private Song song;
+        private SoundEffect[] sound_effects;
+
+        private SpriteFont font;
 
         private Character player;
         private List<Pickup> fruits;
         private Tile[,] map;
         private Cursor cursor;
+        private GameState currentState;
 
         private KeyboardState currKbState;
         private KeyboardState prevKbState;
@@ -38,6 +49,7 @@ namespace test_pickup
         private int fruit_count;
         private bool toggleDebug;
         private const string TitleBar = "Fruit Collector";
+        private bool playSong;
 
         public Game1()
         {
@@ -56,6 +68,8 @@ namespace test_pickup
             fruit_count = 0;
             toggleDebug = false;
             Window.Title = TitleBar;
+            currentState = GameState.LevelScreen;
+            playSong = true;
             base.Initialize();
         }
 
@@ -71,18 +85,15 @@ namespace test_pickup
 
             font = Content.Load<SpriteFont>("daydream_8");
 
-            soundEffect = Content.Load<SoundEffect>("446129__justinvoke__collect-1");
-            walk_sound = Content.Load<SoundEffect>("326543__sqeeeek__wetfootsteps");
+            collect_sfx_one = Content.Load<SoundEffect>("446129__justinvoke__collect-1");
+            collect_sfx_two = Content.Load<SoundEffect>("446134__justinvoke__collect-2");
+            walk_sfx = Content.Load<SoundEffect>("326543__sqeeeek__wetfootsteps");
             song = Content.Load<Song>("[no copyright music] 'Taiyaki' cute background music");
-            sfx = walk_sound.CreateInstance();
+            sound_effects = [collect_sfx_one, collect_sfx_two];
+            sfx = walk_sfx.CreateInstance();
             sfx.Volume = 0.2f;
             MediaPlayer.IsRepeating = true;
             MediaPlayer.Volume = 0.2f;
-            if (MediaPlayer.State == MediaState.Playing)
-            {
-                MediaPlayer.Stop();
-            }
-            MediaPlayer.Play(song);
 
             player = new Character(player_spritesheet, _graphics);
             fruits = new List<Pickup>();
@@ -117,47 +128,68 @@ namespace test_pickup
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
 
-            player.Update(gameTime);
-
             currKbState = Keyboard.GetState();
 
-            Collide();
-
-            foreach (Pickup fruit in fruits)
+            switch (currentState)
             {
-                if (fruit.Colliding == true && currKbState.IsKeyDown(Keys.E) && !prevKbState.IsKeyDown(Keys.E))
-                {
-                    fruit.Scale = 0;
-                    fruit_count++;
-                    soundEffect.Play();
-                }
-            }
+                case GameState.TitleScreen:
+                    break;
+                case GameState.SettingsMenu:
+                    break;
+                case GameState.PauseMenu:
+                    break;
+                case GameState.LevelScreen:
+                    if (playSong)
+                    {
+                        MediaPlayer.Play(song);
+                        playSong = false;
+                    }
 
-            if (currKbState.IsKeyDown(Keys.P) && !prevKbState.IsKeyDown(Keys.P))
-            {
-                toggleDebug = !toggleDebug;
-            }
+                    foreach (Pickup fruit in fruits)
+                    {
+                        if (fruit.Bounds.Intersects(player.Bounds) == true)
+                        {
+                            fruit.Colliding = true;
+                            if (currKbState.IsKeyDown(Keys.E) && !prevKbState.IsKeyDown(Keys.E))
+                            {
+                                fruit.Scale = 0;
+                                fruit_count++;
+                                sound_effects[rng.Next(0, 2)].Play();
+                            }
+                        }
+                    }
 
-            cursor.Update();
+                    if (currKbState.IsKeyDown(Keys.W) || currKbState.IsKeyDown(Keys.A) || currKbState.IsKeyDown(Keys.S) || currKbState.IsKeyDown(Keys.D))
+                    {
+                        if (currKbState.IsKeyDown(Keys.LeftShift))
+                        {
+                            sfx.Pitch = 1;
+                        }
 
-            if (currKbState.IsKeyDown(Keys.W) || currKbState.IsKeyDown(Keys.A) || currKbState.IsKeyDown(Keys.S) || currKbState.IsKeyDown(Keys.D))
-            {
-                if (currKbState.IsKeyDown(Keys.LeftShift))
-                {
-                    sfx.Pitch = 1;
-                }
+                        else
+                        {
+                            sfx.Pitch = 0;
+                        }
 
-                else
-                {
-                    sfx.Pitch = 0;
-                }
+                        sfx.Play();
+                    }
 
-                sfx.Play();
-            }
+                    else
+                    {
+                        sfx.Stop();
+                    }
 
-            else
-            {
-                sfx.Stop();
+                    if (currKbState.IsKeyDown(Keys.P) && !prevKbState.IsKeyDown(Keys.P))
+                    {
+                        toggleDebug = !toggleDebug;
+                    }
+
+                    cursor.Update();
+                    player.Update(gameTime);
+
+                    break;
+                default:
+                    break;
             }
 
             prevKbState = currKbState;
@@ -167,57 +199,53 @@ namespace test_pickup
 
         protected override void Draw(GameTime gameTime)
         {
-            GraphicsDevice.Clear(Color.DarkGreen);
+            GraphicsDevice.Clear(Color.Black);
 
             _spriteBatch.Begin(SpriteSortMode.Deferred, null, SamplerState.PointClamp, null, null);
 
-            foreach (Tile tile in map)
+            switch (currentState)
             {
-                tile.Draw(_spriteBatch);
+                case GameState.TitleScreen:
+                    break;
+                case GameState.SettingsMenu:
+                    break;
+                case GameState.PauseMenu:
+                    break;
+                case GameState.LevelScreen:
+                    foreach (Tile tile in map)
+                    {
+                        tile.Draw(_spriteBatch);
+                    }
+
+                    foreach (Pickup fruit in fruits)
+                    {
+                        fruit.Draw(_spriteBatch);
+                    }
+
+                    player.Draw(_spriteBatch);
+                    cursor.Draw(_spriteBatch);
+
+                    if (toggleDebug)
+                    {
+                        foreach (Pickup fruit in fruits)
+                        {
+                            DebugLib.DrawRectOutline(_spriteBatch, fruit.Bounds, 1, Color.Black);
+                        }
+
+                        DebugLib.DrawRectOutline(_spriteBatch, player.Bounds, 1, Color.Black);
+
+                        _spriteBatch.DrawString(font, $"DEBUG ACTIVATED", new Vector2(1, 16), Color.Black);
+                    }
+
+                    _spriteBatch.DrawString(font, $"Fruits Collected: {fruit_count} / {fruits.Count}", new Vector2(1, 1), Color.Black);
+                    break;
+                default:
+                    break;
             }
-
-            foreach (Pickup fruit in fruits)
-            {
-                fruit.Draw(_spriteBatch);
-            }
-
-            player.Draw(_spriteBatch);
-
-            _spriteBatch.DrawString(font, $"Fruits Collected: {fruit_count} / {fruits.Count}", new Vector2(1, 1), Color.Black);
-
-            if (toggleDebug)
-            {
-                foreach (Pickup fruit in fruits)
-                {
-                    DebugLib.DrawRectOutline(_spriteBatch, fruit.Bounds, 1, Color.Black);
-                }
-
-                DebugLib.DrawRectOutline(_spriteBatch, player.Bounds, 1, Color.Black);
-
-                _spriteBatch.DrawString(font, $"DEBUG ACTIVATED", new Vector2(1, 16), Color.Black);
-            }
-
-            cursor.Draw(_spriteBatch);
 
             _spriteBatch.End();
 
             base.Draw(gameTime);
-        }
-
-        protected void Collide()
-        {
-            foreach (Pickup fruit in fruits)
-            {
-                if (fruit.Bounds.Intersects(player.Bounds))
-                {
-                    fruit.Colliding = true;
-                }
-
-                else
-                {
-                    fruit.Colliding = false;
-                }
-            }
         }
     }
 }

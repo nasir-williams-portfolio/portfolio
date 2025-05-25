@@ -153,5 +153,3 @@ namespace test_pickup
         }
     }
 }
-
-// https://freesound.org/people/JustInvoke/sounds/446134/

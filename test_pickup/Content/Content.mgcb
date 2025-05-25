@@ -31,6 +31,12 @@
 /processorParam:Quality=Best
 /build:446129__justinvoke__collect-1.wav
 
+#begin 446134__justinvoke__collect-2.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:446134__justinvoke__collect-2.wav
+
 #begin daydream_8.spritefont
 /importer:FontDescriptionImporter
 /processor:FontDescriptionProcessor
@@ -85,6 +91,18 @@
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
 /build:tile_0200.png
+
+#begin ui-large-buttons-horizontal.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:ui-large-buttons-horizontal.png
 
 #begin zeo254-completed-commission.png
 /importer:TextureImporter
