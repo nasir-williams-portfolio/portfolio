@@ -17,7 +17,15 @@ namespace test_pickup
 
         public void Draw(SpriteBatch sb)
         {
-            sb.Draw(sprite, position, Color.White);
+            sb.Draw(
+                sprite,
+                position,
+                new Rectangle(0, 0, sprite.Width, sprite.Height),
+                Color.White,
+                0f,
+                new Vector2(sprite.Width / 2, sprite.Height / 2),
+                1f,
+                SpriteEffects.None, 0f);
         }
 
         public void Update()

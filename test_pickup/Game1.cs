@@ -11,8 +11,8 @@ namespace test_pickup
     public enum GameState
     {
         TitleScreen,
-        SettingsMenu,
-        PauseMenu,
+        OptionsScreen,
+        PauseScreen,
         LevelScreen
     }
 
@@ -26,6 +26,7 @@ namespace test_pickup
         private Texture2D key_spritesheet;
         private Texture2D tile_spritesheet;
         private Texture2D cursor_sprite;
+        private Texture2D button_spritesheet;
 
         private SoundEffectInstance sfx;
         private SoundEffect collect_sfx_one;
@@ -40,6 +41,12 @@ namespace test_pickup
         private List<Pickup> fruits;
         private Tile[,] map;
         private Cursor cursor;
+
+        private Button play_button;
+        private Button pause_button;
+        private Button quit_button;
+        private Button options_button;
+        private List<Button> buttons;
         private GameState currentState;
 
         private KeyboardState currKbState;
@@ -49,7 +56,6 @@ namespace test_pickup
         private int fruit_count;
         private bool toggleDebug;
         private const string TitleBar = "Fruit Collector";
-        private bool playSong;
 
         public Game1()
         {
@@ -61,15 +67,14 @@ namespace test_pickup
         protected override void Initialize()
         {
             currKbState = prevKbState;
-            _graphics.IsFullScreen = true;
-            _graphics.PreferredBackBufferWidth = 1920;
-            _graphics.PreferredBackBufferHeight = 1080;
-            _graphics.ApplyChanges();
+            //_graphics.IsFullScreen = true;
+            //_graphics.PreferredBackBufferWidth = 1920;
+            //_graphics.PreferredBackBufferHeight = 1080;
+            //_graphics.ApplyChanges();
             fruit_count = 0;
             toggleDebug = false;
             Window.Title = TitleBar;
-            currentState = GameState.LevelScreen;
-            playSong = true;
+            currentState = GameState.TitleScreen;
             base.Initialize();
         }
 
@@ -82,6 +87,7 @@ namespace test_pickup
             key_spritesheet = Content.Load<Texture2D>("Keyboard Letters and Symbols");
             tile_spritesheet = Content.Load<Texture2D>("zeo254-completed-commission");
             cursor_sprite = Content.Load<Texture2D>("tile_0200");
+            button_spritesheet = Content.Load<Texture2D>("ui-large-buttons-horizontal");
 
             font = Content.Load<SpriteFont>("daydream_8");
 
@@ -99,6 +105,18 @@ namespace test_pickup
             fruits = new List<Pickup>();
             rng = new Random();
             cursor = new Cursor(cursor_sprite);
+
+            play_button = new Button(button_spritesheet, new Vector2(400 - (46 / 2), 240 - (15 / 2)), ButtonStates.Play);
+            pause_button = new Button(button_spritesheet, new Vector2(400 - (46 / 2), 1), ButtonStates.Pause);
+            quit_button = new Button(button_spritesheet, new Vector2(400 - (46 / 2), play_button.Rectangle.Y + 16), ButtonStates.Quit);
+            options_button = new Button(button_spritesheet, new Vector2(400 - (46 / 2), quit_button.Rectangle.Y + 16), ButtonStates.Options);
+
+            play_button.OnButtonClick += LevelScreen;
+            pause_button.OnButtonClick += PauseMenu;
+            quit_button.OnButtonClick += Exit;
+            options_button.OnButtonClick += SettingsMenu;
+
+            buttons = [play_button, quit_button, options_button];
 
             map = new Tile[_graphics.PreferredBackBufferHeight / 15, _graphics.PreferredBackBufferWidth / 16];
             int[] column = { 3, 5, 7, 3, 3, 5, 3, 3, 3, 3, 3, 3 };
@@ -129,20 +147,36 @@ namespace test_pickup
                 Exit();
 
             currKbState = Keyboard.GetState();
+            cursor.Update();
 
             switch (currentState)
             {
                 case GameState.TitleScreen:
+                    foreach (Button button in buttons)
+                    {
+                        button.Update();
+                    }
+                    MediaPlayer.Stop();
                     break;
-                case GameState.SettingsMenu:
+                case GameState.OptionsScreen:
+                    foreach (Button button in buttons)
+                    {
+                        button.Update();
+                    }
+                    MediaPlayer.Stop();
                     break;
-                case GameState.PauseMenu:
+                case GameState.PauseScreen:
+                    foreach (Button button in buttons)
+                    {
+                        button.Update();
+                    }
+                    MediaPlayer.Stop();
                     break;
                 case GameState.LevelScreen:
-                    if (playSong)
+                    pause_button.Update();
+                    if (MediaPlayer.State == MediaState.Stopped)
                     {
                         MediaPlayer.Play(song);
-                        playSong = false;
                     }
 
                     foreach (Pickup fruit in fruits)
@@ -156,6 +190,11 @@ namespace test_pickup
                                 fruit_count++;
                                 sound_effects[rng.Next(0, 2)].Play();
                             }
+                        }
+
+                        else
+                        {
+                            fruit.Colliding = false;
                         }
                     }
 
@@ -184,7 +223,6 @@ namespace test_pickup
                         toggleDebug = !toggleDebug;
                     }
 
-                    cursor.Update();
                     player.Update(gameTime);
 
                     break;
@@ -199,19 +237,35 @@ namespace test_pickup
 
         protected override void Draw(GameTime gameTime)
         {
-            GraphicsDevice.Clear(Color.Black);
+            GraphicsDevice.Clear(Color.White);
 
             _spriteBatch.Begin(SpriteSortMode.Deferred, null, SamplerState.PointClamp, null, null);
 
             switch (currentState)
             {
                 case GameState.TitleScreen:
+                    foreach (Button button in buttons)
+                    {
+                        button.Draw(_spriteBatch);
+                    }
+                    _spriteBatch.DrawString(font, $"{currentState}", new Vector2(1, 1), Color.Black);
                     break;
-                case GameState.SettingsMenu:
+                case GameState.OptionsScreen:
+                    foreach (Button button in buttons)
+                    {
+                        button.Draw(_spriteBatch);
+                    }
+                    _spriteBatch.DrawString(font, $"{currentState}", new Vector2(1, 1), Color.Black);
                     break;
-                case GameState.PauseMenu:
+                case GameState.PauseScreen:
+                    foreach (Button button in buttons)
+                    {
+                        button.Draw(_spriteBatch);
+                    }
+                    _spriteBatch.DrawString(font, $"{currentState}", new Vector2(1, 1), Color.Black);
                     break;
                 case GameState.LevelScreen:
+
                     foreach (Tile tile in map)
                     {
                         tile.Draw(_spriteBatch);
@@ -223,7 +277,6 @@ namespace test_pickup
                     }
 
                     player.Draw(_spriteBatch);
-                    cursor.Draw(_spriteBatch);
 
                     if (toggleDebug)
                     {
@@ -236,16 +289,34 @@ namespace test_pickup
 
                         _spriteBatch.DrawString(font, $"DEBUG ACTIVATED", new Vector2(1, 16), Color.Black);
                     }
-
+                    pause_button.Draw(_spriteBatch);
                     _spriteBatch.DrawString(font, $"Fruits Collected: {fruit_count} / {fruits.Count}", new Vector2(1, 1), Color.Black);
                     break;
                 default:
                     break;
             }
 
+            cursor.Draw(_spriteBatch);
+
             _spriteBatch.End();
 
             base.Draw(gameTime);
+        }
+        protected void LevelScreen()
+        {
+            currentState = GameState.LevelScreen;
+        }
+        protected void PauseMenu()
+        {
+            currentState = GameState.PauseScreen;
+        }
+        protected void SettingsMenu()
+        {
+            currentState = GameState.OptionsScreen;
+        }
+        protected void TitleScreen()
+        {
+            currentState = GameState.TitleScreen;
         }
     }
 }
