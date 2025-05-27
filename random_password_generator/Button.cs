@@ -72,11 +72,11 @@ namespace random_password_generator
                 {
                     current_sprite = sprite_hover;
                 }
+            }
 
-                else
-                {
-                    current_sprite = sprite;
-                }
+            else
+            {
+                current_sprite = sprite;
             }
 
             prev_mouse = curr_mouse;

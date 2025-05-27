@@ -10,10 +10,10 @@ namespace test_pickup
 {
     public enum GameState
     {
-        TitleScreen,
-        OptionsScreen,
-        PauseScreen,
-        LevelScreen
+        MainMenu,
+        OptionsMenu,
+        PauseMenu,
+        Level
     }
 
     public class Game1 : Game
@@ -46,8 +46,11 @@ namespace test_pickup
         private Button pause_button;
         private Button quit_button;
         private Button options_button;
-        private List<Button> buttons;
-        private GameState currentState;
+        private Button continue_button;
+        private Button back_button;
+
+        private GameState curr_state;
+        private Stack<GameState> state_history;
 
         private KeyboardState currKbState;
         private KeyboardState prevKbState;
@@ -66,15 +69,17 @@ namespace test_pickup
 
         protected override void Initialize()
         {
-            currKbState = prevKbState;
             //_graphics.IsFullScreen = true;
             //_graphics.PreferredBackBufferWidth = 1920;
             //_graphics.PreferredBackBufferHeight = 1080;
             //_graphics.ApplyChanges();
+
+            currKbState = prevKbState;
             fruit_count = 0;
             toggleDebug = false;
             Window.Title = TitleBar;
-            currentState = GameState.TitleScreen;
+            curr_state = GameState.MainMenu;
+            state_history = new Stack<GameState>();
             base.Initialize();
         }
 
@@ -106,22 +111,55 @@ namespace test_pickup
             rng = new Random();
             cursor = new Cursor(cursor_sprite);
 
-            play_button = new Button(button_spritesheet, new Vector2(400 - (46 / 2), 240 - (15 / 2)), ButtonStates.Play);
-            pause_button = new Button(button_spritesheet, new Vector2(400 - (46 / 2), 1), ButtonStates.Pause);
-            quit_button = new Button(button_spritesheet, new Vector2(400 - (46 / 2), play_button.Rectangle.Y + 16), ButtonStates.Quit);
-            options_button = new Button(button_spritesheet, new Vector2(400 - (46 / 2), quit_button.Rectangle.Y + 16), ButtonStates.Options);
+            // can probably turn this into a method that populates an array of button objects
+            play_button = new Button(
+                button_spritesheet,
+                new Vector2(400 - (46 / 2), 240 - (15 / 2)),
+                ButtonStates.Play,
+                6,
+                2);
+            continue_button = new Button(
+                button_spritesheet,
+                new Vector2(400 - (46 / 2), 240 - (15 / 2)),
+                ButtonStates.Continue,
+                6,
+                2);
+            options_button = new Button(
+                button_spritesheet,
+                new Vector2(400 - (46 / 2), play_button.Rectangle.Y + 16),
+                ButtonStates.Options,
+                6,
+                2);
+            quit_button = new Button(
+                button_spritesheet,
+                new Vector2(400 - (46 / 2), options_button.Rectangle.Y + 16),
+                ButtonStates.Quit,
+                6,
+                2);
+            pause_button = new Button(
+                button_spritesheet,
+                new Vector2(400 - (46 / 2), 1),
+                ButtonStates.Pause,
+                6,
+                2);
+            back_button = new Button(
+                button_spritesheet,
+                new Vector2(400 - (46 / 2), quit_button.Rectangle.Y - 16),
+                ButtonStates.Back,
+                6,
+                2);
 
-            play_button.OnButtonClick += LevelScreen;
-            pause_button.OnButtonClick += PauseMenu;
+            play_button.OnButtonClick += NavigateToLevel;
+            continue_button.OnButtonClick += NavigateToLevel;
+            pause_button.OnButtonClick += NavigateToPauseMenu;
             quit_button.OnButtonClick += Exit;
-            options_button.OnButtonClick += SettingsMenu;
-
-            buttons = [play_button, quit_button, options_button];
+            options_button.OnButtonClick += NavigateToOptionsMenu;
+            back_button.OnButtonClick += NavigateToPreviousMenu;
 
             map = new Tile[_graphics.PreferredBackBufferHeight / 15, _graphics.PreferredBackBufferWidth / 16];
             int[] column = { 3, 5, 7, 3, 3, 5, 3, 3, 3, 3, 3, 3 };
 
-            // populate the map array with a random assortment of grass tiles
+            // populate the map array with a random assortment of grass tiles; could probably be a method
             for (int y = 0; y < map.GetLength(1); y++)
             {
                 for (int x = 0; x < map.GetLength(0); x++)
@@ -130,7 +168,7 @@ namespace test_pickup
                 }
             }
 
-            // populate the fruit list with a random number and assortment of pickup type objects
+            // populate the fruit list with a random number and assortment of pickup type objects; could definately be a method
             int fruit_capacity = rng.Next(10, 26);
             for (int i = 0; i < fruit_capacity; i++)
             {
@@ -145,35 +183,35 @@ namespace test_pickup
         {
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
-
             currKbState = Keyboard.GetState();
             cursor.Update();
 
-            switch (currentState)
+            switch (curr_state)
             {
-                case GameState.TitleScreen:
-                    foreach (Button button in buttons)
-                    {
-                        button.Update();
-                    }
+                case GameState.MainMenu:
+                    play_button.Update();
+                    options_button.Update();
+                    quit_button.Update();
+
                     MediaPlayer.Stop();
                     break;
-                case GameState.OptionsScreen:
-                    foreach (Button button in buttons)
-                    {
-                        button.Update();
-                    }
+                case GameState.OptionsMenu:
+                    back_button.Update();
+                    quit_button.Update();
+
                     MediaPlayer.Stop();
                     break;
-                case GameState.PauseScreen:
-                    foreach (Button button in buttons)
-                    {
-                        button.Update();
-                    }
+                case GameState.PauseMenu:
+                    continue_button.Update();
+                    options_button.Update();
+                    quit_button.Update();
+
                     MediaPlayer.Stop();
                     break;
-                case GameState.LevelScreen:
+                case GameState.Level:
                     pause_button.Update();
+                    player.Update(gameTime);
+
                     if (MediaPlayer.State == MediaState.Stopped)
                     {
                         MediaPlayer.Play(song);
@@ -222,16 +260,12 @@ namespace test_pickup
                     {
                         toggleDebug = !toggleDebug;
                     }
-
-                    player.Update(gameTime);
-
                     break;
                 default:
                     break;
             }
 
             prevKbState = currKbState;
-
             base.Update(gameTime);
         }
 
@@ -241,31 +275,26 @@ namespace test_pickup
 
             _spriteBatch.Begin(SpriteSortMode.Deferred, null, SamplerState.PointClamp, null, null);
 
-            switch (currentState)
+            switch (curr_state)
             {
-                case GameState.TitleScreen:
-                    foreach (Button button in buttons)
-                    {
-                        button.Draw(_spriteBatch);
-                    }
-                    _spriteBatch.DrawString(font, $"{currentState}", new Vector2(1, 1), Color.Black);
+                case GameState.MainMenu:
+                    play_button.Draw(_spriteBatch);
+                    options_button.Draw(_spriteBatch);
+                    quit_button.Draw(_spriteBatch);
                     break;
-                case GameState.OptionsScreen:
-                    foreach (Button button in buttons)
-                    {
-                        button.Draw(_spriteBatch);
-                    }
-                    _spriteBatch.DrawString(font, $"{currentState}", new Vector2(1, 1), Color.Black);
-                    break;
-                case GameState.PauseScreen:
-                    foreach (Button button in buttons)
-                    {
-                        button.Draw(_spriteBatch);
-                    }
-                    _spriteBatch.DrawString(font, $"{currentState}", new Vector2(1, 1), Color.Black);
-                    break;
-                case GameState.LevelScreen:
+                case GameState.OptionsMenu:
 
+                    back_button.Draw(_spriteBatch);
+                    quit_button.Draw(_spriteBatch);
+                    break;
+                case GameState.PauseMenu:
+
+                    continue_button.Draw(_spriteBatch);
+                    options_button.Draw(_spriteBatch);
+                    quit_button.Draw(_spriteBatch);
+                    break;
+                case GameState.Level:
+                    // both of these foreach loops could probably be a single method
                     foreach (Tile tile in map)
                     {
                         tile.Draw(_spriteBatch);
@@ -289,34 +318,54 @@ namespace test_pickup
 
                         _spriteBatch.DrawString(font, $"DEBUG ACTIVATED", new Vector2(1, 16), Color.Black);
                     }
+
                     pause_button.Draw(_spriteBatch);
                     _spriteBatch.DrawString(font, $"Fruits Collected: {fruit_count} / {fruits.Count}", new Vector2(1, 1), Color.Black);
+
                     break;
                 default:
                     break;
             }
 
+            _spriteBatch.DrawString(
+                font,
+                $"Currrent State: {curr_state}",
+                new Vector2(1, _graphics.PreferredBackBufferHeight - font.MeasureString($"Currrent State: {curr_state}").Y),
+                Color.Black);
             cursor.Draw(_spriteBatch);
 
             _spriteBatch.End();
 
             base.Draw(gameTime);
         }
-        protected void LevelScreen()
+
+        protected void NavigateToLevel()
         {
-            currentState = GameState.LevelScreen;
+            state_history.Push(curr_state);
+            curr_state = GameState.Level;
         }
-        protected void PauseMenu()
+
+        protected void NavigateToPauseMenu()
         {
-            currentState = GameState.PauseScreen;
+            state_history.Push(curr_state);
+            curr_state = GameState.PauseMenu;
         }
-        protected void SettingsMenu()
+
+        protected void NavigateToOptionsMenu()
         {
-            currentState = GameState.OptionsScreen;
+            state_history.Push(curr_state);
+            curr_state = GameState.OptionsMenu;
         }
-        protected void TitleScreen()
+
+        protected void NavigateToMainMenu()
         {
-            currentState = GameState.TitleScreen;
+            state_history.Push(curr_state);
+            curr_state = GameState.MainMenu;
+        }
+
+        protected void NavigateToPreviousMenu()
+        {
+            curr_state = state_history.Pop();
         }
     }
 }
