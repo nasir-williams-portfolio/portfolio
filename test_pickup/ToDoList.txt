@@ -1,0 +1,3 @@
+﻿- finish implementing the universal scaling
+	- give every object the "origin" of the center of the sprite, then position them all based on that origin
+	- make everything more responsive (i.e. the screen is proportional if i'm in windowed mode or if i'm in full screen; do some math with the monitor height and width to find the "universal scale" ratio)

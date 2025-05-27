@@ -59,7 +59,7 @@ namespace test_pickup
                 Color.White,
                 0f,
                 Vector2.Zero,
-                scale,
+                scale * Game1.scale,
                 flip,
                 0f);
         }

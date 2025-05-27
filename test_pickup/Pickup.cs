@@ -59,7 +59,7 @@ namespace test_pickup
                 Color.White,
                 0f,
                 Vector2.Zero,
-                scale,
+                scale * Game1.scale,
                 SpriteEffects.None,
                 0f);
 
@@ -72,7 +72,7 @@ namespace test_pickup
                     Color.White,
                     0f,
                     new Vector2(6, 6),
-                    scale,
+                    scale * Game1.scale,
                     SpriteEffects.None,
                     0f);
             }

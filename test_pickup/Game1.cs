@@ -59,6 +59,9 @@ namespace test_pickup
         private int fruit_count;
         private bool toggleDebug;
         private const string TitleBar = "Fruit Collector";
+        public static int scale;
+        public int window_width;
+        public int window_height;
 
         public Game1()
         {
@@ -80,6 +83,9 @@ namespace test_pickup
             Window.Title = TitleBar;
             curr_state = GameState.MainMenu;
             state_history = new Stack<GameState>();
+            scale = 2;
+            window_height = _graphics.PreferredBackBufferHeight;
+            window_width = _graphics.PreferredBackBufferWidth;
             base.Initialize();
         }
 
@@ -126,13 +132,13 @@ namespace test_pickup
                 2);
             options_button = new Button(
                 button_spritesheet,
-                new Vector2(400 - (46 / 2), play_button.Rectangle.Y + 16),
+                new Vector2(400 - (46 / 2), play_button.Y + Button.Height + 1),
                 ButtonStates.Options,
                 6,
                 2);
             quit_button = new Button(
                 button_spritesheet,
-                new Vector2(400 - (46 / 2), options_button.Rectangle.Y + 16),
+                new Vector2(400 - (46 / 2), options_button.Y + +Button.Height + 1),
                 ButtonStates.Quit,
                 6,
                 2);
@@ -144,7 +150,7 @@ namespace test_pickup
                 2);
             back_button = new Button(
                 button_spritesheet,
-                new Vector2(400 - (46 / 2), quit_button.Rectangle.Y - 16),
+                new Vector2(400 - (46 / 2), quit_button.Y - Button.Height + 1),
                 ButtonStates.Back,
                 6,
                 2);
@@ -152,7 +158,7 @@ namespace test_pickup
             play_button.OnButtonClick += NavigateToLevel;
             continue_button.OnButtonClick += NavigateToLevel;
             pause_button.OnButtonClick += NavigateToPauseMenu;
-            quit_button.OnButtonClick += Exit;
+            quit_button.OnButtonClick += Quit;
             options_button.OnButtonClick += NavigateToOptionsMenu;
             back_button.OnButtonClick += NavigateToPreviousMenu;
 
@@ -357,10 +363,17 @@ namespace test_pickup
             curr_state = GameState.OptionsMenu;
         }
 
-        protected void NavigateToMainMenu()
+        protected void Quit()
         {
-            state_history.Push(curr_state);
-            curr_state = GameState.MainMenu;
+            if (state_history.Count == 0)
+            {
+                Exit();
+            }
+
+            else
+            {
+                curr_state = GameState.MainMenu;
+            }
         }
 
         protected void NavigateToPreviousMenu()

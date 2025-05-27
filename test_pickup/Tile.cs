@@ -9,11 +9,13 @@ namespace test_pickup
 
         private Rectangle source_rectangle;
         private Vector2 position;
+        private int rows;
+        private int columns;
 
         public Tile(Texture2D spritesheet, Vector2 position, int row, int column)
         {
             this.spritesheet = spritesheet;
-            source_rectangle = new Rectangle(16 * column, 16 * row, 16, 16);
+            source_rectangle = new Rectangle(16 * column, 16 * row, 16 * Game1.scale, 16 * Game1.scale);
             this.position = position;
         }
 
@@ -23,7 +25,12 @@ namespace test_pickup
                 spritesheet,
                 position,
                 source_rectangle,
-                Color.White);
+                Color.White,
+                0f,
+                Vector2.Zero,
+                1,
+                SpriteEffects.None,
+                0f);
         }
     }
 }
