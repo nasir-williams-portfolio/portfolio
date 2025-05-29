@@ -8,43 +8,47 @@ namespace test_pickup
     {
         private Rectangle sourceRectangle;
         private Rectangle destinationRectangle;
+        private Vector2 sprite_center;
         private Texture2D spritesheet;
         private SpriteEffects flip;
 
         private double timeCounter;
         private double fps;
         private double secondsPerFrame;
-        private float scale;
         private int speed;
+        private int sprite_width;
+        private int sprite_height;
 
         private KeyboardState currKbState;
         private KeyboardState prevKbState;
 
         public Rectangle Bounds { get { return destinationRectangle; } }
 
-        public Character(Texture2D spritesheet, GraphicsDeviceManager graphics)
+        public Character(Texture2D spritesheet, GraphicsDeviceManager graphics, int rows, int columns)
         {
             this.spritesheet = spritesheet;
 
             flip = SpriteEffects.None;
-            speed = 1;
-            scale = 1;
+            speed = 1; // use a vector for this (reference the mario finite state machine practice exercise)
+            timeCounter = 0.0;
+            fps = 6.0;
+
+            secondsPerFrame = 1.0 / fps;
+            sprite_width = (spritesheet.Width / columns);
+            sprite_height = (spritesheet.Height / rows);
+            sprite_center = new Vector2(sprite_width / 2, sprite_height / 2);
 
             sourceRectangle = new Rectangle(
                 0,
                 0,
-                12,
-                14);
+                sprite_width,
+                sprite_height);
 
             destinationRectangle = new Rectangle(
-                graphics.PreferredBackBufferWidth / 2 - sourceRectangle.Width / 2,
-                graphics.PreferredBackBufferHeight / 2 - sourceRectangle.Height / 2,
-                (12 * (int)scale),
-                (14 * (int)scale));
-
-            timeCounter = 0.0;
-            fps = 6.0;
-            secondsPerFrame = 1.0 / fps;
+                graphics.PreferredBackBufferWidth / 2 - (int)sprite_center.X,
+                graphics.PreferredBackBufferHeight / 2 - (int)sprite_center.Y,
+                (sprite_width * Game1.scale),
+                (sprite_height * Game1.scale));
 
             currKbState = Keyboard.GetState();
             prevKbState = currKbState;
@@ -54,12 +58,11 @@ namespace test_pickup
         {
             sb.Draw(
                 spritesheet,
-                new Vector2(destinationRectangle.X, destinationRectangle.Y),
+                destinationRectangle,
                 sourceRectangle,
                 Color.White,
                 0f,
                 Vector2.Zero,
-                scale * Game1.scale,
                 flip,
                 0f);
         }
@@ -89,14 +92,14 @@ namespace test_pickup
 
             if (currKbState.GetPressedKeyCount() > 1 && currKbState.IsKeyDown(Keys.LeftShift))
             {
-                speed = 2;
+                speed = 2 * Game1.scale;
                 fps = 12.0;
                 secondsPerFrame = 1.0 / fps;
             }
 
             else
             {
-                speed = 1;
+                speed = 1 * Game1.scale;
                 fps = 6.0;
                 secondsPerFrame = 1.0 / fps;
             }

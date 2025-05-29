@@ -7,12 +7,12 @@ namespace test_pickup
     internal class Cursor
     {
         private Texture2D sprite;
-        private Vector2 position;
+        private Rectangle position;
 
         public Cursor(Texture2D sprite)
         {
             this.sprite = sprite;
-            position = new Vector2(Mouse.GetState().X, Mouse.GetState().Y);
+            position = new Rectangle(Mouse.GetState().X, Mouse.GetState().Y, sprite.Width * Game1.scale, sprite.Height * Game1.scale);
         }
 
         public void Draw(SpriteBatch sb)
@@ -24,7 +24,6 @@ namespace test_pickup
                 Color.White,
                 0f,
                 new Vector2(sprite.Width / 2, sprite.Height / 2),
-                1f,
                 SpriteEffects.None, 0f);
         }
 

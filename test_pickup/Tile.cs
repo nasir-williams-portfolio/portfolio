@@ -8,6 +8,7 @@ namespace test_pickup
         private Texture2D spritesheet;
 
         private Rectangle source_rectangle;
+        private Rectangle destination_rectangle;
         private Vector2 position;
         private int rows;
         private int columns;
@@ -15,20 +16,20 @@ namespace test_pickup
         public Tile(Texture2D spritesheet, Vector2 position, int row, int column)
         {
             this.spritesheet = spritesheet;
-            source_rectangle = new Rectangle(16 * column, 16 * row, 16 * Game1.scale, 16 * Game1.scale);
             this.position = position;
+            source_rectangle = new Rectangle(16 * column, 16 * row, 16, 16);
+            destination_rectangle = new Rectangle((int)position.X, (int)position.Y, source_rectangle.Width * Game1.scale, source_rectangle.Height * Game1.scale);
         }
 
         public void Draw(SpriteBatch sb)
         {
             sb.Draw(
                 spritesheet,
-                position,
+                destination_rectangle,
                 source_rectangle,
                 Color.White,
                 0f,
                 Vector2.Zero,
-                1,
                 SpriteEffects.None,
                 0f);
         }

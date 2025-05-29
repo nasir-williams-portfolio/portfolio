@@ -13,12 +13,12 @@ namespace test_pickup
         private Rectangle destination_rectangle;
         private Rectangle bounds;
 
-        private float scale;
         private bool isColliding;
+        private bool isCollected;
 
         public bool Colliding { get { return isColliding; } set { isColliding = value; } }
-        public float Scale { set { scale = value; } }
         public Rectangle Bounds { get { return bounds; } }
+        public bool Collected { get { return isCollected; } set { isCollected = value; } }
 
         public Pickup(Texture2D spritesheet, Texture2D key_spritesheet, Vector2 position)
         {
@@ -39,43 +39,41 @@ namespace test_pickup
             destination_rectangle = new Rectangle(
                 (int)position.X,
                 (int)position.Y,
-                source_rectangle.Width,
-                source_rectangle.Height);
+                source_rectangle.Width * Game1.scale,
+                source_rectangle.Height * Game1.scale);
+
             bounds = new Rectangle(
                 (int)position.X - 2,
                 (int)position.Y - 2,
                 destination_rectangle.Width + 4,
                 destination_rectangle.Height + 4);
-
-            scale = 1;
         }
 
         public void Draw(SpriteBatch sb)
         {
             sb.Draw(
-                spritesheet,
-                new Vector2(destination_rectangle.X, destination_rectangle.Y),
-                source_rectangle,
-                Color.White,
-                0f,
-                Vector2.Zero,
-                scale * Game1.scale,
-                SpriteEffects.None,
-                0f);
+            spritesheet,
+            destination_rectangle,
+            source_rectangle,
+            Color.White,
+            0f,
+            Vector2.Zero,
+            SpriteEffects.None,
+            0f);
 
             if (Colliding)
             {
                 sb.Draw(
                     key_spritesheet,
-                    new Vector2(destination_rectangle.X + source_rectangle.Width / 2, destination_rectangle.Y - 10),
+                    new Rectangle(destination_rectangle.X - ((13 * Game1.scale - destination_rectangle.Width) / 2), destination_rectangle.Y - 13 * Game1.scale, 13 * Game1.scale, 12 * Game1.scale),
                     new Rectangle(65, 34, 13, 12),
                     Color.White,
                     0f,
-                    new Vector2(6, 6),
-                    scale * Game1.scale,
+                    Vector2.Zero,
                     SpriteEffects.None,
                     0f);
             }
+
         }
     }
 }

@@ -29,21 +29,21 @@ namespace test_pickup
         private Rectangle click_position;
         private Rectangle mouse_rect;
 
-        private static int sprite_width;
-        private static int sprite_height;
+        private int sprite_width;
+        private int sprite_height;
 
         public OnButtonClickDelegate OnButtonClick;
 
         public int X { get { return (int)position.X; } }
         public int Y { get { return (int)position.Y; } }
-        public static int Width { get { return sprite_width * Game1.scale; } }
-        public static int Height { get { return sprite_height * Game1.scale; } }
+        public static int Width { get { return 46 * Game1.scale; } }
+        public static int Height { get { return 14 * Game1.scale; } }
 
         public Button(Texture2D spritesheet, Vector2 position, ButtonStates function, int rows, int columns)
         {
             this.spritesheet = spritesheet;
             this.position = position;
-            sprite_width = (spritesheet.Width / columns);
+            sprite_width = (spritesheet.Width / columns); //fundamentally, doing the calculation when the variable is hard-coded in the static variable is redundant; so maybe make a method that positions it?
             sprite_height = (spritesheet.Height / rows);
             prev_mouse = curr_mouse;
 
@@ -83,14 +83,18 @@ namespace test_pickup
                 spritesheet,
                 position_rect,
                 source_rect,
-                Color.White);
-
+                Color.White,
+                0f,
+                new Vector2(source_rect.Width / 2, source_rect.Height / 2),
+                SpriteEffects.None,
+                0f);
         }
 
         public void Update()
         {
             curr_mouse = Mouse.GetState();
             mouse_rect = new Rectangle(curr_mouse.X, curr_mouse.Y, 1, 1);
+            Rectangle button_bounds = new Rectangle(position_rect.X - (position_rect.Width / 2), position_rect.Y - (position_rect.Height / 2), position_rect.Width, position_rect.Height);
 
             if (curr_mouse.LeftButton == ButtonState.Pressed && prev_mouse.LeftButton == ButtonState.Released)
             {
@@ -98,7 +102,7 @@ namespace test_pickup
                 click_position.Y = (int)curr_mouse.Y;
             }
 
-            if (position_rect.Contains(mouse_rect) && position_rect.Contains(click_position))
+            if (button_bounds.Contains(mouse_rect) && button_bounds.Contains(click_position))
             {
                 if (curr_mouse.LeftButton == ButtonState.Pressed)
                 {

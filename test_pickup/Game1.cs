@@ -44,7 +44,7 @@ namespace test_pickup
 
         private Button play_button;
         private Button pause_button;
-        private Button quit_button;
+        private Button exit_button;
         private Button options_button;
         private Button continue_button;
         private Button back_button;
@@ -62,6 +62,7 @@ namespace test_pickup
         public static int scale;
         public int window_width;
         public int window_height;
+        private int fruit_capacity;
 
         public Game1()
         {
@@ -72,10 +73,10 @@ namespace test_pickup
 
         protected override void Initialize()
         {
-            //_graphics.IsFullScreen = true;
-            //_graphics.PreferredBackBufferWidth = 1920;
-            //_graphics.PreferredBackBufferHeight = 1080;
-            //_graphics.ApplyChanges();
+            _graphics.IsFullScreen = true;
+            _graphics.PreferredBackBufferWidth = 1920;
+            _graphics.PreferredBackBufferHeight = 1080;
+            _graphics.ApplyChanges();
 
             currKbState = prevKbState;
             fruit_count = 0;
@@ -83,9 +84,9 @@ namespace test_pickup
             Window.Title = TitleBar;
             curr_state = GameState.MainMenu;
             state_history = new Stack<GameState>();
-            scale = 2;
             window_height = _graphics.PreferredBackBufferHeight;
             window_width = _graphics.PreferredBackBufferWidth;
+            scale = window_width / 400;
             base.Initialize();
         }
 
@@ -112,7 +113,7 @@ namespace test_pickup
             MediaPlayer.IsRepeating = true;
             MediaPlayer.Volume = 0.2f;
 
-            player = new Character(player_spritesheet, _graphics);
+            player = new Character(player_spritesheet, _graphics, 12, 4);
             fruits = new List<Pickup>();
             rng = new Random();
             cursor = new Cursor(cursor_sprite);
@@ -120,37 +121,49 @@ namespace test_pickup
             // can probably turn this into a method that populates an array of button objects
             play_button = new Button(
                 button_spritesheet,
-                new Vector2(400 - (46 / 2), 240 - (15 / 2)),
+                new Vector2(
+                    window_width / 2,
+                    window_height / 2),
                 ButtonStates.Play,
                 6,
                 2);
             continue_button = new Button(
                 button_spritesheet,
-                new Vector2(400 - (46 / 2), 240 - (15 / 2)),
+                new Vector2(
+                    window_width / 2,
+                    window_height / 2),
                 ButtonStates.Continue,
                 6,
                 2);
             options_button = new Button(
                 button_spritesheet,
-                new Vector2(400 - (46 / 2), play_button.Y + Button.Height + 1),
+                new Vector2(
+                    window_width / 2,
+                    play_button.Y + Button.Height + 2 * Game1.scale),
                 ButtonStates.Options,
                 6,
                 2);
-            quit_button = new Button(
+            exit_button = new Button(
                 button_spritesheet,
-                new Vector2(400 - (46 / 2), options_button.Y + +Button.Height + 1),
+                new Vector2(
+                    (window_width / 2),
+                    options_button.Y + Button.Height + 2 * Game1.scale),
                 ButtonStates.Quit,
                 6,
                 2);
             pause_button = new Button(
                 button_spritesheet,
-                new Vector2(400 - (46 / 2), 1),
+                new Vector2(
+                    window_width / 2,
+                    10 * Game1.scale),
                 ButtonStates.Pause,
                 6,
                 2);
             back_button = new Button(
                 button_spritesheet,
-                new Vector2(400 - (46 / 2), quit_button.Y - Button.Height + 1),
+                new Vector2(
+                    window_width / 2,
+                    exit_button.Y - Button.Height + 2 * Game1.scale),
                 ButtonStates.Back,
                 6,
                 2);
@@ -158,7 +171,7 @@ namespace test_pickup
             play_button.OnButtonClick += NavigateToLevel;
             continue_button.OnButtonClick += NavigateToLevel;
             pause_button.OnButtonClick += NavigateToPauseMenu;
-            quit_button.OnButtonClick += Quit;
+            exit_button.OnButtonClick += NavigateToExit;
             options_button.OnButtonClick += NavigateToOptionsMenu;
             back_button.OnButtonClick += NavigateToPreviousMenu;
 
@@ -170,12 +183,12 @@ namespace test_pickup
             {
                 for (int x = 0; x < map.GetLength(0); x++)
                 {
-                    map[x, y] = new Tile(tile_spritesheet, new Vector2(16 * (y), 16 * (x)), 0, column[rng.Next(0, column.Length)]);
+                    map[x, y] = new Tile(tile_spritesheet, new Vector2(scale * 16 * (y), scale * 16 * (x)), 0, column[rng.Next(0, column.Length)]);
                 }
             }
 
             // populate the fruit list with a random number and assortment of pickup type objects; could definately be a method
-            int fruit_capacity = rng.Next(10, 26);
+            fruit_capacity = rng.Next(10, 26);
             for (int i = 0; i < fruit_capacity; i++)
             {
                 fruits.Add(new Pickup(
@@ -188,7 +201,7 @@ namespace test_pickup
         protected override void Update(GameTime gameTime)
         {
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
-                Exit();
+                base.Exit();
             currKbState = Keyboard.GetState();
             cursor.Update();
 
@@ -197,20 +210,20 @@ namespace test_pickup
                 case GameState.MainMenu:
                     play_button.Update();
                     options_button.Update();
-                    quit_button.Update();
+                    exit_button.Update();
 
                     MediaPlayer.Stop();
                     break;
                 case GameState.OptionsMenu:
                     back_button.Update();
-                    quit_button.Update();
+                    exit_button.Update();
 
                     MediaPlayer.Stop();
                     break;
                 case GameState.PauseMenu:
                     continue_button.Update();
                     options_button.Update();
-                    quit_button.Update();
+                    exit_button.Update();
 
                     MediaPlayer.Stop();
                     break;
@@ -223,22 +236,15 @@ namespace test_pickup
                         MediaPlayer.Play(song);
                     }
 
-                    foreach (Pickup fruit in fruits)
+                    for (int i = 0; i < fruits.Count; i++)
                     {
-                        if (fruit.Bounds.Intersects(player.Bounds) == true)
-                        {
-                            fruit.Colliding = true;
-                            if (currKbState.IsKeyDown(Keys.E) && !prevKbState.IsKeyDown(Keys.E))
-                            {
-                                fruit.Scale = 0;
-                                fruit_count++;
-                                sound_effects[rng.Next(0, 2)].Play();
-                            }
-                        }
+                        fruits[i].Colliding = fruits[i].Bounds.Intersects(player.Bounds);
 
-                        else
+                        if (fruits[i].Colliding && currKbState.IsKeyDown(Keys.E) && !prevKbState.IsKeyDown(Keys.E))
                         {
-                            fruit.Colliding = false;
+                            fruit_count++;
+                            sound_effects[rng.Next(0, 2)].Play();
+                            fruits.Remove(fruits[i]);
                         }
                     }
 
@@ -286,18 +292,17 @@ namespace test_pickup
                 case GameState.MainMenu:
                     play_button.Draw(_spriteBatch);
                     options_button.Draw(_spriteBatch);
-                    quit_button.Draw(_spriteBatch);
+                    exit_button.Draw(_spriteBatch);
                     break;
                 case GameState.OptionsMenu:
 
                     back_button.Draw(_spriteBatch);
-                    quit_button.Draw(_spriteBatch);
                     break;
                 case GameState.PauseMenu:
 
                     continue_button.Draw(_spriteBatch);
                     options_button.Draw(_spriteBatch);
-                    quit_button.Draw(_spriteBatch);
+                    exit_button.Draw(_spriteBatch);
                     break;
                 case GameState.Level:
                     // both of these foreach loops could probably be a single method
@@ -326,7 +331,7 @@ namespace test_pickup
                     }
 
                     pause_button.Draw(_spriteBatch);
-                    _spriteBatch.DrawString(font, $"Fruits Collected: {fruit_count} / {fruits.Count}", new Vector2(1, 1), Color.Black);
+                    _spriteBatch.DrawString(font, $"Fruits Collected: {fruit_count} / {fruit_capacity}", new Vector2(1, 1), Color.Black);
 
                     break;
                 default:
@@ -363,11 +368,11 @@ namespace test_pickup
             curr_state = GameState.OptionsMenu;
         }
 
-        protected void Quit()
+        protected void NavigateToExit()
         {
-            if (state_history.Count == 0)
+            if (curr_state == GameState.MainMenu)
             {
-                Exit();
+                base.Exit();
             }
 
             else
