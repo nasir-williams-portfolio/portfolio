@@ -13,7 +13,9 @@ namespace test_pickup
         Quit,
         Options,
         Pause,
-        Back
+        Back,
+        MuteVolume,
+        UnMuteVolume
     }
 
     internal class Button

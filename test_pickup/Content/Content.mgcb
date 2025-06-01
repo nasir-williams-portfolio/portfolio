@@ -104,6 +104,18 @@
 /processorParam:TextureFormat=Color
 /build:ui-large-buttons-horizontal.png
 
+#begin volume-large-buttons-horizontal.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:volume-large-buttons-horizontal.png
+
 #begin zeo254-completed-commission.png
 /importer:TextureImporter
 /processor:TextureProcessor

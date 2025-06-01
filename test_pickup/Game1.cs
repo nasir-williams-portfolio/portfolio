@@ -27,6 +27,7 @@ namespace test_pickup
         private Texture2D tile_spritesheet;
         private Texture2D cursor_sprite;
         private Texture2D button_spritesheet;
+        private Texture2D volume_buttons_spritesheet;
 
         private SoundEffectInstance sfx;
         private SoundEffect collect_sfx_one;
@@ -100,6 +101,7 @@ namespace test_pickup
             tile_spritesheet = Content.Load<Texture2D>("zeo254-completed-commission");
             cursor_sprite = Content.Load<Texture2D>("tile_0200");
             button_spritesheet = Content.Load<Texture2D>("ui-large-buttons-horizontal");
+            volume_buttons_spritesheet = Content.Load<Texture2D>("volume-large-buttons-horizontal");
 
             font = Content.Load<SpriteFont>("daydream_8");
 
@@ -384,6 +386,16 @@ namespace test_pickup
         protected void NavigateToPreviousMenu()
         {
             curr_state = state_history.Pop();
+        }
+
+        protected void MuteAudio()
+        {
+            sfx.Volume = 0f;
+        }
+
+        protected void UnMuteAudio()
+        {
+
         }
     }
 }
