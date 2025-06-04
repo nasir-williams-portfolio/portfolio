@@ -56,6 +56,7 @@ namespace test_pickup
         private GameState curr_state;
         private Stack<GameState> state_history;
         private Queue<float> volume_history;
+        private Queue<int> window_history;
 
         private KeyboardState currKbState;
         private KeyboardState prevKbState;
@@ -63,7 +64,7 @@ namespace test_pickup
         private Random rng;
         private int fruit_count;
         private bool toggleDebug;
-        private const string TitleBar = "Fruit Collector";
+        private const string TitleBar = "The Gatherer";
         public static int scale;
         public int window_width;
         public int window_height;
@@ -90,6 +91,7 @@ namespace test_pickup
             curr_state = GameState.MainMenu;
             state_history = new Stack<GameState>();
             volume_history = new Queue<float>();
+            window_history = new Queue<int>();
             volume_history.Enqueue(0f);
             volume_history.Enqueue(0f);
             window_height = _graphics.PreferredBackBufferHeight;
@@ -179,7 +181,13 @@ namespace test_pickup
                 UIButtonStates.Back,
                 6,
                 2);
-            volume_toggle = new Toggle(volume_buttons_spritesheet, new Vector2(400, 228), 2, 2);
+
+            volume_toggle = new Toggle(
+                volume_buttons_spritesheet,
+                ToggleStates.Volume,
+                new Vector2(back_button.Boundary.X + volume_buttons_spritesheet.Width / 2, 228),
+                2,
+                2); // very jnaky, fix...somehow
 
             play_button.OnButtonClick += NavigateToLevel;
             continue_button.OnButtonClick += NavigateToLevel;
@@ -210,8 +218,6 @@ namespace test_pickup
                     key_spritesheet,
                     new Vector2(rng.Next(231, _graphics.PreferredBackBufferWidth - 20), rng.Next(15, _graphics.PreferredBackBufferHeight - 20))));
             }
-
-
         }
 
         protected override void Update(GameTime gameTime)
@@ -248,7 +254,6 @@ namespace test_pickup
                     pause_button.Update();
                     player.Update(gameTime);
                     MediaPlayer.Resume();
-
 
                     for (int i = 0; i < fruits.Count; i++)
                     {
@@ -289,6 +294,40 @@ namespace test_pickup
             if (currKbState.IsKeyDown(Keys.P) && !prevKbState.IsKeyDown(Keys.P))
             {
                 toggleDebug = !toggleDebug;
+            }
+
+            // this whole conditional will most likely be a method on its own
+            if (currKbState.IsKeyDown(Keys.R) && !prevKbState.IsKeyDown(Keys.R))
+            {
+                _graphics.IsFullScreen = true;
+                _graphics.PreferredBackBufferWidth = 1920;
+                _graphics.PreferredBackBufferHeight = 1080;
+                _graphics.ApplyChanges();
+
+                window_height = _graphics.PreferredBackBufferHeight;
+                window_width = _graphics.PreferredBackBufferWidth;
+                scale = window_width / 400;
+
+                play_button.Resize();
+                pause_button.Resize();
+                exit_button.Resize();
+                options_button.Resize();
+                continue_button.Resize();
+                back_button.Resize();
+                volume_toggle.Resize();
+
+                player.Resize();
+                cursor.Resize();
+
+                foreach (Pickup item in fruits)
+                {
+                    item.Resize();
+                }
+
+                foreach (Tile item in map)
+                {
+                    item.Resize();
+                }
             }
 
             prevKbState = currKbState;
@@ -427,6 +466,13 @@ namespace test_pickup
             System.Diagnostics.Debug.WriteLine(walk_sfx_instance.Volume);
             System.Diagnostics.Debug.WriteLine(collect_sfx_one_instance.Volume);
             System.Diagnostics.Debug.WriteLine(collect_sfx_two_instance.Volume);
+        }
+
+        protected void ToggleWindowResizing()
+        {
+            _graphics.IsFullScreen = !_graphics.IsFullScreen;
+
+            _graphics.ApplyChanges();
         }
     }
 }

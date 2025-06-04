@@ -6,6 +6,12 @@ namespace test_pickup
 {
     public delegate void OnToggleDelegate();
 
+    public enum ToggleStates
+    {
+        Volume,
+        WindowResizing
+    }
+
     internal class Toggle
     {
         private Texture2D spritesheet;
@@ -20,12 +26,14 @@ namespace test_pickup
         private MouseState curr_mouse;
         private MouseState prev_mouse;
 
+        private ToggleStates state;
+
         private int sprite_width;
         private int sprite_height;
         private bool isMuted;
 
         public OnToggleDelegate OnToggle;
-        public Toggle(Texture2D spritesheet, Vector2 position, int rows, int columns)
+        public Toggle(Texture2D spritesheet, ToggleStates state, Vector2 position, int rows, int columns)
         {
             this.spritesheet = spritesheet;
             sprite_width = (spritesheet.Width / columns);
@@ -33,6 +41,7 @@ namespace test_pickup
             isMuted = false;
             curr_mouse = Mouse.GetState();
             prev_mouse = curr_mouse;
+            this.state = state;
 
             position_rect = new Rectangle(
                 (int)position.X,
@@ -40,7 +49,7 @@ namespace test_pickup
                 sprite_width * Game1.scale,
                 sprite_height * Game1.scale);
             source_rect = new Rectangle(
-                0,
+                sprite_height * (int)state,
                 0,
                 sprite_width,
                 sprite_height);
@@ -70,6 +79,8 @@ namespace test_pickup
                 // if the audio is NOT currently muted
                 source_rect.Y = 0;
             }
+
+
 
             sb.Draw(
                     spritesheet,
@@ -120,6 +131,18 @@ namespace test_pickup
             }
 
             prev_mouse = curr_mouse;
+        }
+
+        public void Resize()
+        {
+            position_rect.Width = position_rect.Width * Game1.scale;
+            position_rect.Height = position_rect.Height * Game1.scale;
+
+            button_bounds = new Rectangle(
+                position_rect.X - (position_rect.Width / 2),
+                position_rect.Y - (position_rect.Height / 2),
+                position_rect.Width,
+                position_rect.Height);
         }
     }
 }

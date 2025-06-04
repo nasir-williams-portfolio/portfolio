@@ -27,6 +27,7 @@ namespace test_pickup
 
             Random rng = new Random();
 
+            // this will change once I fix the spritesheet
             Rectangle[] rectangles = {
                 new Rectangle(213, 4, 7, 7),
                 new Rectangle(163, 195, 10, 10),
@@ -65,6 +66,7 @@ namespace test_pickup
             {
                 sb.Draw(
                     key_spritesheet,
+                    // if you change the hardcoded values (which you should eventually) this will blow up
                     new Rectangle(destination_rectangle.X - ((13 * Game1.scale - destination_rectangle.Width) / 2), destination_rectangle.Y - 13 * Game1.scale, 13 * Game1.scale, 12 * Game1.scale),
                     new Rectangle(65, 34, 13, 12),
                     Color.White,
@@ -74,6 +76,18 @@ namespace test_pickup
                     0f);
             }
 
+        }
+
+        public void Resize()
+        {
+            destination_rectangle.Width = destination_rectangle.Width * Game1.scale;
+            destination_rectangle.Height = destination_rectangle.Height * Game1.scale;
+
+            bounds = new Rectangle(
+                (int)destination_rectangle.X - 2,
+                (int)destination_rectangle.Y - 2,
+                destination_rectangle.Width + 4,
+                destination_rectangle.Height + 4);
         }
     }
 }

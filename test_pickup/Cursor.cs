@@ -32,5 +32,11 @@ namespace test_pickup
             position.X = Mouse.GetState().X;
             position.Y = Mouse.GetState().Y;
         }
+
+        public void Resize()
+        {
+            position.Width = position.Width * Game1.scale;
+            position.Height = position.Height * Game1.scale;
+        }
     }
 }

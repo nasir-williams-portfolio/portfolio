@@ -47,8 +47,8 @@ namespace test_pickup
             destinationRectangle = new Rectangle(
                 graphics.PreferredBackBufferWidth / 2 - (int)sprite_center.X,
                 graphics.PreferredBackBufferHeight / 2 - (int)sprite_center.Y,
-                (sprite_width * Game1.scale),
-                (sprite_height * Game1.scale));
+                sprite_width * Game1.scale,
+                sprite_height * Game1.scale);
 
             currKbState = Keyboard.GetState();
             prevKbState = currKbState;
@@ -153,6 +153,12 @@ namespace test_pickup
             }
 
             prevKbState = currKbState;
+        }
+
+        public void Resize()
+        {
+            destinationRectangle.Width = destinationRectangle.Width * Game1.scale;
+            destinationRectangle.Height = destinationRectangle.Height * Game1.scale;
         }
     }
 }

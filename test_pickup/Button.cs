@@ -5,7 +5,6 @@ using Microsoft.Xna.Framework.Input;
 namespace test_pickup
 {
     public delegate void OnButtonClickDelegate();
-
     public enum UIButtonStates
     {
         Play,
@@ -29,51 +28,31 @@ namespace test_pickup
         private Rectangle mouse_rect;
         private Rectangle button_bounds;
 
+        UIButtonStates state;
+
         private int sprite_width;
         private int sprite_height;
 
         public OnButtonClickDelegate OnButtonClick;
         public int X { get { return (int)position_rect.X; } }
         public int Y { get { return (int)position_rect.Y; } }
-        public Button(Texture2D spritesheet, Vector2 position, UIButtonStates function, int rows, int columns)
+        public Rectangle Boundary { get { return button_bounds; } }
+        public Button(Texture2D spritesheet, Vector2 position, UIButtonStates state, int rows, int columns)
         {
             this.spritesheet = spritesheet;
             sprite_width = (spritesheet.Width / columns);
             sprite_height = (spritesheet.Height / rows);
             prev_mouse = curr_mouse;
+            this.state = state;
 
             position_rect = new Rectangle((int)position.X, (int)position.Y, sprite_width * Game1.scale, sprite_height * Game1.scale);
-            source_rect = new Rectangle(0, 0, sprite_width, sprite_height);
+            source_rect = new Rectangle(0, sprite_height * (int)state, sprite_width, sprite_height);
             click_position = new Vector2(0, 0);
             // this whole "mouse_rect" business is a great example of why you need better architecture (an observer would probably make it easier)
             mouse_rect = new Rectangle(curr_mouse.X, curr_mouse.Y, 1, 1);
 
             // the buttons are drawn from the center, so the position_rect coordinates are not accurate, "button_bounds" fixes that
             button_bounds = new Rectangle(position_rect.X - (position_rect.Width / 2), position_rect.Y - (position_rect.Height / 2), position_rect.Width, position_rect.Height);
-
-            switch (function)
-            {
-                case UIButtonStates.Play:
-                    source_rect.Y = sprite_height * ((int)UIButtonStates.Play);
-                    break;
-                case UIButtonStates.Continue:
-                    source_rect.Y = sprite_height * ((int)UIButtonStates.Continue);
-                    break;
-                case UIButtonStates.Quit:
-                    source_rect.Y = sprite_height * ((int)UIButtonStates.Quit);
-                    break;
-                case UIButtonStates.Options:
-                    source_rect.Y = sprite_height * ((int)UIButtonStates.Options);
-                    break;
-                case UIButtonStates.Pause:
-                    source_rect.Y = sprite_height * ((int)UIButtonStates.Pause);
-                    break;
-                case UIButtonStates.Back:
-                    source_rect.Y = sprite_height * ((int)UIButtonStates.Back);
-                    break;
-                default:
-                    break;
-            }
         }
 
         public void Draw(SpriteBatch sb)
@@ -133,6 +112,13 @@ namespace test_pickup
         public int GetWidth()
         {
             return sprite_width * Game1.scale;
+        }
+
+        public void Resize()
+        {
+            position_rect.Width = position_rect.Width * Game1.scale;
+            position_rect.Height = position_rect.Height * Game1.scale;
+            button_bounds = new Rectangle(position_rect.X - (position_rect.Width / 2), position_rect.Y - (position_rect.Height / 2), position_rect.Width, position_rect.Height);
         }
     }
 }

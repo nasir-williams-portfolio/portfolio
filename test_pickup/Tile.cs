@@ -33,5 +33,11 @@ namespace test_pickup
                 SpriteEffects.None,
                 0f);
         }
+
+        public void Resize()
+        {
+            destination_rectangle.Width = destination_rectangle.Width * Game1.scale;
+            destination_rectangle.Height = destination_rectangle.Height * Game1.scale;
+        }
     }
 }
