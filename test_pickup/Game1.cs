@@ -29,12 +29,14 @@ namespace test_pickup
         private Texture2D button_spritesheet;
         private Texture2D volume_buttons_spritesheet;
 
-        private SoundEffectInstance sfx;
+        private SoundEffectInstance walk_sfx_instance;
+        private SoundEffectInstance collect_sfx_one_instance;
+        private SoundEffectInstance collect_sfx_two_instance;
         private SoundEffect collect_sfx_one;
         private SoundEffect collect_sfx_two;
         private SoundEffect walk_sfx;
         private Song song;
-        private SoundEffect[] sound_effects;
+        private SoundEffectInstance[] sound_effects;
 
         private SpriteFont font;
 
@@ -114,9 +116,11 @@ namespace test_pickup
             collect_sfx_two = Content.Load<SoundEffect>("446134__justinvoke__collect-2");
             walk_sfx = Content.Load<SoundEffect>("326543__sqeeeek__wetfootsteps");
             song = Content.Load<Song>("[no copyright music] 'Taiyaki' cute background music");
-            sound_effects = [collect_sfx_one, collect_sfx_two];
-            sfx = walk_sfx.CreateInstance();
-            sfx.Volume = 1f;
+            walk_sfx_instance = walk_sfx.CreateInstance();
+            collect_sfx_one_instance = collect_sfx_one.CreateInstance();
+            collect_sfx_two_instance = collect_sfx_two.CreateInstance();
+            sound_effects = [collect_sfx_one_instance, collect_sfx_two_instance];
+            walk_sfx_instance.Volume = 1f;
             MediaPlayer.IsRepeating = true;
             MediaPlayer.Volume = 1f;
             MediaPlayer.Play(song);
@@ -262,20 +266,20 @@ namespace test_pickup
                     {
                         if (currKbState.IsKeyDown(Keys.LeftShift))
                         {
-                            sfx.Pitch = 1;
+                            walk_sfx_instance.Pitch = 1;
                         }
 
                         else
                         {
-                            sfx.Pitch = 0;
+                            walk_sfx_instance.Pitch = 0;
                         }
 
-                        sfx.Play();
+                        walk_sfx_instance.Play();
                     }
 
                     else
                     {
-                        sfx.Stop();
+                        walk_sfx_instance.Stop();
                     }
                     break;
                 default:
@@ -411,11 +415,18 @@ namespace test_pickup
         protected void ToggleVolume()
         {
             // to use the queue data structure for this you'd have to pop the previous values in the correct order, otherwise the sfx will be louder than the music
-            volume_history.Enqueue(sfx.Volume);
+            volume_history.Enqueue(walk_sfx_instance.Volume);
             volume_history.Enqueue(MediaPlayer.Volume);
 
-            sfx.Volume = volume_history.Dequeue();
+            float sfx_volume = volume_history.Dequeue();
+            walk_sfx_instance.Volume = sfx_volume;
+            collect_sfx_one_instance.Volume = sfx_volume;
+            collect_sfx_two_instance.Volume = sfx_volume;
             MediaPlayer.Volume = volume_history.Dequeue();
+
+            System.Diagnostics.Debug.WriteLine(walk_sfx_instance.Volume);
+            System.Diagnostics.Debug.WriteLine(collect_sfx_one_instance.Volume);
+            System.Diagnostics.Debug.WriteLine(collect_sfx_two_instance.Volume);
         }
     }
 }
