@@ -49,9 +49,11 @@ namespace test_pickup
         private Button options_button;
         private Button continue_button;
         private Button back_button;
+        private Toggle volume_toggle;
 
         private GameState curr_state;
         private Stack<GameState> state_history;
+        private Queue<float> volume_history;
 
         private KeyboardState currKbState;
         private KeyboardState prevKbState;
@@ -74,10 +76,10 @@ namespace test_pickup
 
         protected override void Initialize()
         {
-            _graphics.IsFullScreen = true;
-            _graphics.PreferredBackBufferWidth = 1920;
-            _graphics.PreferredBackBufferHeight = 1080;
-            _graphics.ApplyChanges();
+            //_graphics.IsFullScreen = true;
+            //_graphics.PreferredBackBufferWidth = 1920;
+            //_graphics.PreferredBackBufferHeight = 1080;
+            //_graphics.ApplyChanges();
 
             currKbState = prevKbState;
             fruit_count = 0;
@@ -85,6 +87,9 @@ namespace test_pickup
             Window.Title = TitleBar;
             curr_state = GameState.MainMenu;
             state_history = new Stack<GameState>();
+            volume_history = new Queue<float>();
+            volume_history.Enqueue(0f);
+            volume_history.Enqueue(0f);
             window_height = _graphics.PreferredBackBufferHeight;
             window_width = _graphics.PreferredBackBufferWidth;
             scale = window_width / 400;
@@ -111,9 +116,9 @@ namespace test_pickup
             song = Content.Load<Song>("[no copyright music] 'Taiyaki' cute background music");
             sound_effects = [collect_sfx_one, collect_sfx_two];
             sfx = walk_sfx.CreateInstance();
-            sfx.Volume = 0.2f;
+            sfx.Volume = 1f;
             MediaPlayer.IsRepeating = true;
-            MediaPlayer.Volume = 0.2f;
+            MediaPlayer.Volume = 1f;
 
             player = new Character(player_spritesheet, _graphics, 12, 4);
             fruits = new List<Pickup>();
@@ -126,7 +131,7 @@ namespace test_pickup
                 new Vector2(
                     window_width / 2,
                     window_height / 2),
-                ButtonStates.Play,
+                UIButtonStates.Play,
                 6,
                 2);
             continue_button = new Button(
@@ -134,23 +139,23 @@ namespace test_pickup
                 new Vector2(
                     window_width / 2,
                     window_height / 2),
-                ButtonStates.Continue,
+                UIButtonStates.Continue,
                 6,
                 2);
             options_button = new Button(
                 button_spritesheet,
                 new Vector2(
                     window_width / 2,
-                    play_button.Y + Button.Height + 2 * Game1.scale),
-                ButtonStates.Options,
+                    play_button.Y + play_button.GetHeight() + 2 * Game1.scale), // make the GetHeight() calls to the first element of the button list / array (whichever you end up doing)
+                UIButtonStates.Options,
                 6,
                 2);
             exit_button = new Button(
                 button_spritesheet,
                 new Vector2(
                     (window_width / 2),
-                    options_button.Y + Button.Height + 2 * Game1.scale),
-                ButtonStates.Quit,
+                    options_button.Y + play_button.GetHeight() + 2 * Game1.scale),
+                UIButtonStates.Quit,
                 6,
                 2);
             pause_button = new Button(
@@ -158,17 +163,18 @@ namespace test_pickup
                 new Vector2(
                     window_width / 2,
                     10 * Game1.scale),
-                ButtonStates.Pause,
+                UIButtonStates.Pause,
                 6,
                 2);
             back_button = new Button(
                 button_spritesheet,
                 new Vector2(
                     window_width / 2,
-                    exit_button.Y - Button.Height + 2 * Game1.scale),
-                ButtonStates.Back,
+                    exit_button.Y - play_button.GetHeight() + 2 * Game1.scale),
+                UIButtonStates.Back,
                 6,
                 2);
+            volume_toggle = new Toggle(volume_buttons_spritesheet, new Vector2(400, 228), 2, 2);
 
             play_button.OnButtonClick += NavigateToLevel;
             continue_button.OnButtonClick += NavigateToLevel;
@@ -176,6 +182,7 @@ namespace test_pickup
             exit_button.OnButtonClick += NavigateToExit;
             options_button.OnButtonClick += NavigateToOptionsMenu;
             back_button.OnButtonClick += NavigateToPreviousMenu;
+            volume_toggle.OnButtonClick += ToggleVolume;
 
             map = new Tile[_graphics.PreferredBackBufferHeight / 15, _graphics.PreferredBackBufferWidth / 16];
             int[] column = { 3, 5, 7, 3, 3, 5, 3, 3, 3, 3, 3, 3 };
@@ -219,6 +226,7 @@ namespace test_pickup
                 case GameState.OptionsMenu:
                     back_button.Update();
                     exit_button.Update();
+                    volume_toggle.Update();
 
                     MediaPlayer.Stop();
                     break;
@@ -232,11 +240,6 @@ namespace test_pickup
                 case GameState.Level:
                     pause_button.Update();
                     player.Update(gameTime);
-
-                    if (MediaPlayer.State == MediaState.Stopped)
-                    {
-                        MediaPlayer.Play(song);
-                    }
 
                     for (int i = 0; i < fruits.Count; i++)
                     {
@@ -269,14 +272,14 @@ namespace test_pickup
                     {
                         sfx.Stop();
                     }
-
-                    if (currKbState.IsKeyDown(Keys.P) && !prevKbState.IsKeyDown(Keys.P))
-                    {
-                        toggleDebug = !toggleDebug;
-                    }
                     break;
                 default:
                     break;
+            }
+
+            if (currKbState.IsKeyDown(Keys.P) && !prevKbState.IsKeyDown(Keys.P))
+            {
+                toggleDebug = !toggleDebug;
             }
 
             prevKbState = currKbState;
@@ -299,6 +302,7 @@ namespace test_pickup
                 case GameState.OptionsMenu:
 
                     back_button.Draw(_spriteBatch);
+                    volume_toggle.Draw(_spriteBatch);
                     break;
                 case GameState.PauseMenu:
 
@@ -320,17 +324,7 @@ namespace test_pickup
 
                     player.Draw(_spriteBatch);
 
-                    if (toggleDebug)
-                    {
-                        foreach (Pickup fruit in fruits)
-                        {
-                            DebugLib.DrawRectOutline(_spriteBatch, fruit.Bounds, 1, Color.Black);
-                        }
 
-                        DebugLib.DrawRectOutline(_spriteBatch, player.Bounds, 1, Color.Black);
-
-                        _spriteBatch.DrawString(font, $"DEBUG ACTIVATED", new Vector2(1, 16), Color.Black);
-                    }
 
                     pause_button.Draw(_spriteBatch);
                     _spriteBatch.DrawString(font, $"Fruits Collected: {fruit_count} / {fruit_capacity}", new Vector2(1, 1), Color.Black);
@@ -338,6 +332,23 @@ namespace test_pickup
                     break;
                 default:
                     break;
+            }
+
+            if (toggleDebug)
+            {
+                foreach (Pickup fruit in fruits)
+                {
+                    DebugLib.DrawRectOutline(_spriteBatch, fruit.Bounds, 1, Color.Black);
+                }
+
+                DebugLib.DrawRectOutline(_spriteBatch, player.Bounds, 1, Color.Black);
+
+                _spriteBatch.DrawString(font, $"DEBUG ACTIVATED", new Vector2(1, 16), Color.Black);
+                _spriteBatch.DrawString(
+                    font,
+                    $"Mouse Coordinates - X:{Mouse.GetState().X}, Y:{Mouse.GetState().Y}",
+                    new Vector2(1, window_height - font.MeasureString($"Mouse Coordinates - X:{Mouse.GetState().X}, Y:{Mouse.GetState().Y}").Y - font.MeasureString($"Currrent State: {curr_state}").Y),
+                    Color.Black);
             }
 
             _spriteBatch.DrawString(
@@ -355,6 +366,10 @@ namespace test_pickup
         protected void NavigateToLevel()
         {
             state_history.Push(curr_state);
+            if (MediaPlayer.State == MediaState.Stopped && state_history.Count == 0)
+            {
+                MediaPlayer.Play(song);
+            }
             curr_state = GameState.Level;
         }
 
@@ -388,14 +403,14 @@ namespace test_pickup
             curr_state = state_history.Pop();
         }
 
-        protected void MuteAudio()
+        protected void ToggleVolume()
         {
-            sfx.Volume = 0f;
-        }
+            // to use the queue data structure for this you'd have to pop the previous values in the correct order, otherwise the sfx will be louder than the music
+            volume_history.Enqueue(sfx.Volume);
+            volume_history.Enqueue(MediaPlayer.Volume);
 
-        protected void UnMuteAudio()
-        {
-
+            sfx.Volume = volume_history.Dequeue();
+            MediaPlayer.Volume = volume_history.Dequeue();
         }
     }
 }

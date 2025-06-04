@@ -6,16 +6,14 @@ namespace test_pickup
 {
     public delegate void OnButtonClickDelegate();
 
-    public enum ButtonStates
+    public enum UIButtonStates
     {
         Play,
         Continue,
         Quit,
         Options,
         Pause,
-        Back,
-        MuteVolume,
-        UnMuteVolume
+        Back
     }
 
     internal class Button
@@ -25,54 +23,53 @@ namespace test_pickup
         private MouseState curr_mouse;
         private MouseState prev_mouse;
 
-        private Vector2 position;
         private Rectangle position_rect;
         private Rectangle source_rect;
-        private Rectangle click_position;
+        private Vector2 click_position;
         private Rectangle mouse_rect;
+        private Rectangle button_bounds;
 
         private int sprite_width;
         private int sprite_height;
 
         public OnButtonClickDelegate OnButtonClick;
-
-        public int X { get { return (int)position.X; } }
-        public int Y { get { return (int)position.Y; } }
-        public static int Width { get { return 46 * Game1.scale; } }
-        public static int Height { get { return 14 * Game1.scale; } }
-
-        public Button(Texture2D spritesheet, Vector2 position, ButtonStates function, int rows, int columns)
+        public int X { get { return (int)position_rect.X; } }
+        public int Y { get { return (int)position_rect.Y; } }
+        public Button(Texture2D spritesheet, Vector2 position, UIButtonStates function, int rows, int columns)
         {
             this.spritesheet = spritesheet;
-            this.position = position;
-            sprite_width = (spritesheet.Width / columns); //fundamentally, doing the calculation when the variable is hard-coded in the static variable is redundant; so maybe make a method that positions it?
+            sprite_width = (spritesheet.Width / columns);
             sprite_height = (spritesheet.Height / rows);
             prev_mouse = curr_mouse;
 
             position_rect = new Rectangle((int)position.X, (int)position.Y, sprite_width * Game1.scale, sprite_height * Game1.scale);
             source_rect = new Rectangle(0, 0, sprite_width, sprite_height);
-            click_position = new Rectangle(0, 0, 1, 1);
-            mouse_rect = new Rectangle(0, 0, 1, 1);
+            click_position = new Vector2(0, 0);
+            // this whole "mouse_rect" business is a great example of why you need better architecture (an observer would probably make it easier)
+            mouse_rect = new Rectangle(curr_mouse.X, curr_mouse.Y, 1, 1);
+
+            // the buttons are drawn from the center, so the position_rect coordinates are not accurate, "button_bounds" fixes that
+            button_bounds = new Rectangle(position_rect.X - (position_rect.Width / 2), position_rect.Y - (position_rect.Height / 2), position_rect.Width, position_rect.Height);
 
             switch (function)
             {
-                case ButtonStates.Play:
-                    source_rect.Y = sprite_height * ((int)ButtonStates.Play);
+                case UIButtonStates.Play:
+                    source_rect.Y = sprite_height * ((int)UIButtonStates.Play);
                     break;
-                case ButtonStates.Continue:
-                    source_rect.Y = sprite_height * ((int)ButtonStates.Continue);
+                case UIButtonStates.Continue:
+                    source_rect.Y = sprite_height * ((int)UIButtonStates.Continue);
                     break;
-                case ButtonStates.Quit:
-                    source_rect.Y = sprite_height * ((int)ButtonStates.Quit);
+                case UIButtonStates.Quit:
+                    source_rect.Y = sprite_height * ((int)UIButtonStates.Quit);
                     break;
-                case ButtonStates.Options:
-                    source_rect.Y = sprite_height * ((int)ButtonStates.Options);
+                case UIButtonStates.Options:
+                    source_rect.Y = sprite_height * ((int)UIButtonStates.Options);
                     break;
-                case ButtonStates.Pause:
-                    source_rect.Y = sprite_height * ((int)ButtonStates.Pause);
+                case UIButtonStates.Pause:
+                    source_rect.Y = sprite_height * ((int)UIButtonStates.Pause);
                     break;
-                case ButtonStates.Back:
-                    source_rect.Y = sprite_height * ((int)ButtonStates.Back);
+                case UIButtonStates.Back:
+                    source_rect.Y = sprite_height * ((int)UIButtonStates.Back);
                     break;
                 default:
                     break;
@@ -95,8 +92,10 @@ namespace test_pickup
         public void Update()
         {
             curr_mouse = Mouse.GetState();
-            mouse_rect = new Rectangle(curr_mouse.X, curr_mouse.Y, 1, 1);
-            Rectangle button_bounds = new Rectangle(position_rect.X - (position_rect.Width / 2), position_rect.Y - (position_rect.Height / 2), position_rect.Width, position_rect.Height);
+
+            // could possibly turn this into its own method
+            mouse_rect.X = curr_mouse.X;
+            mouse_rect.Y = curr_mouse.Y;
 
             if (curr_mouse.LeftButton == ButtonState.Pressed && prev_mouse.LeftButton == ButtonState.Released)
             {
@@ -104,7 +103,7 @@ namespace test_pickup
                 click_position.Y = (int)curr_mouse.Y;
             }
 
-            if (button_bounds.Contains(mouse_rect) && button_bounds.Contains(click_position))
+            if (button_bounds.Contains(mouse_rect) && button_bounds.Contains(click_position)) // you could do the AABB collision for the "contains" condition and cut down on rectangle usage
             {
                 if (curr_mouse.LeftButton == ButtonState.Pressed)
                 {
@@ -124,6 +123,16 @@ namespace test_pickup
             }
 
             prev_mouse = curr_mouse;
+        }
+
+        public int GetHeight()
+        {
+            return sprite_height * Game1.scale;
+        }
+
+        public int GetWidth()
+        {
+            return sprite_width * Game1.scale;
         }
     }
 }
