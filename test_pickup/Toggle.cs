@@ -4,6 +4,8 @@ using Microsoft.Xna.Framework.Input;
 
 namespace test_pickup
 {
+    public delegate void OnToggleDelegate();
+
     internal class Toggle
     {
         private Texture2D spritesheet;
@@ -22,7 +24,7 @@ namespace test_pickup
         private int sprite_height;
         private bool isMuted;
 
-        public OnButtonClickDelegate OnButtonClick;
+        public OnToggleDelegate OnToggle;
         public Toggle(Texture2D spritesheet, Vector2 position, int rows, int columns)
         {
             this.spritesheet = spritesheet;
@@ -105,15 +107,11 @@ namespace test_pickup
                     source_rect.X = 0;
                 }
 
-
-
-                else if (OnButtonClick != null && prev_mouse.LeftButton == ButtonState.Pressed)
+                if (OnToggle != null && curr_mouse.LeftButton == ButtonState.Pressed && prev_mouse.LeftButton == ButtonState.Released)
                 {
                     isMuted = !isMuted;
-                    OnButtonClick();
+                    OnToggle();
                 }
-
-
             }
 
             else

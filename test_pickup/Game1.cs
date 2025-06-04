@@ -119,6 +119,7 @@ namespace test_pickup
             sfx.Volume = 1f;
             MediaPlayer.IsRepeating = true;
             MediaPlayer.Volume = 1f;
+            MediaPlayer.Play(song);
 
             player = new Character(player_spritesheet, _graphics, 12, 4);
             fruits = new List<Pickup>();
@@ -182,7 +183,7 @@ namespace test_pickup
             exit_button.OnButtonClick += NavigateToExit;
             options_button.OnButtonClick += NavigateToOptionsMenu;
             back_button.OnButtonClick += NavigateToPreviousMenu;
-            volume_toggle.OnButtonClick += ToggleVolume;
+            volume_toggle.OnToggle += ToggleVolume;
 
             map = new Tile[_graphics.PreferredBackBufferHeight / 15, _graphics.PreferredBackBufferWidth / 16];
             int[] column = { 3, 5, 7, 3, 3, 5, 3, 3, 3, 3, 3, 3 };
@@ -205,6 +206,8 @@ namespace test_pickup
                     key_spritesheet,
                     new Vector2(rng.Next(231, _graphics.PreferredBackBufferWidth - 20), rng.Next(15, _graphics.PreferredBackBufferHeight - 20))));
             }
+
+
         }
 
         protected override void Update(GameTime gameTime)
@@ -221,25 +224,27 @@ namespace test_pickup
                     options_button.Update();
                     exit_button.Update();
 
-                    MediaPlayer.Stop();
+                    MediaPlayer.Pause();
                     break;
                 case GameState.OptionsMenu:
                     back_button.Update();
                     exit_button.Update();
                     volume_toggle.Update();
 
-                    MediaPlayer.Stop();
+                    MediaPlayer.Pause();
                     break;
                 case GameState.PauseMenu:
                     continue_button.Update();
                     options_button.Update();
                     exit_button.Update();
 
-                    MediaPlayer.Stop();
+                    MediaPlayer.Pause();
                     break;
                 case GameState.Level:
                     pause_button.Update();
                     player.Update(gameTime);
+                    MediaPlayer.Resume();
+
 
                     for (int i = 0; i < fruits.Count; i++)
                     {
