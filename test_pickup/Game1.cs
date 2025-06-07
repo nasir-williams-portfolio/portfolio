@@ -92,17 +92,20 @@ namespace test_pickup
             state_history = new Stack<GameState>();
             volume_history = new Queue<float>();
             window_history = new Queue<int>();
+            window_history.Enqueue(GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Width);
+            window_history.Enqueue(GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Height);
             volume_history.Enqueue(0f);
             volume_history.Enqueue(0f);
-            window_height = _graphics.PreferredBackBufferHeight;
-            window_width = _graphics.PreferredBackBufferWidth;
-            scale = window_width / 400;
             base.Initialize();
         }
 
         protected override void LoadContent()
         {
             _spriteBatch = new SpriteBatch(GraphicsDevice);
+
+            window_height = _graphics.PreferredBackBufferHeight;
+            window_width = _graphics.PreferredBackBufferWidth;
+            scale = window_width / 400;
 
             player_spritesheet = Content.Load<Texture2D>("Prototype_Character_Red");
             item_spritesheet = Content.Load<Texture2D>("TheBanquet_SpriteAtlas_Master");
@@ -299,35 +302,7 @@ namespace test_pickup
             // this whole conditional will most likely be a method on its own
             if (currKbState.IsKeyDown(Keys.R) && !prevKbState.IsKeyDown(Keys.R))
             {
-                _graphics.IsFullScreen = true;
-                _graphics.PreferredBackBufferWidth = 1920;
-                _graphics.PreferredBackBufferHeight = 1080;
-                _graphics.ApplyChanges();
-
-                window_height = _graphics.PreferredBackBufferHeight;
-                window_width = _graphics.PreferredBackBufferWidth;
-                scale = window_width / 400;
-
-                play_button.Resize();
-                pause_button.Resize();
-                exit_button.Resize();
-                options_button.Resize();
-                continue_button.Resize();
-                back_button.Resize();
-                volume_toggle.Resize();
-
-                player.Resize();
-                cursor.Resize();
-
-                foreach (Pickup item in fruits)
-                {
-                    item.Resize();
-                }
-
-                foreach (Tile item in map)
-                {
-                    item.Resize();
-                }
+                ToggleWindowResizing();
             }
 
             prevKbState = currKbState;
@@ -462,17 +437,46 @@ namespace test_pickup
             collect_sfx_one_instance.Volume = sfx_volume;
             collect_sfx_two_instance.Volume = sfx_volume;
             MediaPlayer.Volume = volume_history.Dequeue();
-
-            System.Diagnostics.Debug.WriteLine(walk_sfx_instance.Volume);
-            System.Diagnostics.Debug.WriteLine(collect_sfx_one_instance.Volume);
-            System.Diagnostics.Debug.WriteLine(collect_sfx_two_instance.Volume);
         }
 
         protected void ToggleWindowResizing()
         {
+            window_history.Enqueue(_graphics.PreferredBackBufferWidth); //make these the variables you assigned at some point
+            window_history.Enqueue(_graphics.PreferredBackBufferHeight);
+
+            _graphics.PreferredBackBufferWidth = window_history.Dequeue();
+            _graphics.PreferredBackBufferHeight = window_history.Dequeue();
+
+            // this stays
             _graphics.IsFullScreen = !_graphics.IsFullScreen;
 
+            // this all stays too
             _graphics.ApplyChanges();
+
+            window_height = _graphics.PreferredBackBufferHeight;
+            window_width = _graphics.PreferredBackBufferWidth;
+            scale = window_width / 400;
+
+            play_button.Resize();
+            pause_button.Resize();
+            exit_button.Resize();
+            options_button.Resize();
+            continue_button.Resize();
+            back_button.Resize();
+            volume_toggle.Resize();
+
+            player.Resize();
+            cursor.Resize();
+
+            foreach (Pickup item in fruits)
+            {
+                item.Resize();
+            }
+
+            foreach (Tile item in map)
+            {
+                item.Resize();
+            }
         }
     }
 }

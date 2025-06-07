@@ -135,8 +135,8 @@ namespace test_pickup
 
         public void Resize()
         {
-            position_rect.Width = position_rect.Width * Game1.scale;
-            position_rect.Height = position_rect.Height * Game1.scale;
+            position_rect.Width = sprite_width * Game1.scale;
+            position_rect.Height = sprite_height * Game1.scale;
 
             button_bounds = new Rectangle(
                 position_rect.X - (position_rect.Width / 2),

@@ -35,8 +35,8 @@ namespace test_pickup
 
         public void Resize()
         {
-            position.Width = position.Width * Game1.scale;
-            position.Height = position.Height * Game1.scale;
+            position.Width = sprite.Width * Game1.scale;
+            position.Height = sprite.Height * Game1.scale;
         }
     }
 }

@@ -157,8 +157,8 @@ namespace test_pickup
 
         public void Resize()
         {
-            destinationRectangle.Width = destinationRectangle.Width * Game1.scale;
-            destinationRectangle.Height = destinationRectangle.Height * Game1.scale;
+            destinationRectangle.Width = sprite_width * Game1.scale;
+            destinationRectangle.Height = sprite_height * Game1.scale;
         }
     }
 }

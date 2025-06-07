@@ -9,14 +9,10 @@ namespace test_pickup
 
         private Rectangle source_rectangle;
         private Rectangle destination_rectangle;
-        private Vector2 position;
-        private int rows;
-        private int columns;
 
         public Tile(Texture2D spritesheet, Vector2 position, int row, int column)
         {
             this.spritesheet = spritesheet;
-            this.position = position;
             source_rectangle = new Rectangle(16 * column, 16 * row, 16, 16);
             destination_rectangle = new Rectangle((int)position.X, (int)position.Y, source_rectangle.Width * Game1.scale, source_rectangle.Height * Game1.scale);
         }
@@ -36,8 +32,9 @@ namespace test_pickup
 
         public void Resize()
         {
-            destination_rectangle.Width = destination_rectangle.Width * Game1.scale;
-            destination_rectangle.Height = destination_rectangle.Height * Game1.scale;
+            // again, this is gonna look janky until you fix the spritesheet
+            destination_rectangle.Width = 16 * Game1.scale;
+            destination_rectangle.Height = 16 * Game1.scale;
         }
     }
 }

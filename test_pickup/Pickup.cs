@@ -80,8 +80,9 @@ namespace test_pickup
 
         public void Resize()
         {
-            destination_rectangle.Width = destination_rectangle.Width * Game1.scale;
-            destination_rectangle.Height = destination_rectangle.Height * Game1.scale;
+            // can't fix this until you make a new, uniform spritesheet
+            destination_rectangle.Width = source_rectangle.Width * Game1.scale;
+            destination_rectangle.Height = source_rectangle.Height * Game1.scale;
 
             bounds = new Rectangle(
                 (int)destination_rectangle.X - 2,

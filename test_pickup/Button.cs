@@ -63,7 +63,7 @@ namespace test_pickup
                 source_rect,
                 Color.White,
                 0f,
-                new Vector2(source_rect.Width / 2, source_rect.Height / 2),
+                new Vector2(sprite_width / 2, sprite_height / 2),
                 SpriteEffects.None,
                 0f);
         }
@@ -116,8 +116,8 @@ namespace test_pickup
 
         public void Resize()
         {
-            position_rect.Width = position_rect.Width * Game1.scale;
-            position_rect.Height = position_rect.Height * Game1.scale;
+            position_rect.Width = sprite_width * Game1.scale;
+            position_rect.Height = sprite_height * Game1.scale;
             button_bounds = new Rectangle(position_rect.X - (position_rect.Width / 2), position_rect.Y - (position_rect.Height / 2), position_rect.Width, position_rect.Height);
         }
     }
