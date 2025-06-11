@@ -51,6 +51,7 @@ namespace test_pickup
         private Button options_button;
         private Button continue_button;
         private Button back_button;
+        private List<Button> buttons;
         private Toggle volume_toggle;
 
         private GameState curr_state;
@@ -116,6 +117,8 @@ namespace test_pickup
             volume_buttons_spritesheet = Content.Load<Texture2D>("volume-large-buttons-horizontal");
 
             font = Content.Load<SpriteFont>("daydream_8");
+
+            buttons = new List<Button>();
 
             collect_sfx_one = Content.Load<SoundEffect>("446129__justinvoke__collect-1");
             collect_sfx_two = Content.Load<SoundEffect>("446134__justinvoke__collect-2");
@@ -184,6 +187,13 @@ namespace test_pickup
                 UIButtonStates.Back,
                 6,
                 2);
+
+            buttons.Add(play_button);
+            buttons.Add(continue_button);
+            buttons.Add(options_button);
+            buttons.Add(exit_button);
+            buttons.Add(pause_button);
+            buttons.Add(back_button);
 
             volume_toggle = new Toggle(
                 volume_buttons_spritesheet,
@@ -372,6 +382,11 @@ namespace test_pickup
                     $"Mouse Coordinates - X:{Mouse.GetState().X}, Y:{Mouse.GetState().Y}",
                     new Vector2(1, window_height - font.MeasureString($"Mouse Coordinates - X:{Mouse.GetState().X}, Y:{Mouse.GetState().Y}").Y - font.MeasureString($"Currrent State: {curr_state}").Y),
                     Color.Black);
+
+                foreach (Button btn in buttons)
+                {
+                    DebugLib.DrawRectOutline(_spriteBatch, btn.Boundary, 1f, Color.Red);
+                }
             }
 
             _spriteBatch.DrawString(
@@ -476,6 +491,15 @@ namespace test_pickup
             foreach (Tile item in map)
             {
                 item.Resize();
+            }
+
+            for (int y = 0; y < map.GetLength(1); y++)
+            {
+                for (int x = 0; x < map.GetLength(0); x++)
+                {
+                    map[x, y].X = scale * 16 * (y);
+                    map[x, y].Y = scale * 16 * (x);
+                }
             }
         }
     }

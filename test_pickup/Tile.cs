@@ -10,6 +10,11 @@ namespace test_pickup
         private Rectangle source_rectangle;
         private Rectangle destination_rectangle;
 
+        public Rectangle Destination_Rectangle { get { return destination_rectangle; } set { destination_rectangle = value; } }
+
+        public int X { get { return destination_rectangle.X; } set { destination_rectangle.X = value; } }
+        public int Y { get { return destination_rectangle.Y; } set { destination_rectangle.Y = value; } }
+
         public Tile(Texture2D spritesheet, Vector2 position, int row, int column)
         {
             this.spritesheet = spritesheet;
