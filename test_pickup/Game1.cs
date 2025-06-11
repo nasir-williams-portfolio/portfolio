@@ -501,6 +501,8 @@ namespace test_pickup
                     map[x, y].Y = scale * 16 * (x);
                 }
             }
+
+            play_button.Reposition(window_width / 2, window_height / 2);
         }
     }
 }

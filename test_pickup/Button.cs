@@ -120,5 +120,11 @@ namespace test_pickup
             position_rect.Height = sprite_height * Game1.scale;
             button_bounds = new Rectangle(position_rect.X - (position_rect.Width / 2), position_rect.Y - (position_rect.Height / 2), position_rect.Width, position_rect.Height);
         }
+
+        public void Reposition(int x, int y)
+        {
+            position_rect.X = x;
+            position_rect.Y = y;
+        }
     }
 }
