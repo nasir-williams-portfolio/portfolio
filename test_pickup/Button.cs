@@ -28,10 +28,8 @@ namespace test_pickup
         private Rectangle mouse_rect;
         private Rectangle button_bounds;
 
-        UIButtonStates state;
-
-        private int sprite_width;
-        private int sprite_height;
+        private int sprite_width; //make these constants
+        private int sprite_height; //make these constants
 
         public OnButtonClickDelegate OnButtonClick;
         public int X { get { return (int)position_rect.X; } }
@@ -43,7 +41,6 @@ namespace test_pickup
             sprite_width = (spritesheet.Width / columns);
             sprite_height = (spritesheet.Height / rows);
             prev_mouse = curr_mouse;
-            this.state = state;
 
             position_rect = new Rectangle((int)position.X, (int)position.Y, sprite_width * Game1.scale, sprite_height * Game1.scale);
             source_rect = new Rectangle(0, sprite_height * (int)state, sprite_width, sprite_height);
@@ -118,6 +115,8 @@ namespace test_pickup
         {
             position_rect.Width = sprite_width * Game1.scale;
             position_rect.Height = sprite_height * Game1.scale;
+
+            //figure out a way to break this down into a reassignment of each property, then make the whole thing a private method
             button_bounds = new Rectangle(position_rect.X - (position_rect.Width / 2), position_rect.Y - (position_rect.Height / 2), position_rect.Width, position_rect.Height);
         }
 
@@ -125,6 +124,9 @@ namespace test_pickup
         {
             position_rect.X = x;
             position_rect.Y = y;
+
+            //figure out a way to break this down into a reassignment of each property, then make the whole thing a private method
+            button_bounds = new Rectangle(position_rect.X - (position_rect.Width / 2), position_rect.Y - (position_rect.Height / 2), position_rect.Width, position_rect.Height);
         }
     }
 }

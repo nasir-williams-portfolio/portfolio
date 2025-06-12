@@ -80,11 +80,6 @@ namespace test_pickup
 
         protected override void Initialize()
         {
-            //_graphics.IsFullScreen = true;
-            //_graphics.PreferredBackBufferWidth = 1920;
-            //_graphics.PreferredBackBufferHeight = 1080;
-            //_graphics.ApplyChanges();
-
             currKbState = prevKbState;
             fruit_count = 0;
             toggleDebug = false;
@@ -166,7 +161,7 @@ namespace test_pickup
             exit_button = new Button(
                 button_spritesheet,
                 new Vector2(
-                    (window_width / 2),
+                    window_width / 2,
                     options_button.Y + play_button.GetHeight() + 2 * Game1.scale),
                 UIButtonStates.Quit,
                 6,
@@ -198,9 +193,9 @@ namespace test_pickup
             volume_toggle = new Toggle(
                 volume_buttons_spritesheet,
                 ToggleStates.Volume,
-                new Vector2(back_button.Boundary.X + volume_buttons_spritesheet.Width / 2, 228),
+                new Vector2(back_button.Boundary.X + (8 * scale), ((window_height / 2) - 15 * scale)),
                 2,
-                2); // very jnaky, fix...somehow
+                2);
 
             play_button.OnButtonClick += NavigateToLevel;
             continue_button.OnButtonClick += NavigateToLevel;
@@ -387,6 +382,8 @@ namespace test_pickup
                 {
                     DebugLib.DrawRectOutline(_spriteBatch, btn.Boundary, 1f, Color.Red);
                 }
+
+                DebugLib.DrawRectOutline(_spriteBatch, volume_toggle.Boundary, 1, Color.Blue);
             }
 
             _spriteBatch.DrawString(
@@ -503,6 +500,12 @@ namespace test_pickup
             }
 
             play_button.Reposition(window_width / 2, window_height / 2);
+            continue_button.Reposition(window_width / 2, window_height / 2);
+            options_button.Reposition(window_width / 2, play_button.Y + play_button.GetHeight() + 2 * Game1.scale);
+            exit_button.Reposition(window_width / 2, options_button.Y + play_button.GetHeight() + 2 * Game1.scale);
+            pause_button.Reposition(window_width / 2, 10 * Game1.scale);
+            back_button.Reposition(window_width / 2, exit_button.Y - play_button.GetHeight() + 2 * Game1.scale);
+            volume_toggle.Reposition(back_button.Boundary.X + (8 * scale), ((window_height / 2) - 15 * scale));
         }
     }
 }

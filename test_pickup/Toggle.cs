@@ -28,11 +28,13 @@ namespace test_pickup
 
         private ToggleStates state;
 
-        private int sprite_width;
-        private int sprite_height;
-        private bool isMuted;
+        private int sprite_width; //make these constants
+        private int sprite_height; //make these constants
+        private bool isMuted; //change to say "isToggled" or something
 
         public OnToggleDelegate OnToggle;
+
+        public Rectangle Boundary { get { return button_bounds; } }
         public Toggle(Texture2D spritesheet, ToggleStates state, Vector2 position, int rows, int columns)
         {
             this.spritesheet = spritesheet;
@@ -79,8 +81,6 @@ namespace test_pickup
                 // if the audio is NOT currently muted
                 source_rect.Y = 0;
             }
-
-
 
             sb.Draw(
                     spritesheet,
@@ -132,17 +132,20 @@ namespace test_pickup
 
             prev_mouse = curr_mouse;
         }
-
         public void Resize()
         {
             position_rect.Width = sprite_width * Game1.scale;
             position_rect.Height = sprite_height * Game1.scale;
 
-            button_bounds = new Rectangle(
-                position_rect.X - (position_rect.Width / 2),
-                position_rect.Y - (position_rect.Height / 2),
-                position_rect.Width,
-                position_rect.Height);
+            button_bounds = new Rectangle(position_rect.X - (position_rect.Width / 2), position_rect.Y - (position_rect.Height / 2), position_rect.Width, position_rect.Height);
+        }
+        public void Reposition(int x, int y)
+        {
+            position_rect.X = x;
+            position_rect.Y = y;
+
+            // because you are the furthest thing from gods favorite, the boundaries are slightly to the right; fix them
+            button_bounds = new Rectangle(position_rect.X - (position_rect.Width / 2), position_rect.Y - (position_rect.Height / 2), position_rect.Width, position_rect.Height);
         }
     }
 }
