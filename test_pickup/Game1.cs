@@ -425,6 +425,8 @@ namespace test_pickup
 
             _spriteBatch.End();
 
+            player.MovePlayer(0, map.GetLength(0) * map[0, 0].Height - 12 * scale, 0, map.GetLength(1) * map[0, 0].Height - 14 * scale);
+
             base.Draw(gameTime);
         }
 

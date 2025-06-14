@@ -86,11 +86,9 @@ namespace test_pickup
 
                 timeCounter -= secondsPerFrame;
             }
-
-            MovePlayer();
         }
 
-        public void MovePlayer()
+        public void MovePlayer(int left, int right, int top, int bottom)
         {
             currKbState = Keyboard.GetState();
 
@@ -108,10 +106,10 @@ namespace test_pickup
                 secondsPerFrame = 1.0 / fps;
             }
 
-            if (currKbState.IsKeyDown(Keys.D))
+            if (currKbState.IsKeyDown(Keys.D) && screenPosition.X < right + 1)
             {
                 sourceRectangle.Y = 56;
-                screenPosition.X += speed; //test
+                screenPosition.X += speed;
                 flip = SpriteEffects.None;
             }
 
@@ -121,10 +119,10 @@ namespace test_pickup
                 flip = SpriteEffects.None;
             }
 
-            else if (currKbState.IsKeyDown(Keys.A) && screenPosition.X > 0)
+            else if (currKbState.IsKeyDown(Keys.A) && screenPosition.X > left - 1 * Game1.scale)
             {
                 sourceRectangle.Y = 56;
-                screenPosition.X -= speed; //test
+                screenPosition.X -= speed;
                 flip = SpriteEffects.FlipHorizontally;
             }
 
@@ -134,10 +132,10 @@ namespace test_pickup
                 flip = SpriteEffects.FlipHorizontally;
             }
 
-            else if (currKbState.IsKeyDown(Keys.W) && screenPosition.Y > 0)
+            else if (currKbState.IsKeyDown(Keys.W) && screenPosition.Y > top + 1)
             {
                 sourceRectangle.Y = 70;
-                screenPosition.Y -= speed; //test
+                screenPosition.Y -= speed;
             }
 
             else if (prevKbState.IsKeyDown(Keys.W))
@@ -145,10 +143,10 @@ namespace test_pickup
                 sourceRectangle.Y = 28;
             }
 
-            else if (currKbState.IsKeyDown(Keys.S))
+            else if (currKbState.IsKeyDown(Keys.S) && screenPosition.Y < bottom - 1 * Game1.scale)
             {
                 sourceRectangle.Y = 42;
-                screenPosition.Y += speed; //test
+                screenPosition.Y += speed;
             }
 
             else if (prevKbState.IsKeyDown(Keys.S))
