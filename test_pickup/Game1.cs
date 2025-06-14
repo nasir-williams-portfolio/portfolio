@@ -364,10 +364,10 @@ namespace test_pickup
                         }
                     }
 
-                    //foreach (Pickup fruit in fruits)
-                    //{
-                    //    fruit.Draw(_spriteBatch);
-                    //}
+                    foreach (Pickup item in fruits)
+                    {
+                        item.Draw(_spriteBatch, (int)worldToScreen.X, (int)worldToScreen.Y);
+                    }
 
                     player.Draw(_spriteBatch);
 
