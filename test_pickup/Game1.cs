@@ -65,6 +65,8 @@ namespace test_pickup
         private KeyboardState currKbState;
         private KeyboardState prevKbState;
 
+        private Vector2 worldPosition;
+
         private Random rng;
         private int fruit_count;
         private bool toggleDebug;
@@ -131,10 +133,13 @@ namespace test_pickup
             MediaPlayer.Volume = 1f;
             MediaPlayer.Play(song);
 
-            player = new Character(player_spritesheet, _graphics, 12, 4);
+            player = new Character(
+                player_spritesheet,
+                _graphics, 12, 4);
             fruits = new List<Pickup>();
             rng = new Random();
             cursor = new Cursor(cursor_sprite);
+            worldPosition = player.ScreenPosition;
 
             // can probably turn this into a method that populates an array of button objects
             // create a UIElement manager that has a dictionary of the buttons for cleaner implementation

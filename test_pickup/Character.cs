@@ -8,7 +8,7 @@ namespace test_pickup
     {
         private Rectangle sourceRectangle;
         private Rectangle destinationRectangle;
-        private Vector2 sprite_center;
+        private Vector2 screenPosition;
         private Texture2D spritesheet;
         private SpriteEffects flip;
 
@@ -23,6 +23,7 @@ namespace test_pickup
         private KeyboardState prevKbState;
 
         public Rectangle Bounds { get { return destinationRectangle; } }
+        public Vector2 ScreenPosition { get { return screenPosition; } set { screenPosition = value; } }
 
         public Character(Texture2D spritesheet, GraphicsDeviceManager graphics, int rows, int columns)
         {
@@ -36,7 +37,6 @@ namespace test_pickup
             secondsPerFrame = 1.0 / fps;
             sprite_width = (spritesheet.Width / columns);
             sprite_height = (spritesheet.Height / rows);
-            sprite_center = new Vector2(sprite_width / 2, sprite_height / 2);
 
             sourceRectangle = new Rectangle(
                 0,
@@ -44,9 +44,13 @@ namespace test_pickup
                 sprite_width,
                 sprite_height);
 
+            screenPosition = new Vector2(
+                graphics.PreferredBackBufferWidth / 2 - (sprite_width * Game1.scale / 2),
+                graphics.PreferredBackBufferHeight / 2 - (sprite_height * Game1.scale / 2));
+
             destinationRectangle = new Rectangle(
-                graphics.PreferredBackBufferWidth / 2 - (int)sprite_center.X,
-                graphics.PreferredBackBufferHeight / 2 - (int)sprite_center.Y,
+                (int)screenPosition.X,
+                (int)screenPosition.Y,
                 sprite_width * Game1.scale,
                 sprite_height * Game1.scale);
 
