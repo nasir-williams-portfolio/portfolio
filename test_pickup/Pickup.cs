@@ -17,8 +17,10 @@ namespace test_pickup
         private bool isCollected;
 
         public bool Colliding { get { return isColliding; } set { isColliding = value; } }
-        public Rectangle Bounds { get { return bounds; } }
         public bool Collected { get { return isCollected; } set { isCollected = value; } }
+        public Rectangle Bounds { get { return bounds; } }
+        public int X { get { return destination_rectangle.X; } set { destination_rectangle.X = value; } }
+        public int Y { get { return destination_rectangle.Y; } set { destination_rectangle.Y = value; } }
 
         public Pickup(Texture2D spritesheet, Texture2D key_spritesheet, Vector2 position)
         {

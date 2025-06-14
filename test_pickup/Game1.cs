@@ -72,7 +72,6 @@ namespace test_pickup
         public static int scale;
         public int window_width;
         public int window_height;
-        private int fruit_capacity;
 
         public Game1()
         {
@@ -232,15 +231,7 @@ namespace test_pickup
                 }
             }
 
-            // populate the fruit list with a random number and assortment of pickup type objects; could definately be a method
-            fruit_capacity = rng.Next(10, 26);
-            for (int i = 0; i < fruit_capacity; i++)
-            {
-                fruits.Add(new Pickup(
-                    item_spritesheet,
-                    key_spritesheet,
-                    new Vector2(rng.Next(231, _graphics.PreferredBackBufferWidth - 20), rng.Next(15, _graphics.PreferredBackBufferHeight - 20))));
-            }
+            PopulatePickups();
         }
 
         protected override void Update(GameTime gameTime)
@@ -310,6 +301,11 @@ namespace test_pickup
                     {
                         walk_sfx_instance.Stop();
                     }
+
+                    if (fruits.Count == 0)
+                    {
+                        PopulatePickups();
+                    }
                     break;
                 default:
                     break;
@@ -363,10 +359,8 @@ namespace test_pickup
 
                     player.Draw(_spriteBatch);
 
-
-
                     pause_button.Draw(_spriteBatch);
-                    _spriteBatch.DrawString(font, $"Fruits Collected: {fruit_count} / {fruit_capacity}", new Vector2(1, 1), Color.Black);
+                    _spriteBatch.DrawString(font, $"Fruits Remaining: {fruits.Count}", new Vector2(1, 1), Color.Black);
 
                     break;
                 default:
@@ -375,35 +369,44 @@ namespace test_pickup
 
             if (toggleDebug)
             {
-                foreach (Pickup fruit in fruits)
-                {
-                    DebugLib.DrawRectOutline(_spriteBatch, fruit.Bounds, 1, Color.Black);
-                }
-
-                DebugLib.DrawRectOutline(_spriteBatch, player.Bounds, 1, Color.Black);
-
-                _spriteBatch.DrawString(font, $"DEBUG ACTIVATED", new Vector2(1, 16), Color.Black);
-                _spriteBatch.DrawString(
-                    font,
-                    $"Mouse Coordinates - X:{Mouse.GetState().X}, Y:{Mouse.GetState().Y}",
-                    new Vector2(1, window_height - font.MeasureString($"Mouse Coordinates - X:{Mouse.GetState().X}, Y:{Mouse.GetState().Y}").Y - font.MeasureString($"Currrent State: {curr_state}").Y),
-                    Color.Black);
-
                 foreach (Button btn in buttons)
                 {
                     DebugLib.DrawRectOutline(_spriteBatch, btn.Boundary, 1f, Color.Red);
                 }
-
+                foreach (Pickup fruit in fruits)
+                {
+                    DebugLib.DrawRectOutline(_spriteBatch, fruit.Bounds, 1, Color.Black);
+                }
                 foreach (Toggle tgl in toggles)
                 {
                     DebugLib.DrawRectOutline(_spriteBatch, tgl.Boundary, 1f, Color.Red);
                 }
 
                 _spriteBatch.DrawString(
-                font,
-                $"Currrent State: {curr_state}",
-                new Vector2(1, _graphics.PreferredBackBufferHeight - font.MeasureString($"Currrent State: {curr_state}").Y),
-                Color.Black);
+                    font,
+                    $"Currrent State: {curr_state}",
+                    new Vector2(
+                        1,
+                        _graphics.PreferredBackBufferHeight - font.MeasureString($"Currrent State: {curr_state}").Y),
+                    Color.Black);
+                _spriteBatch.DrawString(
+                    font,
+                    $"DEBUG ACTIVATED",
+                    new Vector2(
+                        1,
+                        16),
+                    Color.Black);
+                _spriteBatch.DrawString(
+                    font,
+                    $"Mouse Coordinates - X:{Mouse.GetState().X}, Y:{Mouse.GetState().Y}",
+                    new Vector2(1, window_height - font.MeasureString($"Mouse Coordinates - X:{Mouse.GetState().X}, Y:{Mouse.GetState().Y}").Y - font.MeasureString($"Currrent State: {curr_state}").Y),
+                    Color.Black);
+
+                DebugLib.DrawRectOutline(
+                    _spriteBatch,
+                    player.Bounds,
+                    1,
+                    Color.Black);
             }
 
             cursor.Draw(_spriteBatch);
@@ -484,6 +487,9 @@ namespace test_pickup
             window_width = _graphics.PreferredBackBufferWidth;
             scale = window_width / 400;
 
+            player.Resize();
+            cursor.Resize();
+
             foreach (Button btn in buttons)
             {
                 btn.Resize();
@@ -494,11 +500,9 @@ namespace test_pickup
                 tgl.Resize();
             }
 
-            player.Resize();
-            cursor.Resize();
-
             foreach (Pickup item in fruits)
             {
+                //eventually I want to make it so that the pickups position is consistent independent of the size of the window
                 item.Resize();
             }
 
@@ -524,6 +528,20 @@ namespace test_pickup
             back_button.Reposition(window_width / 2, exit_button.Y - play_button.GetHeight() + 2 * Game1.scale);
             volume_toggle.Reposition(back_button.Boundary.X + (8 * scale), ((window_height / 2) - 15 * scale));
             resizing_toggle.Reposition(back_button.Boundary.Right - (9 * scale), ((window_height / 2) - 15 * scale));
+        }
+
+        public void PopulatePickups()
+        {
+            int max = rng.Next(10, 26);
+            for (int i = 0; i < max; i++)
+            {
+                fruits.Add(new Pickup(
+                    item_spritesheet,
+                    key_spritesheet,
+                    new Vector2(
+                        rng.Next(0, _graphics.PreferredBackBufferWidth - 20),
+                        rng.Next(0, _graphics.PreferredBackBufferHeight - 20))));
+            }
         }
     }
 }
