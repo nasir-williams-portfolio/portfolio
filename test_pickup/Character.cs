@@ -121,7 +121,7 @@ namespace test_pickup
                 flip = SpriteEffects.None;
             }
 
-            else if (currKbState.IsKeyDown(Keys.A))
+            else if (currKbState.IsKeyDown(Keys.A) && screenPosition.X > 0)
             {
                 sourceRectangle.Y = 56;
                 screenPosition.X -= speed; //test
@@ -134,7 +134,7 @@ namespace test_pickup
                 flip = SpriteEffects.FlipHorizontally;
             }
 
-            else if (currKbState.IsKeyDown(Keys.W))
+            else if (currKbState.IsKeyDown(Keys.W) && screenPosition.Y > 0)
             {
                 sourceRectangle.Y = 70;
                 screenPosition.Y -= speed; //test
