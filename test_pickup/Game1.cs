@@ -27,7 +27,7 @@ namespace test_pickup
         private Texture2D tile_spritesheet;
         private Texture2D cursor_sprite;
         private Texture2D button_spritesheet;
-        private Texture2D volume_buttons_spritesheet;
+        private Texture2D toggle_spritesheet;
 
         private SoundEffectInstance walk_sfx_instance;
         private SoundEffectInstance collect_sfx_one_instance;
@@ -52,7 +52,10 @@ namespace test_pickup
         private Button continue_button;
         private Button back_button;
         private List<Button> buttons;
+
         private Toggle volume_toggle;
+        private Toggle resizing_toggle;
+        private List<Toggle> toggles;
 
         private GameState curr_state;
         private Stack<GameState> state_history;
@@ -109,11 +112,12 @@ namespace test_pickup
             tile_spritesheet = Content.Load<Texture2D>("zeo254-completed-commission");
             cursor_sprite = Content.Load<Texture2D>("tile_0200");
             button_spritesheet = Content.Load<Texture2D>("ui-large-buttons-horizontal");
-            volume_buttons_spritesheet = Content.Load<Texture2D>("volume-large-buttons-horizontal");
+            toggle_spritesheet = Content.Load<Texture2D>("ui_toggle_spritesheet");
 
             font = Content.Load<SpriteFont>("daydream_8");
 
             buttons = new List<Button>();
+            toggles = new List<Toggle>();
 
             collect_sfx_one = Content.Load<SoundEffect>("446129__justinvoke__collect-1");
             collect_sfx_two = Content.Load<SoundEffect>("446134__justinvoke__collect-2");
@@ -134,6 +138,7 @@ namespace test_pickup
             cursor = new Cursor(cursor_sprite);
 
             // can probably turn this into a method that populates an array of button objects
+            // create a UIElement manager that has a dictionary of the buttons for cleaner implementation
             play_button = new Button(
                 button_spritesheet,
                 new Vector2(
@@ -191,11 +196,20 @@ namespace test_pickup
             buttons.Add(back_button);
 
             volume_toggle = new Toggle(
-                volume_buttons_spritesheet,
+                toggle_spritesheet,
                 ToggleStates.Volume,
                 new Vector2(back_button.Boundary.X + (8 * scale), ((window_height / 2) - 15 * scale)),
-                2,
+                4,
                 2);
+            resizing_toggle = new Toggle(
+                toggle_spritesheet,
+                ToggleStates.WindowResizing,
+                new Vector2(back_button.Boundary.Right - (9 * scale), ((window_height / 2) - 15 * scale)),
+                4,
+                2);
+
+            toggles.Add(volume_toggle);
+            toggles.Add(resizing_toggle);
 
             play_button.OnButtonClick += NavigateToLevel;
             continue_button.OnButtonClick += NavigateToLevel;
@@ -204,6 +218,7 @@ namespace test_pickup
             options_button.OnButtonClick += NavigateToOptionsMenu;
             back_button.OnButtonClick += NavigateToPreviousMenu;
             volume_toggle.OnToggle += ToggleVolume;
+            resizing_toggle.OnToggle += ToggleWindowResizing;
 
             map = new Tile[_graphics.PreferredBackBufferHeight / 15, _graphics.PreferredBackBufferWidth / 16];
             int[] column = { 3, 5, 7, 3, 3, 5, 3, 3, 3, 3, 3, 3 };
@@ -248,6 +263,7 @@ namespace test_pickup
                     back_button.Update();
                     exit_button.Update();
                     volume_toggle.Update();
+                    resizing_toggle.Update();
 
                     MediaPlayer.Pause();
                     break;
@@ -304,12 +320,6 @@ namespace test_pickup
                 toggleDebug = !toggleDebug;
             }
 
-            // this whole conditional will most likely be a method on its own
-            if (currKbState.IsKeyDown(Keys.R) && !prevKbState.IsKeyDown(Keys.R))
-            {
-                ToggleWindowResizing();
-            }
-
             prevKbState = currKbState;
             base.Update(gameTime);
         }
@@ -331,6 +341,7 @@ namespace test_pickup
 
                     back_button.Draw(_spriteBatch);
                     volume_toggle.Draw(_spriteBatch);
+                    resizing_toggle.Draw(_spriteBatch);
                     break;
                 case GameState.PauseMenu:
 
@@ -383,7 +394,10 @@ namespace test_pickup
                     DebugLib.DrawRectOutline(_spriteBatch, btn.Boundary, 1f, Color.Red);
                 }
 
-                DebugLib.DrawRectOutline(_spriteBatch, volume_toggle.Boundary, 1, Color.Blue);
+                foreach (Toggle tgl in toggles)
+                {
+                    DebugLib.DrawRectOutline(_spriteBatch, tgl.Boundary, 1f, Color.Red);
+                }
             }
 
             _spriteBatch.DrawString(
@@ -469,13 +483,15 @@ namespace test_pickup
             window_width = _graphics.PreferredBackBufferWidth;
             scale = window_width / 400;
 
-            play_button.Resize();
-            pause_button.Resize();
-            exit_button.Resize();
-            options_button.Resize();
-            continue_button.Resize();
-            back_button.Resize();
-            volume_toggle.Resize();
+            foreach (Button btn in buttons)
+            {
+                btn.Resize();
+            }
+
+            foreach (Toggle tgl in toggles)
+            {
+                tgl.Resize();
+            }
 
             player.Resize();
             cursor.Resize();
@@ -506,6 +522,7 @@ namespace test_pickup
             pause_button.Reposition(window_width / 2, 10 * Game1.scale);
             back_button.Reposition(window_width / 2, exit_button.Y - play_button.GetHeight() + 2 * Game1.scale);
             volume_toggle.Reposition(back_button.Boundary.X + (8 * scale), ((window_height / 2) - 15 * scale));
+            resizing_toggle.Reposition(back_button.Boundary.Right - (9 * scale), ((window_height / 2) - 15 * scale));
         }
     }
 }

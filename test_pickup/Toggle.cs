@@ -1,6 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using System;
 
 namespace test_pickup
 {
@@ -28,9 +29,9 @@ namespace test_pickup
 
         private ToggleStates state;
 
-        private int sprite_width; //make these constants
-        private int sprite_height; //make these constants
-        private bool isMuted; //change to say "isToggled" or something
+        private int sprite_width; //make these constants, if you ever solidify the spritesheets
+        private int sprite_height; //make these constants, if you ever solidify the spritesheets
+        private bool isToggled;
 
         public OnToggleDelegate OnToggle;
 
@@ -40,7 +41,7 @@ namespace test_pickup
             this.spritesheet = spritesheet;
             sprite_width = (spritesheet.Width / columns);
             sprite_height = (spritesheet.Height / rows);
-            isMuted = false;
+            isToggled = false;
             curr_mouse = Mouse.GetState();
             prev_mouse = curr_mouse;
             this.state = state;
@@ -51,7 +52,7 @@ namespace test_pickup
                 sprite_width * Game1.scale,
                 sprite_height * Game1.scale);
             source_rect = new Rectangle(
-                sprite_height * (int)state,
+                sprite_height + (sprite_height * Enum.GetNames(typeof(ToggleStates)).Length * (int)state),
                 0,
                 sprite_width,
                 sprite_height);
@@ -70,16 +71,16 @@ namespace test_pickup
         }
         public void Draw(SpriteBatch sb)
         {
-            if (isMuted == true)
+            if (isToggled == true)
             {
                 // if the audio is currently muted
-                source_rect.Y = sprite_height;
+                source_rect.Y = sprite_height + (sprite_height * Enum.GetNames(typeof(ToggleStates)).Length * (int)state);
             }
 
             else
             {
                 // if the audio is NOT currently muted
-                source_rect.Y = 0;
+                source_rect.Y = 0 + (sprite_height * Enum.GetNames(typeof(ToggleStates)).Length * (int)state);
             }
 
             sb.Draw(
@@ -120,7 +121,7 @@ namespace test_pickup
 
                 if (OnToggle != null && curr_mouse.LeftButton == ButtonState.Pressed && prev_mouse.LeftButton == ButtonState.Released)
                 {
-                    isMuted = !isMuted;
+                    isToggled = !isToggled;
                     OnToggle();
                 }
             }
