@@ -398,13 +398,14 @@ namespace test_pickup
                 {
                     DebugLib.DrawRectOutline(_spriteBatch, tgl.Boundary, 1f, Color.Red);
                 }
-            }
 
-            _spriteBatch.DrawString(
+                _spriteBatch.DrawString(
                 font,
                 $"Currrent State: {curr_state}",
                 new Vector2(1, _graphics.PreferredBackBufferHeight - font.MeasureString($"Currrent State: {curr_state}").Y),
                 Color.Black);
+            }
+
             cursor.Draw(_spriteBatch);
 
             _spriteBatch.End();
