@@ -224,7 +224,7 @@ namespace test_pickup
             volume_toggle.OnToggle += ToggleVolume;
             resizing_toggle.OnToggle += ToggleWindowResizing;
 
-            map = new Tile[_graphics.PreferredBackBufferHeight / 15, _graphics.PreferredBackBufferWidth / 16];
+            map = new Tile[30, 30];
             int[] column = { 3, 5, 7, 3, 3, 5, 3, 3, 3, 3, 3, 3 };
 
             // populate the map array with a random assortment of grass tiles; could probably be a method
@@ -232,7 +232,7 @@ namespace test_pickup
             {
                 for (int x = 0; x < map.GetLength(0); x++)
                 {
-                    map[x, y] = new Tile(tile_spritesheet, new Vector2(scale * 16 * (y), scale * 16 * (x)), 0, column[rng.Next(0, column.Length)]);
+                    map[x, y] = new Tile(tile_spritesheet, 0, column[rng.Next(0, column.Length)]);
                 }
             }
 
@@ -328,6 +328,7 @@ namespace test_pickup
         protected override void Draw(GameTime gameTime)
         {
             GraphicsDevice.Clear(Color.White);
+            Vector2 worldToScreen = player.ScreenPosition - worldPosition;
 
             _spriteBatch.Begin(SpriteSortMode.Deferred, null, SamplerState.PointClamp, null, null);
 
@@ -351,16 +352,22 @@ namespace test_pickup
                     exit_button.Draw(_spriteBatch);
                     break;
                 case GameState.Level:
-                    // both of these foreach loops could probably be a single method
-                    foreach (Tile tile in map)
+                    for (int x = 0; x < map.GetLength(0); x++)
                     {
-                        tile.Draw(_spriteBatch);
+                        for (int y = 0; y < map.GetLength(1); y++)
+                        {
+                            map[x, y].Draw(
+                                _spriteBatch,
+                                x * map[x, y].Height - (int)worldToScreen.X,
+                                y * map[x, y].Height - (int)worldToScreen.Y);
+
+                        }
                     }
 
-                    foreach (Pickup fruit in fruits)
-                    {
-                        fruit.Draw(_spriteBatch);
-                    }
+                    //foreach (Pickup fruit in fruits)
+                    //{
+                    //    fruit.Draw(_spriteBatch);
+                    //}
 
                     player.Draw(_spriteBatch);
 

@@ -10,23 +10,34 @@ namespace test_pickup
         private Rectangle source_rectangle;
         private Rectangle destination_rectangle;
 
+        private int width;
+        private int height;
+
         public Rectangle Destination_Rectangle { get { return destination_rectangle; } set { destination_rectangle = value; } }
 
         public int X { get { return destination_rectangle.X; } set { destination_rectangle.X = value; } }
         public int Y { get { return destination_rectangle.Y; } set { destination_rectangle.Y = value; } }
 
-        public Tile(Texture2D spritesheet, Vector2 position, int row, int column)
+        public int Width { get { return width; } }
+        public int Height { get { return height; } }
+
+        public Tile(Texture2D spritesheet, int row, int column)
         {
             this.spritesheet = spritesheet;
             source_rectangle = new Rectangle(16 * column, 16 * row, 16, 16);
-            destination_rectangle = new Rectangle((int)position.X, (int)position.Y, source_rectangle.Width * Game1.scale, source_rectangle.Height * Game1.scale);
+            width = source_rectangle.Width * Game1.scale;
+            height = source_rectangle.Height * Game1.scale;
         }
 
-        public void Draw(SpriteBatch sb)
+        public void Draw(SpriteBatch sb, int x, int y)
         {
             sb.Draw(
                 spritesheet,
-                destination_rectangle,
+                new Rectangle(
+                    x,
+                    y,
+                    width,
+                    height),
                 source_rectangle,
                 Color.White,
                 0f,
@@ -38,8 +49,8 @@ namespace test_pickup
         public void Resize()
         {
             // again, this is gonna look janky until you fix the spritesheet
-            destination_rectangle.Width = 16 * Game1.scale;
-            destination_rectangle.Height = 16 * Game1.scale;
+            destination_rectangle.Width = width * Game1.scale;
+            destination_rectangle.Height = height * Game1.scale;
         }
     }
 }
