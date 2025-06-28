@@ -49,8 +49,8 @@ namespace test_pickup
         public void Resize()
         {
             // again, this is gonna look janky until you fix the spritesheet
-            destination_rectangle.Width = width * Game1.scale;
-            destination_rectangle.Height = height * Game1.scale;
+            width = source_rectangle.Width * Game1.scale;
+            height = source_rectangle.Width * Game1.scale;
         }
     }
 }

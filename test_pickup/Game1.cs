@@ -224,7 +224,7 @@ namespace test_pickup
             volume_toggle.OnToggle += ToggleVolume;
             resizing_toggle.OnToggle += ToggleWindowResizing;
 
-            map = new Tile[30, 30];
+            map = new Tile[100, 100];
             int[] column = { 3, 5, 7, 3, 3, 5, 3, 3, 3, 3, 3, 3 };
 
             // populate the map array with a random assortment of grass tiles; could probably be a method
@@ -516,8 +516,7 @@ namespace test_pickup
 
             foreach (Pickup item in fruits)
             {
-                //eventually I want to make it so that the pickups position is consistent independent of the size of the window
-                item.Resize();
+                item.Resize(); // eventually I want to make it so that the pickups position is consistent independent of the size of the window
             }
 
             foreach (Tile item in map)
@@ -529,8 +528,8 @@ namespace test_pickup
             {
                 for (int x = 0; x < map.GetLength(0); x++)
                 {
-                    map[x, y].X = scale * 16 * (y);
-                    map[x, y].Y = scale * 16 * (x);
+                    map[x, y].X = (16 * scale) * (y);
+                    map[x, y].Y = (16 * scale) * (x);
                 }
             }
 
