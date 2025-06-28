@@ -524,15 +524,6 @@ namespace test_pickup
                 item.Resize();
             }
 
-            for (int y = 0; y < map.GetLength(1); y++)
-            {
-                for (int x = 0; x < map.GetLength(0); x++)
-                {
-                    map[x, y].X = (16 * scale) * (y);
-                    map[x, y].Y = (16 * scale) * (x);
-                }
-            }
-
             play_button.Reposition(window_width / 2, window_height / 2);
             continue_button.Reposition(window_width / 2, window_height / 2);
             options_button.Reposition(window_width / 2, play_button.Y + play_button.GetHeight() + 2 * Game1.scale);

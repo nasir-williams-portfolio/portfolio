@@ -8,15 +8,9 @@ namespace test_pickup
         private Texture2D spritesheet;
 
         private Rectangle source_rectangle;
-        private Rectangle destination_rectangle;
 
         private int width;
         private int height;
-
-        public Rectangle Destination_Rectangle { get { return destination_rectangle; } set { destination_rectangle = value; } }
-
-        public int X { get { return destination_rectangle.X; } set { destination_rectangle.X = value; } }
-        public int Y { get { return destination_rectangle.Y; } set { destination_rectangle.Y = value; } }
 
         public int Width { get { return width; } }
         public int Height { get { return height; } }
