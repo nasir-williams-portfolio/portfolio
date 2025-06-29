@@ -46,6 +46,9 @@ namespace graphDataStructureVisualizer
 
         public Button(Texture2D spritesheet, Vector2 position, Direction direction)
         {
+            x = (int)position.X;
+            y = (int)position.Y;
+
             sourceRectangle = new Rectangle(
                 0,
                 HEIGHT * (int)direction,
@@ -53,8 +56,8 @@ namespace graphDataStructureVisualizer
                 spritesheet.Height / 8);
 
             destinationRectangle = new Rectangle(
-                (int)position.X,
-                (int)position.Y,
+                x,
+                y,
                 WIDTH,
                 HEIGHT);
 
@@ -62,6 +65,8 @@ namespace graphDataStructureVisualizer
 
             isActive = true;
             this.direction = direction;
+
+
         }
 
         public void Draw(SpriteBatch sb)

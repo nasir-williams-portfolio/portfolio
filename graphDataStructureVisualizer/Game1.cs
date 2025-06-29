@@ -65,16 +65,16 @@ namespace graphDataStructureVisualizer
             #endregion
 
             #region buttons
-            buttonArray[0] = new Button(directional_thumbsticks, new Vector2(182, 200), Direction.NorthWest);
-            buttonArray[1] = new Button(directional_thumbsticks, new Vector2(200, 200), Direction.North);
-            buttonArray[2] = new Button(directional_thumbsticks, new Vector2(218, 200), Direction.NorthEast);
+            buttonArray[0] = new Button(directional_thumbsticks, new Vector2(200, 212), Direction.North);
+            buttonArray[1] = new Button(directional_thumbsticks, new Vector2(buttonArray[0].X - 18, buttonArray[0].Y + 00), Direction.NorthWest);
+            buttonArray[2] = new Button(directional_thumbsticks, new Vector2(buttonArray[0].X + 18, buttonArray[0].Y + 00), Direction.NorthEast);
 
-            buttonArray[3] = new Button(directional_thumbsticks, new Vector2(218, 218), Direction.East);
-            buttonArray[4] = new Button(directional_thumbsticks, new Vector2(182, 218), Direction.West);
+            buttonArray[3] = new Button(directional_thumbsticks, new Vector2(buttonArray[0].X + 18, buttonArray[0].Y + 18), Direction.East);
+            buttonArray[4] = new Button(directional_thumbsticks, new Vector2(buttonArray[0].X - 18, buttonArray[0].Y + 18), Direction.West);
 
-            buttonArray[5] = new Button(directional_thumbsticks, new Vector2(182, 236), Direction.SouthWest);
-            buttonArray[6] = new Button(directional_thumbsticks, new Vector2(200, 236), Direction.South);
-            buttonArray[7] = new Button(directional_thumbsticks, new Vector2(218, 236), Direction.SouthEast);
+            buttonArray[5] = new Button(directional_thumbsticks, new Vector2(buttonArray[0].X - 18, buttonArray[0].Y + 36), Direction.SouthWest);
+            buttonArray[6] = new Button(directional_thumbsticks, new Vector2(buttonArray[0].X + 00, buttonArray[0].Y + 36), Direction.South);
+            buttonArray[7] = new Button(directional_thumbsticks, new Vector2(buttonArray[0].X + 18, buttonArray[0].Y + 36), Direction.SouthEast);
 
             foreach (Button btn in buttonArray)
             {
@@ -155,7 +155,7 @@ namespace graphDataStructureVisualizer
                 btn.Update();
             }
 
-            //System.Diagnostics.Debug.WriteLine($"{Mouse.GetState().X}, {Mouse.GetState().Y}");
+            System.Diagnostics.Debug.WriteLine($"{Mouse.GetState().X}, {Mouse.GetState().Y}");
 
             base.Update(gameTime);
         }
