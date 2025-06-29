@@ -32,8 +32,6 @@ namespace graphDataStructureVisualizer
         private List<Vertex> deckDoors;
         private List<Vertex> exitDoors;
 
-
-
         public Game1()
         {
             _graphics = new GraphicsDeviceManager(this);
@@ -54,13 +52,16 @@ namespace graphDataStructureVisualizer
             adjacencyList = new Dictionary<string, List<Vertex>>();
             button_array = new Button[8];
 
+            #region textures
             up_arrow_key = Content.Load<Texture2D>("up_arrow_key");
             one_by_one = Content.Load<Texture2D>("one_by_one");
             verticle_one_by_two = Content.Load<Texture2D>("verticle_one_by_two");
             verticle_one_by_three = Content.Load<Texture2D>("verticle_one_by_three");
             horizontal_one_by_two = Content.Load<Texture2D>("horizontal_one_by_two");
             horizontal_one_by_three = Content.Load<Texture2D>("horizontal_one_by_three");
+            #endregion
 
+            #region buttons
             button_array[0] = new Button(up_arrow_key, Vector2.Zero, Direction.North);
             button_array[1] = new Button(up_arrow_key, Vector2.Zero, Direction.NorthEast);
             button_array[2] = new Button(up_arrow_key, Vector2.Zero, Direction.East);
@@ -69,6 +70,7 @@ namespace graphDataStructureVisualizer
             button_array[5] = new Button(up_arrow_key, Vector2.Zero, Direction.SouthWest);
             button_array[6] = new Button(up_arrow_key, Vector2.Zero, Direction.West);
             button_array[7] = new Button(up_arrow_key, Vector2.Zero, Direction.NorthWest);
+            #endregion
 
             Vertex kitchen = new Vertex("kitchen", "Large enough to prepare a feast.", verticle_one_by_two, new Vector2(400, 240));
             Vertex dining = new Vertex("dining", "A huge table for sixteen has gold place settings.", horizontal_one_by_two, new Vector2(410, 250));
@@ -126,13 +128,14 @@ namespace graphDataStructureVisualizer
 
             map = new Graph(vertices, adjacencyList);
 
-            currentVertex = vertices[0];
+            currentVertex = kitchen;
         }
 
         protected override void Update(GameTime gameTime)
         {
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
+
             base.Update(gameTime);
         }
 
@@ -147,12 +150,23 @@ namespace graphDataStructureVisualizer
                 btn.Draw(_spriteBatch);
             }
 
-            foreach (Vertex room in vertices)
+            foreach (Vertex room in map.Vertices)
             {
                 if (currentVertex == room)
                 {
                     room.Color = Color.LightGreen;
                 }
+
+                else if (map.GetAdjacentList(currentVertex.Name).Contains(room))
+                {
+                    room.Color = Color.Yellow;
+                }
+
+                else
+                {
+                    room.Color = Color.Red;
+                }
+
                 room.Draw(_spriteBatch);
             }
 

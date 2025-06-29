@@ -7,6 +7,8 @@ namespace graphDataStructureVisualizer
         private List<Vertex> vertices;
         private Dictionary<string, List<Vertex>> adjacencyList;
 
+        public List<Vertex> Vertices { get { return vertices; } }
+
         public Graph(List<Vertex> vertices, Dictionary<string, List<Vertex>> adjacencyList)
         {
             this.vertices = vertices;

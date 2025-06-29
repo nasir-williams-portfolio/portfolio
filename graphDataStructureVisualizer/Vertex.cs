@@ -20,6 +20,7 @@ namespace graphDataStructureVisualizer
         {
             this.spritesheet = spritesheet;
             this.description = description;
+            this.name = name;
 
             sourceRectangle = new Rectangle(
                 0,
