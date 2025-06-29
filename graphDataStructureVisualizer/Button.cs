@@ -39,8 +39,8 @@ namespace graphDataStructureVisualizer
 
         public Direction Direction { get { return direction; } }
         public bool IsActive { set { isActive = value; } }
-        public int Height { get { return HEIGHT; } }
-        public int Width { get { return WIDTH; } }
+        public static int Height { get { return HEIGHT; } }
+        public static int Width { get { return WIDTH; } }
         public int X { get { return x; } }
         public int Y { get { return y; } }
 
@@ -65,8 +65,6 @@ namespace graphDataStructureVisualizer
 
             isActive = true;
             this.direction = direction;
-
-
         }
 
         public void Draw(SpriteBatch sb)

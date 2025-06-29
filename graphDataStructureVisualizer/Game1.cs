@@ -4,6 +4,10 @@ using Microsoft.Xna.Framework.Input;
 using System.Collections.Generic;
 using System.Linq;
 
+/*
+ * https://otterisk.itch.io/hana-caraka-fantasy-interior - link for the room spritesheet
+ */
+
 namespace graphDataStructureVisualizer
 {
     public class Game1 : Game
@@ -21,7 +25,6 @@ namespace graphDataStructureVisualizer
         private Vertex currentVertex;
 
         private Button[] buttonArray;
-        private Direction movementDirection;
         private List<Vertex> vertices;
         private Dictionary<string, Dictionary<Vertex, Direction>> adjacencyDictionary;
         private Graph map;
@@ -43,7 +46,6 @@ namespace graphDataStructureVisualizer
 
         protected override void Initialize()
         {
-            movementDirection = Direction.North;
             base.Initialize();
         }
 
@@ -83,13 +85,14 @@ namespace graphDataStructureVisualizer
             #endregion
 
             #region vertices
-            Vertex kitchen = new Vertex("kitchen", "Large enough to prepare a feast.", verticle_one_by_two, new Vector2(400, 240));
-            Vertex dining = new Vertex("dining", "A huge table for sixteen has gold place settings.", horizontal_one_by_two, new Vector2(410, 250));
-            Vertex library = new Vertex("library", "This library is packed with floor-to-ceiling bookshelves.", horizontal_one_by_two, new Vector2(410, 240));
-            Vertex conservatory = new Vertex("conservatory", "The glass wall allows sunlight to reach the plants here.", horizontal_one_by_two, new Vector2(410, 230));
-            Vertex hall = new Vertex("hall", "The main hall is central to the house.", verticle_one_by_three, new Vector2(430, 230));
-            Vertex deck = new Vertex("deck", "This covered deck looks over the landscaped grounds.", horizontal_one_by_three, new Vector2(410, 220));
-            Vertex exit = new Vertex("exit", "Cobblestone pathway leads you to the gardens.", one_by_one, new Vector2(420, 210));
+            // make the rooms bigger, so do some calculations with the positions; preferably make them modular
+            Vertex kitchen = new("kitchen", "Large enough to prepare a feast.", verticle_one_by_two, new Vector2(400, 240));
+            Vertex dining = new("dining", "A huge table for sixteen has gold place settings.", horizontal_one_by_two, new Vector2(410, 250));
+            Vertex library = new("library", "This library is packed with floor-to-ceiling bookshelves.", horizontal_one_by_two, new Vector2(410, 240));
+            Vertex conservatory = new("conservatory", "The glass wall allows sunlight to reach the plants here.", horizontal_one_by_two, new Vector2(410, 230));
+            Vertex hall = new("hall", "The main hall is central to the house.", verticle_one_by_three, new Vector2(430, 230));
+            Vertex deck = new("deck", "This covered deck looks over the landscaped grounds.", horizontal_one_by_three, new Vector2(410, 220));
+            Vertex exit = new("exit", "Cobblestone pathway leads you to the gardens.", one_by_one, new Vector2(420, 210));
 
             vertices.Add(kitchen);
             vertices.Add(dining);
@@ -154,8 +157,6 @@ namespace graphDataStructureVisualizer
             {
                 btn.Update();
             }
-
-            System.Diagnostics.Debug.WriteLine($"{Mouse.GetState().X}, {Mouse.GetState().Y}");
 
             base.Update(gameTime);
         }
