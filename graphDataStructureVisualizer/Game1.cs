@@ -11,7 +11,7 @@ namespace graphDataStructureVisualizer
         private GraphicsDeviceManager _graphics;
         private SpriteBatch _spriteBatch;
 
-        private Texture2D up_arrow_key;
+        private Texture2D directional_thumbsticks;
         private Texture2D one_by_one;
         private Texture2D verticle_one_by_two;
         private Texture2D verticle_one_by_three;
@@ -56,7 +56,7 @@ namespace graphDataStructureVisualizer
             buttonArray = new Button[8];
 
             #region textures
-            up_arrow_key = Content.Load<Texture2D>("up_arrow_key");
+            directional_thumbsticks = Content.Load<Texture2D>("directional_thumbsticks");
             one_by_one = Content.Load<Texture2D>("one_by_one");
             verticle_one_by_two = Content.Load<Texture2D>("verticle_one_by_two");
             verticle_one_by_three = Content.Load<Texture2D>("verticle_one_by_three");
@@ -65,14 +65,16 @@ namespace graphDataStructureVisualizer
             #endregion
 
             #region buttons
-            buttonArray[0] = new Button(up_arrow_key, new Vector2(200, 239), Direction.North);
-            buttonArray[1] = new Button(up_arrow_key, new Vector2(217, 239), Direction.NorthEast);
-            buttonArray[2] = new Button(up_arrow_key, new Vector2(219, 256), Direction.East);
-            buttonArray[3] = new Button(up_arrow_key, new Vector2(218, 274), Direction.SouthEast);
-            buttonArray[4] = new Button(up_arrow_key, new Vector2(201, 274), Direction.South);
-            buttonArray[5] = new Button(up_arrow_key, new Vector2(184, 274), Direction.SouthWest);
-            buttonArray[6] = new Button(up_arrow_key, new Vector2(182, 257), Direction.West);
-            buttonArray[7] = new Button(up_arrow_key, new Vector2(183, 239), Direction.NorthWest);
+            buttonArray[0] = new Button(directional_thumbsticks, new Vector2(182, 200), Direction.NorthWest);
+            buttonArray[1] = new Button(directional_thumbsticks, new Vector2(200, 200), Direction.North);
+            buttonArray[2] = new Button(directional_thumbsticks, new Vector2(218, 200), Direction.NorthEast);
+
+            buttonArray[3] = new Button(directional_thumbsticks, new Vector2(218, 218), Direction.East);
+            buttonArray[4] = new Button(directional_thumbsticks, new Vector2(182, 218), Direction.West);
+
+            buttonArray[5] = new Button(directional_thumbsticks, new Vector2(182, 236), Direction.SouthWest);
+            buttonArray[6] = new Button(directional_thumbsticks, new Vector2(200, 236), Direction.South);
+            buttonArray[7] = new Button(directional_thumbsticks, new Vector2(218, 236), Direction.SouthEast);
 
             foreach (Button btn in buttonArray)
             {
@@ -152,6 +154,8 @@ namespace graphDataStructureVisualizer
             {
                 btn.Update();
             }
+
+            //System.Diagnostics.Debug.WriteLine($"{Mouse.GetState().X}, {Mouse.GetState().Y}");
 
             base.Update(gameTime);
         }

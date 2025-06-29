@@ -19,47 +19,48 @@ namespace graphDataStructureVisualizer
 
     internal class Button
     {
+        public OnButtonClickDelegate OnButtonClick;
+        private Direction direction;
+
         private Texture2D spritesheet;
         private Rectangle sourceRectangle;
         private Rectangle destinationRectangle;
-        private bool isActive;
-        private Color color;
-        private Vector2 spriteCenter;
-        private float rotation;
-        private Direction direction;
-        public OnButtonClickDelegate OnButtonClick;
+        private Rectangle mouseRectangle;
 
+        private Color color;
         private MouseState currMouse;
         private MouseState prevMouse;
 
-        private Rectangle mouseRectangle;
+        private bool isActive;
+        public static int HEIGHT = 18;
+        public static int WIDTH = 18;
+        private int x;
+        private int y;
 
-
-        public float Rotation { get { return rotation; } set { rotation = value; } }
         public Direction Direction { get { return direction; } }
-
         public bool IsActive { set { isActive = value; } }
+        public int Height { get { return HEIGHT; } }
+        public int Width { get { return WIDTH; } }
+        public int X { get { return x; } }
+        public int Y { get { return y; } }
 
         public Button(Texture2D spritesheet, Vector2 position, Direction direction)
         {
             sourceRectangle = new Rectangle(
                 0,
-                0,
+                HEIGHT * (int)direction,
                 spritesheet.Width,
-                spritesheet.Height);
+                spritesheet.Height / 8);
 
             destinationRectangle = new Rectangle(
                 (int)position.X,
                 (int)position.Y,
-                sourceRectangle.Width,
-                sourceRectangle.Height);
-
-            spriteCenter = new Vector2(sourceRectangle.Width / 2, sourceRectangle.Height / 2);
+                WIDTH,
+                HEIGHT);
 
             this.spritesheet = spritesheet;
 
             isActive = true;
-            rotation = (int)direction * (MathHelper.Pi / 4);
             this.direction = direction;
         }
 
@@ -75,9 +76,7 @@ namespace graphDataStructureVisualizer
                 color = Color.Gray;
             }
 
-            sb.Draw(spritesheet, destinationRectangle, sourceRectangle, color, rotation, spriteCenter, SpriteEffects.None, 0f);
-
-            DebugLib.DrawRectOutline(sb, destinationRectangle, 1f, Color.Red);
+            sb.Draw(spritesheet, destinationRectangle, sourceRectangle, color);
         }
 
         public void Update()
