@@ -2,6 +2,7 @@
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace graphDataStructureVisualizer
 {
@@ -19,18 +20,19 @@ namespace graphDataStructureVisualizer
 
         private Vertex currentVertex;
 
-        private Button[] button_array;
+        private Button[] buttonArray;
+        private Direction movementDirection;
         private List<Vertex> vertices;
-        private Dictionary<string, List<Vertex>> adjacencyList;
+        private Dictionary<string, Dictionary<Vertex, Direction>> adjacencyDictionary;
         private Graph map;
 
-        private List<Vertex> kitchenDoors;
-        private List<Vertex> diningDoors;
-        private List<Vertex> libraryDoors;
-        private List<Vertex> conservatoryDoors;
-        private List<Vertex> hallDoors;
-        private List<Vertex> deckDoors;
-        private List<Vertex> exitDoors;
+        private Dictionary<Vertex, Direction> kitchenDoors;
+        private Dictionary<Vertex, Direction> diningDoors;
+        private Dictionary<Vertex, Direction> libraryDoors;
+        private Dictionary<Vertex, Direction> conservatoryDoors;
+        private Dictionary<Vertex, Direction> hallDoors;
+        private Dictionary<Vertex, Direction> deckDoors;
+        private Dictionary<Vertex, Direction> exitDoors;
 
         public Game1()
         {
@@ -41,6 +43,7 @@ namespace graphDataStructureVisualizer
 
         protected override void Initialize()
         {
+            movementDirection = Direction.North;
             base.Initialize();
         }
 
@@ -49,8 +52,8 @@ namespace graphDataStructureVisualizer
             _spriteBatch = new SpriteBatch(GraphicsDevice);
 
             vertices = new List<Vertex>();
-            adjacencyList = new Dictionary<string, List<Vertex>>();
-            button_array = new Button[8];
+            adjacencyDictionary = new Dictionary<string, Dictionary<Vertex, Direction>>();
+            buttonArray = new Button[8];
 
             #region textures
             up_arrow_key = Content.Load<Texture2D>("up_arrow_key");
@@ -62,16 +65,22 @@ namespace graphDataStructureVisualizer
             #endregion
 
             #region buttons
-            button_array[0] = new Button(up_arrow_key, Vector2.Zero, Direction.North);
-            button_array[1] = new Button(up_arrow_key, Vector2.Zero, Direction.NorthEast);
-            button_array[2] = new Button(up_arrow_key, Vector2.Zero, Direction.East);
-            button_array[3] = new Button(up_arrow_key, Vector2.Zero, Direction.SouthEast);
-            button_array[4] = new Button(up_arrow_key, Vector2.Zero, Direction.South);
-            button_array[5] = new Button(up_arrow_key, Vector2.Zero, Direction.SouthWest);
-            button_array[6] = new Button(up_arrow_key, Vector2.Zero, Direction.West);
-            button_array[7] = new Button(up_arrow_key, Vector2.Zero, Direction.NorthWest);
+            buttonArray[0] = new Button(up_arrow_key, new Vector2(200, 239), Direction.North);
+            buttonArray[1] = new Button(up_arrow_key, new Vector2(217, 239), Direction.NorthEast);
+            buttonArray[2] = new Button(up_arrow_key, new Vector2(219, 256), Direction.East);
+            buttonArray[3] = new Button(up_arrow_key, new Vector2(218, 274), Direction.SouthEast);
+            buttonArray[4] = new Button(up_arrow_key, new Vector2(201, 274), Direction.South);
+            buttonArray[5] = new Button(up_arrow_key, new Vector2(184, 274), Direction.SouthWest);
+            buttonArray[6] = new Button(up_arrow_key, new Vector2(182, 257), Direction.West);
+            buttonArray[7] = new Button(up_arrow_key, new Vector2(183, 239), Direction.NorthWest);
+
+            foreach (Button btn in buttonArray)
+            {
+                btn.OnButtonClick += MoveRoom;
+            }
             #endregion
 
+            #region vertices
             Vertex kitchen = new Vertex("kitchen", "Large enough to prepare a feast.", verticle_one_by_two, new Vector2(400, 240));
             Vertex dining = new Vertex("dining", "A huge table for sixteen has gold place settings.", horizontal_one_by_two, new Vector2(410, 250));
             Vertex library = new Vertex("library", "This library is packed with floor-to-ceiling bookshelves.", horizontal_one_by_two, new Vector2(410, 240));
@@ -87,46 +96,49 @@ namespace graphDataStructureVisualizer
             vertices.Add(hall);
             vertices.Add(deck);
             vertices.Add(exit);
+            #endregion
 
-            kitchenDoors = new List<Vertex>();
-            kitchenDoors.Add(dining);
-            kitchenDoors.Add(library);
+            #region adjacencies
+            kitchenDoors = new Dictionary<Vertex, Direction>();
+            kitchenDoors.Add(dining, Direction.SouthEast);
+            kitchenDoors.Add(library, Direction.NorthEast);
 
-            diningDoors = new List<Vertex>();
-            diningDoors.Add(kitchen);
-            diningDoors.Add(hall);
+            diningDoors = new Dictionary<Vertex, Direction>();
+            diningDoors.Add(kitchen, Direction.West);
+            diningDoors.Add(hall, Direction.East);
 
-            libraryDoors = new List<Vertex>();
-            libraryDoors.Add(kitchen);
-            libraryDoors.Add(conservatory);
+            libraryDoors = new Dictionary<Vertex, Direction>();
+            libraryDoors.Add(kitchen, Direction.West);
+            libraryDoors.Add(conservatory, Direction.North);
 
-            conservatoryDoors = new List<Vertex>();
-            conservatoryDoors.Add(library);
-            conservatoryDoors.Add(deck);
-            conservatoryDoors.Add(hall);
+            conservatoryDoors = new Dictionary<Vertex, Direction>();
+            conservatoryDoors.Add(library, Direction.South);
+            conservatoryDoors.Add(deck, Direction.North);
+            conservatoryDoors.Add(hall, Direction.East);
 
-            hallDoors = new List<Vertex>();
-            hallDoors.Add(dining);
-            hallDoors.Add(conservatory);
-            hallDoors.Add(deck);
+            hallDoors = new Dictionary<Vertex, Direction>();
+            hallDoors.Add(dining, Direction.SouthWest);
+            hallDoors.Add(conservatory, Direction.NorthWest);
+            hallDoors.Add(deck, Direction.North);
 
-            deckDoors = new List<Vertex>();
-            deckDoors.Add(exit);
-            deckDoors.Add(hall);
-            deckDoors.Add(conservatory);
+            deckDoors = new Dictionary<Vertex, Direction>();
+            deckDoors.Add(exit, Direction.North);
+            deckDoors.Add(hall, Direction.SouthEast);
+            deckDoors.Add(conservatory, Direction.SouthWest);
 
-            exitDoors = new List<Vertex>();
-            exitDoors.Add(deck);
+            exitDoors = new Dictionary<Vertex, Direction>();
+            exitDoors.Add(deck, Direction.South);
 
-            adjacencyList.Add("kitchen", kitchenDoors);
-            adjacencyList.Add("dining", diningDoors);
-            adjacencyList.Add("library", libraryDoors);
-            adjacencyList.Add("conservatory", conservatoryDoors);
-            adjacencyList.Add("hall", hallDoors);
-            adjacencyList.Add("deck", deckDoors);
-            adjacencyList.Add("exit", exitDoors);
+            adjacencyDictionary.Add("kitchen", kitchenDoors);
+            adjacencyDictionary.Add("dining", diningDoors);
+            adjacencyDictionary.Add("library", libraryDoors);
+            adjacencyDictionary.Add("conservatory", conservatoryDoors);
+            adjacencyDictionary.Add("hall", hallDoors);
+            adjacencyDictionary.Add("deck", deckDoors);
+            adjacencyDictionary.Add("exit", exitDoors);
+            #endregion
 
-            map = new Graph(vertices, adjacencyList);
+            map = new Graph(vertices, adjacencyDictionary);
 
             currentVertex = kitchen;
         }
@@ -135,6 +147,11 @@ namespace graphDataStructureVisualizer
         {
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
+
+            foreach (Button btn in buttonArray)
+            {
+                btn.Update();
+            }
 
             base.Update(gameTime);
         }
@@ -145,8 +162,18 @@ namespace graphDataStructureVisualizer
 
             _spriteBatch.Begin(SpriteSortMode.Deferred, null, SamplerState.PointClamp, null, null);
 
-            foreach (Button btn in button_array)
+            foreach (Button btn in buttonArray)
             {
+                if (map.GetAdjacentDictionary(currentVertex.Name).Values.Contains(btn.Direction))
+                {
+                    btn.IsActive = true;
+                }
+
+                else
+                {
+                    btn.IsActive = false;
+                }
+
                 btn.Draw(_spriteBatch);
             }
 
@@ -157,7 +184,7 @@ namespace graphDataStructureVisualizer
                     room.Color = Color.LightGreen;
                 }
 
-                else if (map.GetAdjacentList(currentVertex.Name).Contains(room))
+                else if (map.GetAdjacentDictionary(currentVertex.Name).ContainsKey(room))
                 {
                     room.Color = Color.Yellow;
                 }
@@ -175,9 +202,15 @@ namespace graphDataStructureVisualizer
             base.Draw(gameTime);
         }
 
-        protected void MoveRoom()
+        protected void MoveRoom(Direction movementDirection)
         {
-
+            foreach (Direction dir in map.GetAdjacentDictionary(currentVertex.Name).Values)
+            {
+                if (movementDirection == dir)
+                {
+                    currentVertex = map.GetAdjacentDictionary(currentVertex.Name).FirstOrDefault(x => x.Value == dir).Key;
+                }
+            }
         }
     }
 }

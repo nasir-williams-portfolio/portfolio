@@ -5,14 +5,14 @@ namespace graphDataStructureVisualizer
     internal class Graph
     {
         private List<Vertex> vertices;
-        private Dictionary<string, List<Vertex>> adjacencyList;
+        private Dictionary<string, Dictionary<Vertex, Direction>> adjacencyDictionary;
 
         public List<Vertex> Vertices { get { return vertices; } }
 
-        public Graph(List<Vertex> vertices, Dictionary<string, List<Vertex>> adjacencyList)
+        public Graph(List<Vertex> vertices, Dictionary<string, Dictionary<Vertex, Direction>> adjacencyDictionary)
         {
             this.vertices = vertices;
-            this.adjacencyList = adjacencyList;
+            this.adjacencyDictionary = adjacencyDictionary;
         }
 
         public bool MapContainsRoom(string room)
@@ -30,26 +30,11 @@ namespace graphDataStructureVisualizer
             return result;
         }
 
-        public bool AreAdjacent(string firstRoom, string secondRoom)
+        public Dictionary<Vertex, Direction> GetAdjacentDictionary(string room)
         {
-            bool result = false;
-
-            foreach (Vertex door in adjacencyList[firstRoom])
+            if (adjacencyDictionary[room].Count != 0)
             {
-                if (door.Name == secondRoom)
-                {
-                    result = true;
-                }
-            }
-
-            return result;
-        }
-
-        public List<Vertex> GetAdjacentList(string room)
-        {
-            if (adjacencyList[room].Count != 0)
-            {
-                return adjacencyList[room];
+                return adjacencyDictionary[room];
             }
 
             else
