@@ -22,7 +22,6 @@ namespace graphDataStructureVisualizer
         private Rectangle destinationRectangle;
         private bool isActive;
         private Color color;
-        private Direction direction;
         private Vector2 spriteCenter;
         private float rotation;
 
@@ -45,7 +44,6 @@ namespace graphDataStructureVisualizer
             spriteCenter = new Vector2(sourceRectangle.Width / 2, sourceRectangle.Height / 2);
 
             this.spritesheet = spritesheet;
-            this.direction = direction;
 
             isActive = true;
             rotation = (int)direction * (MathHelper.Pi / 4);

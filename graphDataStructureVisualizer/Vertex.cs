@@ -14,6 +14,7 @@ namespace graphDataStructureVisualizer
 
         public string Name { get { return name; } }
         public string Description { get { return description; } }
+        public Color Color { set { color = value; } }
 
         public Vertex(string name, string description, Texture2D spritesheet, Vector2 position)
         {
@@ -30,11 +31,16 @@ namespace graphDataStructureVisualizer
                 (int)position.Y,
                 sourceRectangle.Width,
                 sourceRectangle.Height);
+            color = Color.White;
         }
 
         public void Draw(SpriteBatch sb)
         {
-            sb.Draw(spritesheet, destinationRectangle, sourceRectangle, color);
+            sb.Draw(
+                spritesheet,
+                destinationRectangle,
+                sourceRectangle,
+                color);
         }
     }
 }
