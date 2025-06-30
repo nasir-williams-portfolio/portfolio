@@ -32,8 +32,8 @@ namespace graphDataStructureVisualizer
         private MouseState prevMouse;
 
         private bool isActive;
-        public static int HEIGHT = 18;
-        public static int WIDTH = 18;
+        public static int HEIGHT = 16;
+        public static int WIDTH = 16;
         private int x;
         private int y;
 

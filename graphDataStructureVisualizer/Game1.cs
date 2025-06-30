@@ -15,7 +15,7 @@ namespace graphDataStructureVisualizer
         private GraphicsDeviceManager _graphics;
         private SpriteBatch _spriteBatch;
 
-        private Texture2D directional_thumbsticks;
+        private Texture2D compass_needles;
         private Texture2D asset_map;
         private Texture2D single_pixel;
 
@@ -55,22 +55,22 @@ namespace graphDataStructureVisualizer
             buttonArray = new Button[8];
 
             #region textures
-            directional_thumbsticks = Content.Load<Texture2D>("directional_thumbsticks");
+            compass_needles = Content.Load<Texture2D>("compass_needles");
             asset_map = Content.Load<Texture2D>("map");
             single_pixel = Content.Load<Texture2D>("single_pixel");
             #endregion
 
             #region buttons
-            buttonArray[0] = new Button(directional_thumbsticks, new Vector2(200, 212), Direction.North);
-            buttonArray[1] = new Button(directional_thumbsticks, new Vector2(buttonArray[0].X - 18, buttonArray[0].Y + 00), Direction.NorthWest);
-            buttonArray[2] = new Button(directional_thumbsticks, new Vector2(buttonArray[0].X + 18, buttonArray[0].Y + 00), Direction.NorthEast);
+            buttonArray[0] = new Button(compass_needles, new Vector2(200, 212), Direction.North);
+            buttonArray[1] = new Button(compass_needles, new Vector2(buttonArray[0].X - 16, buttonArray[0].Y + 00), Direction.NorthWest);
+            buttonArray[2] = new Button(compass_needles, new Vector2(buttonArray[0].X + 16, buttonArray[0].Y + 00), Direction.NorthEast);
 
-            buttonArray[3] = new Button(directional_thumbsticks, new Vector2(buttonArray[0].X + 18, buttonArray[0].Y + 18), Direction.East);
-            buttonArray[4] = new Button(directional_thumbsticks, new Vector2(buttonArray[0].X - 18, buttonArray[0].Y + 18), Direction.West);
+            buttonArray[3] = new Button(compass_needles, new Vector2(buttonArray[0].X + 16, buttonArray[0].Y + 16), Direction.East);
+            buttonArray[4] = new Button(compass_needles, new Vector2(buttonArray[0].X - 16, buttonArray[0].Y + 16), Direction.West);
 
-            buttonArray[5] = new Button(directional_thumbsticks, new Vector2(buttonArray[0].X - 18, buttonArray[0].Y + 36), Direction.SouthWest);
-            buttonArray[6] = new Button(directional_thumbsticks, new Vector2(buttonArray[0].X + 00, buttonArray[0].Y + 36), Direction.South);
-            buttonArray[7] = new Button(directional_thumbsticks, new Vector2(buttonArray[0].X + 18, buttonArray[0].Y + 36), Direction.SouthEast);
+            buttonArray[5] = new Button(compass_needles, new Vector2(buttonArray[0].X - 16, buttonArray[0].Y + 32), Direction.SouthWest);
+            buttonArray[6] = new Button(compass_needles, new Vector2(buttonArray[0].X + 00, buttonArray[0].Y + 32), Direction.South);
+            buttonArray[7] = new Button(compass_needles, new Vector2(buttonArray[0].X + 16, buttonArray[0].Y + 32), Direction.SouthEast);
 
             foreach (Button btn in buttonArray)
             {
