@@ -16,11 +16,7 @@ namespace graphDataStructureVisualizer
         private SpriteBatch _spriteBatch;
 
         private Texture2D directional_thumbsticks;
-        private Texture2D one_by_one;
-        private Texture2D verticle_one_by_two;
-        private Texture2D verticle_one_by_three;
-        private Texture2D horizontal_one_by_two;
-        private Texture2D horizontal_one_by_three;
+        private Texture2D asset_map;
 
         private Vertex currentVertex;
 
@@ -59,11 +55,7 @@ namespace graphDataStructureVisualizer
 
             #region textures
             directional_thumbsticks = Content.Load<Texture2D>("directional_thumbsticks");
-            one_by_one = Content.Load<Texture2D>("one_by_one");
-            verticle_one_by_two = Content.Load<Texture2D>("verticle_one_by_two");
-            verticle_one_by_three = Content.Load<Texture2D>("verticle_one_by_three");
-            horizontal_one_by_two = Content.Load<Texture2D>("horizontal_one_by_two");
-            horizontal_one_by_three = Content.Load<Texture2D>("horizontal_one_by_three");
+            asset_map = Content.Load<Texture2D>("map");
             #endregion
 
             #region buttons
@@ -85,14 +77,16 @@ namespace graphDataStructureVisualizer
             #endregion
 
             #region vertices
-            // make the rooms bigger, so do some calculations with the positions; preferably make them modular
-            Vertex kitchen = new("kitchen", "Large enough to prepare a feast.", verticle_one_by_two, new Vector2(400, 240));
-            Vertex dining = new("dining", "A huge table for sixteen has gold place settings.", horizontal_one_by_two, new Vector2(410, 250));
-            Vertex library = new("library", "This library is packed with floor-to-ceiling bookshelves.", horizontal_one_by_two, new Vector2(410, 240));
-            Vertex conservatory = new("conservatory", "The glass wall allows sunlight to reach the plants here.", horizontal_one_by_two, new Vector2(410, 230));
-            Vertex hall = new("hall", "The main hall is central to the house.", verticle_one_by_three, new Vector2(430, 230));
-            Vertex deck = new("deck", "This covered deck looks over the landscaped grounds.", horizontal_one_by_three, new Vector2(410, 220));
-            Vertex exit = new("exit", "Cobblestone pathway leads you to the gardens.", one_by_one, new Vector2(420, 210));
+            // make the rooms bigger, so do some calculations with the positions; preferably make them modular 
+            Vertex kitchen = new("kitchen", "Large enough to prepare a feast.", asset_map, new Vector2(400, 282), new Rectangle(0, 276, 85, 193));
+            Vertex dining = new("dining", "A huge table for sixteen has gold place settings.", asset_map, new Vector2(480, 374), new Rectangle(80, 368, 162, 101));
+            Vertex library = new("library", "This library is packed with floor-to-ceiling bookshelves.", asset_map, new Vector2(480, 282), new Rectangle(80, 276, 162, 93));
+            Vertex conservatory = new("conservatory", "The glass wall allows sunlight to reach the plants here.", asset_map, new Vector2(480, 190), new Rectangle(80, 184, 162, 93));
+            Vertex hall = new("hall", "The main hall is central to the house.", asset_map, new Vector2(642, 190), new Rectangle(242, 184, 80, 285));
+
+            Vertex deck = new("deck", "This covered deck looks over the landscaped grounds.", asset_map, new Vector2(480, 98), new Rectangle(80, 92, 242, 92));
+
+            Vertex exit = new("exit", "Cobblestone pathway leads you to the gardens.", asset_map, new Vector2(567, 6), new Rectangle(167, 0, 62, 92));
 
             vertices.Add(kitchen);
             vertices.Add(dining);

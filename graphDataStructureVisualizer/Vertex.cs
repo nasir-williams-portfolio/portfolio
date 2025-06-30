@@ -16,17 +16,13 @@ namespace graphDataStructureVisualizer
         public string Description { get { return description; } }
         public Color Color { set { color = value; } }
 
-        public Vertex(string name, string description, Texture2D spritesheet, Vector2 position)
+        public Vertex(string name, string description, Texture2D spritesheet, Vector2 position, Rectangle sourceRectangle)
         {
             this.spritesheet = spritesheet;
             this.description = description;
             this.name = name;
+            this.sourceRectangle = sourceRectangle;
 
-            sourceRectangle = new Rectangle(
-                0,
-                0,
-                spritesheet.Width,
-                spritesheet.Height);
             destinationRectangle = new Rectangle(
                 (int)position.X,
                 (int)position.Y,
