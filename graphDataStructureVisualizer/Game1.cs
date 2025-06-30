@@ -17,6 +17,7 @@ namespace graphDataStructureVisualizer
 
         private Texture2D directional_thumbsticks;
         private Texture2D asset_map;
+        private Texture2D single_pixel;
 
         private Vertex currentVertex;
 
@@ -56,6 +57,7 @@ namespace graphDataStructureVisualizer
             #region textures
             directional_thumbsticks = Content.Load<Texture2D>("directional_thumbsticks");
             asset_map = Content.Load<Texture2D>("map");
+            single_pixel = Content.Load<Texture2D>("single_pixel");
             #endregion
 
             #region buttons
@@ -77,16 +79,13 @@ namespace graphDataStructureVisualizer
             #endregion
 
             #region vertices
-            // make the rooms bigger, so do some calculations with the positions; preferably make them modular 
-            Vertex kitchen = new("kitchen", "Large enough to prepare a feast.", asset_map, new Vector2(400, 282), new Rectangle(0, 276, 85, 193));
-            Vertex dining = new("dining", "A huge table for sixteen has gold place settings.", asset_map, new Vector2(480, 374), new Rectangle(80, 368, 162, 101));
-            Vertex library = new("library", "This library is packed with floor-to-ceiling bookshelves.", asset_map, new Vector2(480, 282), new Rectangle(80, 276, 162, 93));
-            Vertex conservatory = new("conservatory", "The glass wall allows sunlight to reach the plants here.", asset_map, new Vector2(480, 190), new Rectangle(80, 184, 162, 93));
-            Vertex hall = new("hall", "The main hall is central to the house.", asset_map, new Vector2(642, 190), new Rectangle(242, 184, 80, 285));
-
-            Vertex deck = new("deck", "This covered deck looks over the landscaped grounds.", asset_map, new Vector2(480, 98), new Rectangle(80, 92, 242, 92));
-
-            Vertex exit = new("exit", "Cobblestone pathway leads you to the gardens.", asset_map, new Vector2(567, 6), new Rectangle(167, 0, 62, 92));
+            Vertex kitchen = new("kitchen", "Large enough to prepare a feast.", single_pixel, new Rectangle(306, 291, 74, 175));
+            Vertex dining = new("dining", "A huge table for sixteen has gold place settings.", single_pixel, new Rectangle(386, 383, 150, 83));
+            Vertex library = new("library", "This library is packed with floor-to-ceiling bookshelves.", single_pixel, new Rectangle(386, 291, 150, 83));
+            Vertex conservatory = new("conservatory", "The glass wall allows sunlight to reach the plants here.", single_pixel, new Rectangle(386, 199, 150, 83));
+            Vertex hall = new("hall", "The main hall is central to the house.", single_pixel, new Rectangle(542, 199, 74, 267));
+            Vertex deck = new("deck", "This covered deck looks over the landscaped grounds.", single_pixel, new Rectangle(386, 107, 230, 83));
+            Vertex exit = new("exit", "Cobblestone pathway leads you to the gardens.", single_pixel, new Rectangle(473, 15, 50, 83));
 
             vertices.Add(kitchen);
             vertices.Add(dining);
@@ -160,6 +159,8 @@ namespace graphDataStructureVisualizer
             GraphicsDevice.Clear(Color.CornflowerBlue);
 
             _spriteBatch.Begin(SpriteSortMode.Deferred, null, SamplerState.PointClamp, null, null);
+
+            _spriteBatch.Draw(asset_map, new Vector2(300, 6), Color.White);
 
             foreach (Button btn in buttonArray)
             {
