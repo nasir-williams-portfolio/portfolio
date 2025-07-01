@@ -8,6 +8,12 @@ using System.Linq;
  * https://otterisk.itch.io/hana-caraka-fantasy-interior - link for the room spritesheet
  */
 
+public enum GameState
+{
+    TitleScreen,
+    GameScreen
+}
+
 namespace graphDataStructureVisualizer
 {
     public class Game1 : Game
@@ -18,10 +24,15 @@ namespace graphDataStructureVisualizer
         private Texture2D compass_needles;
         private Texture2D asset_map;
         private Texture2D single_pixel;
+        private Texture2D ui_buttons;
+        private Texture2D title_screen_menu;
 
         private Vertex currentVertex;
+        private GameState currState;
+        private UserInterfaceButton playButton;
+        private UserInterfaceButton quitButton;
 
-        private Button[] buttonArray;
+        private TraversalButton[] buttonArray;
         private List<Vertex> vertices;
         private Dictionary<string, Dictionary<Vertex, Direction>> adjacencyDictionary;
         private Graph map;
@@ -43,6 +54,7 @@ namespace graphDataStructureVisualizer
 
         protected override void Initialize()
         {
+            currState = GameState.TitleScreen;
             base.Initialize();
         }
 
@@ -52,27 +64,35 @@ namespace graphDataStructureVisualizer
 
             vertices = new List<Vertex>();
             adjacencyDictionary = new Dictionary<string, Dictionary<Vertex, Direction>>();
-            buttonArray = new Button[8];
+            buttonArray = new TraversalButton[8];
 
             #region textures
             compass_needles = Content.Load<Texture2D>("compass_needles");
             asset_map = Content.Load<Texture2D>("map");
             single_pixel = Content.Load<Texture2D>("single_pixel");
+            title_screen_menu = Content.Load<Texture2D>("title_screen_menu");
+            ui_buttons = Content.Load<Texture2D>("ui_buttons");
             #endregion
 
             #region buttons
-            buttonArray[0] = new Button(compass_needles, new Vector2(200, 212), Direction.North);
-            buttonArray[1] = new Button(compass_needles, new Vector2(buttonArray[0].X - 16, buttonArray[0].Y + 00), Direction.NorthWest);
-            buttonArray[2] = new Button(compass_needles, new Vector2(buttonArray[0].X + 16, buttonArray[0].Y + 00), Direction.NorthEast);
+            buttonArray[0] = new TraversalButton(compass_needles, new Vector2(200, 212), Direction.North);
+            buttonArray[1] = new TraversalButton(compass_needles, new Vector2(buttonArray[0].X - 16, buttonArray[0].Y + 00), Direction.NorthWest);
+            buttonArray[2] = new TraversalButton(compass_needles, new Vector2(buttonArray[0].X + 16, buttonArray[0].Y + 00), Direction.NorthEast);
 
-            buttonArray[3] = new Button(compass_needles, new Vector2(buttonArray[0].X + 16, buttonArray[0].Y + 16), Direction.East);
-            buttonArray[4] = new Button(compass_needles, new Vector2(buttonArray[0].X - 16, buttonArray[0].Y + 16), Direction.West);
+            buttonArray[3] = new TraversalButton(compass_needles, new Vector2(buttonArray[0].X + 16, buttonArray[0].Y + 16), Direction.East);
+            buttonArray[4] = new TraversalButton(compass_needles, new Vector2(buttonArray[0].X - 16, buttonArray[0].Y + 16), Direction.West);
 
-            buttonArray[5] = new Button(compass_needles, new Vector2(buttonArray[0].X - 16, buttonArray[0].Y + 32), Direction.SouthWest);
-            buttonArray[6] = new Button(compass_needles, new Vector2(buttonArray[0].X + 00, buttonArray[0].Y + 32), Direction.South);
-            buttonArray[7] = new Button(compass_needles, new Vector2(buttonArray[0].X + 16, buttonArray[0].Y + 32), Direction.SouthEast);
+            buttonArray[5] = new TraversalButton(compass_needles, new Vector2(buttonArray[0].X - 16, buttonArray[0].Y + 32), Direction.SouthWest);
+            buttonArray[6] = new TraversalButton(compass_needles, new Vector2(buttonArray[0].X + 00, buttonArray[0].Y + 32), Direction.South);
+            buttonArray[7] = new TraversalButton(compass_needles, new Vector2(buttonArray[0].X + 16, buttonArray[0].Y + 32), Direction.SouthEast);
 
-            foreach (Button btn in buttonArray)
+            playButton = new UserInterfaceButton(ui_buttons, new Vector2(354, 250), ButtonUse.Play);
+            quitButton = new UserInterfaceButton(ui_buttons, new Vector2(354, 290), ButtonUse.Quit);
+
+            playButton.OnButtonClick += ScreenTransition;
+            quitButton.OnButtonClick += Exit;
+
+            foreach (TraversalButton btn in buttonArray)
             {
                 btn.OnButtonClick += MoveRoom;
             }
@@ -146,10 +166,23 @@ namespace graphDataStructureVisualizer
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
 
-            foreach (Button btn in buttonArray)
+            switch (currState)
             {
-                btn.Update();
+                case GameState.TitleScreen:
+                    playButton.Update();
+                    quitButton.Update();
+                    break;
+                case GameState.GameScreen:
+                    foreach (TraversalButton btn in buttonArray)
+                    {
+                        btn.Update();
+                    }
+                    break;
+                default:
+                    break;
             }
+
+
 
             base.Update(gameTime);
         }
@@ -160,41 +193,53 @@ namespace graphDataStructureVisualizer
 
             _spriteBatch.Begin(SpriteSortMode.Deferred, null, SamplerState.PointClamp, null, null);
 
-            _spriteBatch.Draw(asset_map, new Vector2(300, 6), Color.White);
-
-            foreach (Button btn in buttonArray)
+            switch (currState)
             {
-                if (map.GetAdjacentDictionary(currentVertex.Name).Values.Contains(btn.Direction))
-                {
-                    btn.IsActive = true;
-                }
+                case GameState.TitleScreen:
+                    _spriteBatch.Draw(title_screen_menu, new Rectangle(175, 120, title_screen_menu.Width * 3, title_screen_menu.Height * 3), Color.White);
+                    playButton.Draw(_spriteBatch);
+                    quitButton.Draw(_spriteBatch);
+                    break;
+                case GameState.GameScreen:
+                    _spriteBatch.Draw(asset_map, new Vector2(300, 6), Color.White);
 
-                else
-                {
-                    btn.IsActive = false;
-                }
+                    foreach (TraversalButton btn in buttonArray)
+                    {
+                        if (map.GetAdjacentDictionary(currentVertex.Name).Values.Contains(btn.Direction))
+                        {
+                            btn.IsActive = true;
+                        }
 
-                btn.Draw(_spriteBatch);
-            }
+                        else
+                        {
+                            btn.IsActive = false;
+                        }
 
-            foreach (Vertex room in map.Vertices)
-            {
-                if (currentVertex == room)
-                {
-                    room.Color = Color.LightGreen;
-                }
+                        btn.Draw(_spriteBatch);
+                    }
 
-                else if (map.GetAdjacentDictionary(currentVertex.Name).ContainsKey(room))
-                {
-                    room.Color = Color.Yellow;
-                }
+                    foreach (Vertex room in map.Vertices)
+                    {
+                        if (currentVertex == room)
+                        {
+                            room.Color = Color.LightGreen;
+                        }
 
-                else
-                {
-                    room.Color = Color.Red;
-                }
+                        else if (map.GetAdjacentDictionary(currentVertex.Name).ContainsKey(room))
+                        {
+                            room.Color = Color.Yellow;
+                        }
 
-                room.Draw(_spriteBatch);
+                        else
+                        {
+                            room.Color = Color.Red;
+                        }
+
+                        room.Draw(_spriteBatch);
+                    }
+                    break;
+                default:
+                    break;
             }
 
             _spriteBatch.End();
@@ -211,6 +256,11 @@ namespace graphDataStructureVisualizer
                     currentVertex = map.GetAdjacentDictionary(currentVertex.Name).FirstOrDefault(x => x.Value == dir).Key;
                 }
             }
+        }
+
+        protected void ScreenTransition()
+        {
+            currState = GameState.GameScreen;
         }
     }
 }

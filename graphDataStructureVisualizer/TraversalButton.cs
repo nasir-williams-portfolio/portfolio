@@ -4,7 +4,7 @@ using Microsoft.Xna.Framework.Input;
 
 namespace graphDataStructureVisualizer
 {
-    public delegate void OnButtonClickDelegate(Direction movementDirection);
+    public delegate void OnTraversalButtonClickDelegate(Direction movementDirection);
     public enum Direction
     {
         North,
@@ -16,10 +16,9 @@ namespace graphDataStructureVisualizer
         West,
         NorthWest
     }
-
-    internal class Button
+    internal class TraversalButton
     {
-        public OnButtonClickDelegate OnButtonClick;
+        public OnTraversalButtonClickDelegate OnButtonClick;
         private Direction direction;
 
         private Texture2D spritesheet;
@@ -44,7 +43,7 @@ namespace graphDataStructureVisualizer
         public int X { get { return x; } }
         public int Y { get { return y; } }
 
-        public Button(Texture2D spritesheet, Vector2 position, Direction direction)
+        public TraversalButton(Texture2D spritesheet, Vector2 position, Direction direction)
         {
             x = (int)position.X;
             y = (int)position.Y;
