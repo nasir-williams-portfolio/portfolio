@@ -6,6 +6,7 @@ using System.Linq;
 
 /*
  * https://otterisk.itch.io/hana-caraka-fantasy-interior - link for the room spritesheet
+ * https://oarielg.itch.io/2d-simple-ui-pack - link for the user interface elements spritesheet
  */
 
 public enum GameState
