@@ -15,7 +15,6 @@ namespace test_pickup
         PauseMenu,
         Level
     }
-
     public class Game1 : Game
     {
         private GraphicsDeviceManager _graphics;
@@ -66,6 +65,7 @@ namespace test_pickup
         private KeyboardState prevKbState;
 
         private Vector2 worldPosition;
+        private Vector2 worldToScreen;
 
         private Random rng;
         private int fruit_count;
@@ -328,7 +328,7 @@ namespace test_pickup
         protected override void Draw(GameTime gameTime)
         {
             GraphicsDevice.Clear(Color.White);
-            Vector2 worldToScreen = player.ScreenPosition - worldPosition;
+            worldToScreen = player.ScreenPosition - worldPosition;
 
             _spriteBatch.Begin(SpriteSortMode.Deferred, null, SamplerState.PointClamp, null, null);
 
@@ -340,13 +340,11 @@ namespace test_pickup
                     exit_button.Draw(_spriteBatch);
                     break;
                 case GameState.OptionsMenu:
-
                     back_button.Draw(_spriteBatch);
                     volume_toggle.Draw(_spriteBatch);
                     resizing_toggle.Draw(_spriteBatch);
                     break;
                 case GameState.PauseMenu:
-
                     continue_button.Draw(_spriteBatch);
                     options_button.Draw(_spriteBatch);
                     exit_button.Draw(_spriteBatch);
@@ -403,7 +401,9 @@ namespace test_pickup
                     Color.Black);
                 _spriteBatch.DrawString(
                     font,
-                    $"DEBUG ACTIVATED",
+                    $"World To Screen X:{worldToScreen.X} Y:{worldToScreen.Y}" +
+                    $"\nWorld Position X: {player.ScreenPosition.X} Y: {player.ScreenPosition.Y} " +
+                    $"\nScreen Position X: {worldPosition.X} Y: {worldPosition.Y}",
                     new Vector2(
                         1,
                         16),
@@ -503,6 +503,13 @@ namespace test_pickup
 
             player.Resize();
             cursor.Resize();
+
+            player.ScreenPosition = new Vector2(_graphics.PreferredBackBufferWidth / 2 - (player.Width * Game1.scale / 2),
+                _graphics.PreferredBackBufferHeight / 2 - (player.Height * Game1.scale / 2));
+
+            player.Bounds = new Rectangle((int)player.ScreenPosition.X, (int)player.ScreenPosition.Y, player.Bounds.Width, player.Bounds.Height);
+
+            worldPosition = player.ScreenPosition;
 
             foreach (Button btn in buttons)
             {

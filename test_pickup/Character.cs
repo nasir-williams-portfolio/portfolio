@@ -22,8 +22,10 @@ namespace test_pickup
         private KeyboardState currKbState;
         private KeyboardState prevKbState;
 
-        public Rectangle Bounds { get { return destinationRectangle; } }
+        public Rectangle Bounds { get { return destinationRectangle; } set { destinationRectangle = value; } }
         public Vector2 ScreenPosition { get { return screenPosition; } set { screenPosition = value; } }
+        public int Width { get { return sprite_width; } }
+        public int Height { get { return sprite_height; } }
 
         public Character(Texture2D spritesheet, GraphicsDeviceManager graphics, int rows, int columns)
         {
