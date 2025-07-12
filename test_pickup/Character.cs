@@ -108,7 +108,7 @@ namespace test_pickup
                 secondsPerFrame = 1.0 / fps;
             }
 
-            if (currKbState.IsKeyDown(Keys.D) && screenPosition.X < right + 1)
+            if (currKbState.IsKeyDown(Keys.D) && screenPosition.X < right + 1 * Game1.scale)
             {
                 sourceRectangle.Y = 56;
                 screenPosition.X += speed;
@@ -134,7 +134,7 @@ namespace test_pickup
                 flip = SpriteEffects.FlipHorizontally;
             }
 
-            else if (currKbState.IsKeyDown(Keys.W) && screenPosition.Y > top + 1)
+            else if (currKbState.IsKeyDown(Keys.W) && screenPosition.Y > top + 1 * Game1.scale)
             {
                 sourceRectangle.Y = 70;
                 screenPosition.Y -= speed;

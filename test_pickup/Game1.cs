@@ -328,7 +328,11 @@ namespace test_pickup
         protected override void Draw(GameTime gameTime)
         {
             GraphicsDevice.Clear(Color.White);
+
+            // make it so that the worldToScreen translation only happens when the player is within the correct "bounds" of the world
             worldToScreen = player.ScreenPosition - worldPosition;
+
+            // as of right now, only the world is moving, not the player so make it so you can move the destination rectangle when it past a certain point
 
             _spriteBatch.Begin(SpriteSortMode.Deferred, null, SamplerState.PointClamp, null, null);
 
@@ -550,8 +554,8 @@ namespace test_pickup
                     item_spritesheet,
                     key_spritesheet,
                     new Vector2(
-                        rng.Next(0, _graphics.PreferredBackBufferWidth - 20),
-                        rng.Next(0, _graphics.PreferredBackBufferHeight - 20))));
+                        rng.Next(0, map.GetLength(0) * 16 * scale - 20),
+                        rng.Next(0, map.GetLength(1) * 16 * scale - 20))));
             }
         }
     }
