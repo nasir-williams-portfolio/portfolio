@@ -1,0 +1,15 @@
+﻿make it so all the buttons can be rendered through one "controller" data structure
+	- try a 2D array of buttons (would have to do the 2D array nested for loop for the rendering)
+	- try several arrays of buttons; one array for each row or column
+
+look into the functionality of events and delegates
+	- see if you can have a "Question" object associated with each button so that when you press the button 
+	- the "Question" object that's associated with that button becomes the "currentQuestion" object that's getting rendered to the screen
+
+see about having several players
+	- i'm thinking having a list of "Team" objects that can render the team name/number and their point value
+	- for getting the render to line up correctly you can make it so the controller can calculate the collective height of all the "team" 
+	objects and center the section based on that (loop through all the elements in the list, add all their heights to a seprate variable, 
+	use that height against the total height of the window, then center it based off the remaining area of the screen) 
+	(i.e., if I have 5 teams and the combined height is 400px then I'd subtract that from the height of the window (480) 
+	get the difference (80) split it in half (40) and use that half as the x position for the topmost team (so team one's x position is 40))

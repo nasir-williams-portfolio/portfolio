@@ -16,7 +16,9 @@ namespace Jeopardy
         private SpriteBatch _spriteBatch;
         private Question currQuestion;
         private State currState;
+        private Texture2D sprite;
         private SpriteFont font;
+        private Button testButton;
 
         public Game1()
         {
@@ -35,7 +37,9 @@ namespace Jeopardy
             _spriteBatch = new SpriteBatch(GraphicsDevice);
             currState = State.Start;
             font = Content.Load<SpriteFont>("arial12");
+            sprite = Content.Load<Texture2D>("single_pixel");
             currQuestion = new Question("What day is it", font, new Vector2(400, 240));
+            testButton = new Button("$200", font, sprite, new Vector2(100, 100));
         }
 
         protected override void Update(GameTime gameTime)
@@ -74,6 +78,7 @@ namespace Jeopardy
                     break;
                 case State.Options:
                     _spriteBatch.DrawString(font, "Options Screen", Vector2.Zero, Color.Black);
+                    testButton.Draw(_spriteBatch);
                     break;
                 case State.Question:
                     _spriteBatch.DrawString(font, "Question Screen", Vector2.Zero, Color.Black);
