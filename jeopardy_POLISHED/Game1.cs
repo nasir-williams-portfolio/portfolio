@@ -1,21 +1,24 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
-using System;
 
 namespace jeopardy_POLISHED
 {
+    public enum GameState
+    {
+        TitleScreen,
+        SettingsScreen,
+        QuestionScreen,
+        BoardScreen,
+        LeaderboardScreen
+    }
+
     public class Game1 : Game
     {
         private GraphicsDeviceManager _graphics;
         private SpriteBatch _spriteBatch;
 
-        private Color backgroundColor;
-        private Texture2D addButtonSprite;
-        private Random rng;
-
-
-        private Button addButton;
+        private GameState currentGameState;
 
         public Game1()
         {
@@ -26,18 +29,12 @@ namespace jeopardy_POLISHED
 
         protected override void Initialize()
         {
-            backgroundColor = Color.CornflowerBlue;
-            rng = new Random();
             base.Initialize();
         }
 
         protected override void LoadContent()
         {
             _spriteBatch = new SpriteBatch(GraphicsDevice);
-
-            addButtonSprite = Content.Load<Texture2D>("addButton");
-            addButton = new Button(addButtonSprite, new Vector2(400, 240));
-            addButton.onSingleButtonPress += ChangeBackgroundColor;
         }
 
         protected override void Update(GameTime gameTime)
@@ -45,27 +42,50 @@ namespace jeopardy_POLISHED
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
 
-            addButton.Update();
+            switch (currentGameState)
+            {
+                case GameState.TitleScreen:
+                    break;
+                case GameState.SettingsScreen:
+                    break;
+                case GameState.QuestionScreen:
+                    break;
+                case GameState.BoardScreen:
+                    break;
+                case GameState.LeaderboardScreen:
+                    break;
+                default:
+                    break;
+            }
 
             base.Update(gameTime);
         }
 
         protected override void Draw(GameTime gameTime)
         {
-            GraphicsDevice.Clear(backgroundColor);
+            GraphicsDevice.Clear(Color.CornflowerBlue);
 
             _spriteBatch.Begin();
 
-            addButton.Draw(_spriteBatch);
+            switch (currentGameState)
+            {
+                case GameState.TitleScreen:
+                    break;
+                case GameState.SettingsScreen:
+                    break;
+                case GameState.QuestionScreen:
+                    break;
+                case GameState.BoardScreen:
+                    break;
+                case GameState.LeaderboardScreen:
+                    break;
+                default:
+                    break;
+            }
 
             _spriteBatch.End();
 
             base.Draw(gameTime);
-        }
-
-        protected void ChangeBackgroundColor()
-        {
-            backgroundColor = new Color(rng.Next(0, 257), rng.Next(0, 257), rng.Next(0, 257));
         }
     }
 }
