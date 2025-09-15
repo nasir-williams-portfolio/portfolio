@@ -1,15 +1,23 @@
-﻿make it so all the buttons can be rendered through one "controller" data structure
-	- try a 2D array of buttons (would have to do the 2D array nested for loop for the rendering)
-	- try several arrays of buttons; one array for each row or column
-
-look into the functionality of events and delegates
-	- see if you can have a "Question" object associated with each button so that when you press the button 
-	- the "Question" object that's associated with that button becomes the "currentQuestion" object that's getting rendered to the screen
-
-see about having several players
-	- i'm thinking having a list of "Team" objects that can render the team name/number and their point value
-	- for getting the render to line up correctly you can make it so the controller can calculate the collective height of all the "team" 
-	objects and center the section based on that (loop through all the elements in the list, add all their heights to a seprate variable, 
-	use that height against the total height of the window, then center it based off the remaining area of the screen) 
-	(i.e., if I have 5 teams and the combined height is 400px then I'd subtract that from the height of the window (480) 
-	get the difference (80) split it in half (40) and use that half as the x position for the topmost team (so team one's x position is 40))
+﻿Check List
+    - [X] finish research for the questions and their categories
+    - [X] fill out the rest of the board ($400, $600, $800 $1,000)
+    - [X] create a team class that holds the team name, and points
+    - [X] make it so you can only click on a clue once, then it's rendered "played" (isPlayed boolean)
+    - [X] have the questions populate from a file being read so the whole project is modular
+    - [X] have a button that's a part of the Team class that's specifically for changing the name of the selected team, and otherwise 
+          clicking the name of a Team object makes that team the "currentTeam" and any points will be added to their total automatically
+    - [X] the add the category titles somewhere on the screen
+    - [X] add the answers to the buttons to the file and make it a field for each of the "Button" objects
+    - [O] space the questions based on their height and width and center them on the screen with a stylized
+    - [X] add the "correct" and "incorrect" buttons to the "answer" section of the "questions" screen
+    - [O] make it so the teams will center on the "options" screen and add the functionality of adding and removing teams
+    - [O] create a proper start, options, questions, and settings screen
+    - [O] finish designing the project (mythology themed) (use itch.io for assets and sprites; use DaFont for a cool font if you want)
+    - [X] make it so the question screen has a "Reveal" button that shows the correct answer and an option that will make the "currentPointValue" 
+          either positive or negative so when the question is done the variable will be added to that team's total and it the change will be visible on the following screen
+     
+Fancy Frills
+    - [O] give each clue price button it's own design in piskel
+    - [O] audio effects for each button click
+    - [O] card flip to reveal the correct answer in on the questions screen
+    - [O] automatically update the scores for teams based on whether or not the correct button was pressed on the questions screen
