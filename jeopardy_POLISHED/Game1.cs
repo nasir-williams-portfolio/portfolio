@@ -1,6 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using System;
 
 namespace jeopardy_POLISHED
 {
@@ -8,6 +9,13 @@ namespace jeopardy_POLISHED
     {
         private GraphicsDeviceManager _graphics;
         private SpriteBatch _spriteBatch;
+
+        private Color backgroundColor;
+        private Texture2D addButtonSprite;
+        private Random rng;
+
+
+        private Button addButton;
 
         public Game1()
         {
@@ -18,8 +26,8 @@ namespace jeopardy_POLISHED
 
         protected override void Initialize()
         {
-            // TODO: Add your initialization logic here
-
+            backgroundColor = Color.CornflowerBlue;
+            rng = new Random();
             base.Initialize();
         }
 
@@ -27,7 +35,9 @@ namespace jeopardy_POLISHED
         {
             _spriteBatch = new SpriteBatch(GraphicsDevice);
 
-            // TODO: use this.Content to load your game content here
+            addButtonSprite = Content.Load<Texture2D>("addButton");
+            addButton = new Button(addButtonSprite, new Vector2(400, 240));
+            addButton.onSingleButtonPress += ChangeBackgroundColor;
         }
 
         protected override void Update(GameTime gameTime)
@@ -35,18 +45,27 @@ namespace jeopardy_POLISHED
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
 
-            // TODO: Add your update logic here
+            addButton.Update();
 
             base.Update(gameTime);
         }
 
         protected override void Draw(GameTime gameTime)
         {
-            GraphicsDevice.Clear(Color.CornflowerBlue);
+            GraphicsDevice.Clear(backgroundColor);
 
-            // TODO: Add your drawing code here
+            _spriteBatch.Begin();
+
+            addButton.Draw(_spriteBatch);
+
+            _spriteBatch.End();
 
             base.Draw(gameTime);
+        }
+
+        protected void ChangeBackgroundColor()
+        {
+            backgroundColor = new Color(rng.Next(0, 257), rng.Next(0, 257), rng.Next(0, 257));
         }
     }
 }
