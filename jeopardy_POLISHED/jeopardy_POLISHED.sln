@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.14.36221.1 d17.14
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "jeopardy_POLISHED", "jeopardy_POLISHED.csproj", "{F1D945BC-5903-46B4-81AA-3D23A3F8F368}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "jeopardy_POLISHED", "jeopardy_POLISHED.csproj", "{1E034D12-9CF9-4F1B-977D-6A4D1D11C959}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -11,15 +11,15 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{F1D945BC-5903-46B4-81AA-3D23A3F8F368}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{F1D945BC-5903-46B4-81AA-3D23A3F8F368}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{F1D945BC-5903-46B4-81AA-3D23A3F8F368}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{F1D945BC-5903-46B4-81AA-3D23A3F8F368}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1E034D12-9CF9-4F1B-977D-6A4D1D11C959}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1E034D12-9CF9-4F1B-977D-6A4D1D11C959}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1E034D12-9CF9-4F1B-977D-6A4D1D11C959}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1E034D12-9CF9-4F1B-977D-6A4D1D11C959}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
-		SolutionGuid = {DDC3AE99-8D36-4B83-B534-F30BEE9F8CAE}
+		SolutionGuid = {EBE78185-82DB-4074-9394-800D0D598F16}
 	EndGlobalSection
 EndGlobal
