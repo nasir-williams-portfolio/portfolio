@@ -10,9 +10,11 @@ namespace HackYourSummerProjectTwo
         private GraphicsDeviceManager _graphics;
         private SpriteBatch _spriteBatch;
 
-        private Application googleChrome;
         private Texture2D placeholderTexture;
-        private ArrayList line;
+        private Queue applicationQueue;
+        private Application currentApplication;
+        private Button acceptButton;
+        private Button denyButton;
 
         public Game1()
         {
@@ -31,7 +33,11 @@ namespace HackYourSummerProjectTwo
             _spriteBatch = new SpriteBatch(GraphicsDevice);
 
             placeholderTexture = Content.Load<Texture2D>("pixel");
-            googleChrome = new Application(placeholderTexture);
+            acceptButton = new Button(placeholderTexture, new Vector2(288, 350), Color.Green);
+            denyButton = new Button(placeholderTexture, new Vector2(438, 350), Color.Red);
+            applicationQueue = new Queue();
+
+            applicationQueue.Enqueue(new Application(placeholderTexture));
         }
 
         protected override void Update(GameTime gameTime)
@@ -39,7 +45,11 @@ namespace HackYourSummerProjectTwo
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
 
-            googleChrome.Update();
+            currentApplication = (Application)applicationQueue.Peek();
+
+            currentApplication.Update();
+            acceptButton.Update();
+            denyButton.Update();
 
             base.Update(gameTime);
         }
@@ -50,7 +60,9 @@ namespace HackYourSummerProjectTwo
 
             _spriteBatch.Begin();
 
-            googleChrome.Draw(_spriteBatch);
+            currentApplication.Draw(_spriteBatch);
+            acceptButton.Draw(_spriteBatch);
+            denyButton.Draw(_spriteBatch);
 
             _spriteBatch.End();
 
