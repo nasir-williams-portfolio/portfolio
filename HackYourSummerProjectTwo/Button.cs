@@ -14,11 +14,11 @@ namespace HackYourSummerProjectTwo
         public OnButtonClickDelegate OnButtonClick;
         private Color color;
 
-        public Button(Texture2D sprite, Vector2 location, Color color)
+        public Button(Texture2D sprite, Vector2 location, Color color, int width, int height)
         {
             this.sprite = sprite;
             this.color = color;
-            destinationRectangle = new Rectangle((int)location.X, (int)location.Y, 75, 25);
+            destinationRectangle = new Rectangle((int)location.X, (int)location.Y, width, height);
         }
 
         public void Draw(SpriteBatch sb)
