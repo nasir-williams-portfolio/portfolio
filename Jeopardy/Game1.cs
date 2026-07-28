@@ -71,7 +71,9 @@ namespace Jeopardy
         {
             _graphics = new GraphicsDeviceManager(this);
             Content.RootDirectory = "Content";
-            _graphics.IsFullScreen = true;
+            //_graphics.PreferredBackBufferHeight = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Height;
+            //_graphics.PreferredBackBufferWidth = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Width;
+            //_graphics.IsFullScreen = true;
             IsMouseVisible = true;
         }
 
@@ -169,12 +171,6 @@ namespace Jeopardy
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
 
-            // so...it is staying
-            if (Keyboard.GetState().IsKeyDown(Keys.Q))
-            {
-                currentState = State.Options;
-            }
-
             currentMouseState = Mouse.GetState();
             currState = Keyboard.GetState();
 
@@ -183,6 +179,10 @@ namespace Jeopardy
             switch (currentState)
             {
                 case State.Start:
+                    if (Mouse.GetState().LeftButton == ButtonState.Pressed)
+                    {
+                        currentState = State.Options;
+                    }
                     break;
                 case State.Options:
                     if (currState.IsKeyDown(Keys.Up) && prevState.IsKeyUp(Keys.Up))
@@ -263,7 +263,7 @@ namespace Jeopardy
             switch (currentState)
             {
                 case State.Start:
-                    _spriteBatch.Draw(background, new Rectangle(0, 0, 800, 480), Color.White);
+                    _spriteBatch.Draw(background, new Rectangle(0, 0, _graphics.PreferredBackBufferWidth, _graphics.PreferredBackBufferHeight), Color.White);
                     break;
                 case State.Options:
                     foreach (Team team in teams)

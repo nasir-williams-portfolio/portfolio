@@ -1,0 +1,118 @@
+﻿next to be added...
+	- the card information being read and populated from a formatted file
+	- fully implemented environment cards
+	- fully implement the maximums for the player attributes
+	- fully implemented companion cards
+	- the ability to choose how many rounds to play on the title screen
+	- the ability to change the game mode (regular or adventure mode)	
+	- finally port the game and get it play / crash tested
+	- implement the illusion of choice by letting players "draw" item cards and select which to keep
+	- audio
+		- add ambient audio like button clicks and state transitions
+		- add adventuring music
+	- visuals
+		- player cards
+		- quest cards
+		- item cards
+		- environment cards
+		- companion cards
+		- all the buttons
+	
+
+possible quest card events / effects
+	- change one player attribute
+	- change two player attributes
+	- change three player attributes
+	- "you may add 6 to your next die roll only" (trap room)
+	- literally nothing (theres a switch under this bust)
+		when reading from the file and adding to the success and fail events, do a try-catch block for this null value
+	- "claim the quest for VPs" (im free)
+		when reading from the file and adding to the success and fail events, do a try-catch block for this null value
+	- "you may discard this Quest completely" (bounty)
+		when reading from the file and adding to the success and fail events, do a try-catch block for this null value
+	- "gain the maximum number of money possible" (spin the wheel)
+	- "lose all but one health" (holiday curse)
+	- "gain the maximum amount of luck possible" (holiday curse)
+	- "gain the maximum amount of money possible" (holiday curse)
+	- "this quest counts as being successful"
+		when reading from the file and adding to the success and fail events, do a try-catch block for this null value
+
+possible item card events / effects | rephrase some of these
+	- change one player attribute
+	- change two player attributes
+	- "...add 5 to your health" (I don't know what the fuck this means to be honest)
+	- replace a quest card
+	- draw 2 item cards, keep one and discard the other
+	- increase the number of items able to be held (while holding card)
+	- search for a specific card and add to deck
+	- roll a die & change an attribute based on die roll (while holding card)
+	- change vps (by end of game), discard in exchange for change in player attribute
+	- increase maximum attribute
+	- reroll all natural 6 rolls
+	- auto pass a 1 star quest
+	- exchange 1 attribute for another while holding card
+	- 2 star quests require 1 less money to add a d6
+	- reroll any number of dice once
+	- change attribute if held by end of game
+	- change a die to a natural 6
+	- add 2 to the roll total
+	- negate one damage from the quest
+	- gain a die for the quest
+
+possible companion card events / effects
+	- gain 2 items
+	- gain 1 die, add 1 to your next die roll
+	- lose 2 health
+	- gain 2 health
+	- gain 1 health
+	- gain 1 item
+	- lose 1 money
+	- gain 1 luck
+	- gain 1 luck
+	- gain 4 luck
+	- gain 2 health, gain 2 luck
+
+possible environment card events / effects
+	- when drawing an item card, draw 3 and pick 1
+	- you can change 1 rolled die to match another rolled die once per quest
+	- whenever you roll a 5 or 6 gain 1 money
+	- your max health is 4
+	- discard 2 luck to change any die to any value
+	- 3 star quests require 1 less money to add a die
+	- base roll for 1 star quests is now 2d6
+	- once per quest use 1 luck to change the value of a die by 1
+	- all shop items cost 1 additional money
+	- can change any die roll of 6 to 1, 2, or 3
+	- all shop items cost 1 less (minimum 1)
+	- discard any item to gain 1 money
+	- trade 1 luck for 1 health
+	- trade 1 health to re-roll any die once
+	- if die total is 5 or less, you can reroll any of the die 
+	- if the active quest is 2 star, lower the fail value by 1
+
+
+**possible quest card file formatting**
+	- fail value
+	- success value
+	- fail event attribute, fail event value | fail event attribute, fail event value
+	- success event attribute, success event value | success event attribute, success event value
+
+method to...
+	- add to the next die roll [add to the roll total]
+	- max out the money & luck attributes
+	- set health to 0
+
+
+**possbile item card file formatting**
+	- attribute, value | attribute, value
+
+method to...
+	- replace a quest card (screen where player selects a card and it's replaced with another from the deck list)
+	- draw two item cards, select one, discard the other
+	- increase maximum for one of the attributes
+	- add a specific item card to the player's hand (create a giant visible list of item cards and have the player select from it)
+	- change an attribute to the value of a rolled die (special screen)
+	- change the VP
+	- if a die face is a 6, roll again
+	- automatically pass a quest
+	- 

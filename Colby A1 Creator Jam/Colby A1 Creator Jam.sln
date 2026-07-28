@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.14.36616.10 d17.14
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Colby A1 Creator Jam", "Colby A1 Creator Jam.csproj", "{B92EA391-23C2-4300-848C-83EC29EAB7DD}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{B92EA391-23C2-4300-848C-83EC29EAB7DD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B92EA391-23C2-4300-848C-83EC29EAB7DD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B92EA391-23C2-4300-848C-83EC29EAB7DD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B92EA391-23C2-4300-848C-83EC29EAB7DD}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {E13F9F3B-B248-4BFA-9871-0C0FF10995AC}
+	EndGlobalSection
+EndGlobal
