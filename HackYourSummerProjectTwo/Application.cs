@@ -9,6 +9,7 @@ namespace HackYourSummerProjectTwo
     {
         private Texture2D sprite;
         private Rectangle destinationRectangle;
+        private Rectangle propertiesRectangle;
         private MouseState currentMouseState;
         private MouseState previousMouseState;
         private bool isShowingProperties;
@@ -19,8 +20,10 @@ namespace HackYourSummerProjectTwo
         {
             this.sprite = sprite;
             destinationRectangle = new Rectangle(388, 228, 25, 25);
+            propertiesRectangle = new Rectangle(450, 228, 100, 200);
             rng = new Random();
-            propertiesColor = new Color(rng.Next(0, 2) * 225, 0, 0);
+
+            propertiesColor = (rng.Next(0, 2) == 1) ? Color.Red : Color.Blue;
         }
 
         public void Draw(SpriteBatch sb)
@@ -28,7 +31,7 @@ namespace HackYourSummerProjectTwo
             sb.Draw(sprite, destinationRectangle, Color.White);
             if (isShowingProperties)
             {
-                sb.Draw(sprite, new Rectangle(400, 228, 25, 100), propertiesColor);
+                sb.Draw(sprite, propertiesRectangle, propertiesColor);
             }
         }
 
@@ -37,12 +40,12 @@ namespace HackYourSummerProjectTwo
             currentMouseState = Mouse.GetState();
             Rectangle cursorPosition = new Rectangle(currentMouseState.X, currentMouseState.Y, 1, 1);
 
-            if (
-                currentMouseState.LeftButton == ButtonState.Pressed &&
-                previousMouseState.LeftButton == ButtonState.Released &&
-                destinationRectangle.Contains(cursorPosition))
+            if (currentMouseState.RightButton == ButtonState.Pressed && previousMouseState.RightButton == ButtonState.Released)
             {
-                isShowingProperties = true;
+                if (destinationRectangle.Contains(cursorPosition))
+                {
+                    isShowingProperties = !isShowingProperties;
+                }
             }
 
             previousMouseState = currentMouseState;
