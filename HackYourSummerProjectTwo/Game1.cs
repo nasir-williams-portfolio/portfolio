@@ -15,6 +15,9 @@ namespace HackYourSummerProjectTwo
         private Application currentApplication;
         private Button acceptButton;
         private Button denyButton;
+        private SpriteFont placeholderFont;
+        private int correctAssessments;
+        private int incorrectAssessments;
 
         public Game1()
         {
@@ -32,9 +35,12 @@ namespace HackYourSummerProjectTwo
         {
             _spriteBatch = new SpriteBatch(GraphicsDevice);
 
+            placeholderFont = Content.Load<SpriteFont>("arial12");
             placeholderTexture = Content.Load<Texture2D>("pixel");
-            acceptButton = new Button(placeholderTexture, new Vector2(288, 350), Color.Green);
-            denyButton = new Button(placeholderTexture, new Vector2(438, 350), Color.Red);
+            acceptButton = new Button(placeholderTexture, new Vector2(288, 430), Color.Green);
+            acceptButton.OnButtonClick += AcceptApplication;
+            denyButton = new Button(placeholderTexture, new Vector2(438, 430), Color.Red);
+            denyButton.OnButtonClick += DenyApplication;
             applicationQueue = new Queue();
 
             applicationQueue.Enqueue(new Application(placeholderTexture));
@@ -60,6 +66,7 @@ namespace HackYourSummerProjectTwo
 
             _spriteBatch.Begin();
 
+            _spriteBatch.DrawString(placeholderFont, $"Correct: {correctAssessments}\nIncorrect: {incorrectAssessments}", Vector2.Zero, Color.White);
             currentApplication.Draw(_spriteBatch);
             acceptButton.Draw(_spriteBatch);
             denyButton.Draw(_spriteBatch);
@@ -67,6 +74,36 @@ namespace HackYourSummerProjectTwo
             _spriteBatch.End();
 
             base.Draw(gameTime);
+        }
+
+        protected void AcceptApplication()
+        {
+            if (currentApplication.IsCorrupted)
+            {
+                incorrectAssessments++;
+            }
+            else
+            {
+                correctAssessments++;
+            }
+
+            applicationQueue.Enqueue(new Application(placeholderTexture));
+            applicationQueue.Dequeue();
+        }
+
+        protected void DenyApplication()
+        {
+            if (currentApplication.IsCorrupted)
+            {
+                correctAssessments++;
+            }
+            else
+            {
+                incorrectAssessments++;
+            }
+
+            applicationQueue.Enqueue(new Application(placeholderTexture));
+            applicationQueue.Dequeue();
         }
     }
 }

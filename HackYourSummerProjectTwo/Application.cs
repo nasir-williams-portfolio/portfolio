@@ -16,16 +16,21 @@ namespace HackYourSummerProjectTwo
         private Color propertiesColor;
         private Random rng;
         private Color applicationColor;
+        private bool isCorrupted;
+
+        public bool IsCorrupted { get { return isCorrupted; } set { isCorrupted = value; } }
 
         public Application(Texture2D sprite)
         {
             this.sprite = sprite;
             rng = new Random();
             applicationRectangle = new Rectangle(363, 203, 75, 75);
-            propertiesRectangle = new Rectangle(450, 228, 100, 200);
+            propertiesRectangle = new Rectangle(450, 203, 100, 200);
             applicationColor = new Color(rng.Next(0, 226), rng.Next(0, 226), rng.Next(0, 226));
 
-            propertiesColor = (rng.Next(0, 2) == 1) ? Color.Red : Color.Blue;
+            propertiesColor = (rng.Next(0, 2) == 1) ? Color.DarkRed : Color.DarkGreen;
+
+            isCorrupted = (propertiesColor == Color.DarkRed) ? true : false;
         }
 
         public void Draw(SpriteBatch sb)

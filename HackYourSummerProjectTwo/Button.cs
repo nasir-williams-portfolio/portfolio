@@ -11,7 +11,7 @@ namespace HackYourSummerProjectTwo
         private Rectangle destinationRectangle;
         private MouseState currentMouseState;
         private MouseState previousMouseState;
-        private OnButtonClickDelegate OnButtonClick;
+        public OnButtonClickDelegate OnButtonClick;
         private Color color;
 
         public Button(Texture2D sprite, Vector2 location, Color color)
