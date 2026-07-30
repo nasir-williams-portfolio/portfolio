@@ -1,0 +1,2 @@
+﻿Ok so the idea is to have it so that the "client" is in the center of the screen and you can "delete" or "download" them based on whether or not
+they've got something suspicious about them, whether it be the resolution of their icon, the file path, the program size, or a suspicious tooltip

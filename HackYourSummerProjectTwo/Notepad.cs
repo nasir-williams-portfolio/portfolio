@@ -4,20 +4,19 @@ using Microsoft.Xna.Framework.Input;
 
 namespace HackYourSummerProjectTwo
 {
-    public delegate void OnButtonClickDelegate();
-    internal class Button
+    internal class Notepad
     {
-        public OnButtonClickDelegate OnButtonClick;
         private Texture2D sprite;
         private Rectangle destinationRectangle;
         private MouseState currMouse;
         private MouseState prevMouse;
-        private Color color;
+        private bool isShowing;
 
-        public Button(Texture2D sprite, int x, int y, int width, int height, Color color)
+        public bool IsShowing { get { return isShowing; } set { isShowing = value; } }
+
+        public Notepad(Texture2D sprite, int x, int y, int width, int height)
         {
             this.sprite = sprite;
-            this.color = color;
             destinationRectangle = new Rectangle(x, y, width, height);
         }
 
@@ -26,12 +25,10 @@ namespace HackYourSummerProjectTwo
             currMouse = Mouse.GetState();
             Rectangle cursor = new Rectangle(currMouse.X, currMouse.Y, 1, 1);
 
-            if (currMouse.LeftButton == ButtonState.Pressed && prevMouse.LeftButton == ButtonState.Released)
+            if (currMouse.LeftButton == ButtonState.Pressed && destinationRectangle.Contains(cursor))
             {
-                if (destinationRectangle.Contains(cursor) && OnButtonClick != null)
-                {
-                    OnButtonClick();
-                }
+                destinationRectangle.X = cursor.X - 50;
+                destinationRectangle.Y = cursor.Y - 50;
             }
 
             prevMouse = currMouse;
@@ -39,7 +36,10 @@ namespace HackYourSummerProjectTwo
 
         public void Draw(SpriteBatch sb)
         {
-            sb.Draw(sprite, destinationRectangle, color);
+            if (isShowing)
+            {
+                sb.Draw(sprite, destinationRectangle, Color.White);
+            }
         }
     }
 }
