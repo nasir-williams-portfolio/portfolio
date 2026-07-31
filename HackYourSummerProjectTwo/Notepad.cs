@@ -9,15 +9,18 @@ namespace HackYourSummerProjectTwo
         private Texture2D sprite;
         private Rectangle destinationRectangle;
         private MouseState currMouse;
-        private MouseState prevMouse;
+        private SpriteFont font;
         private bool isShowing;
+        private string applicationText;
 
         public bool IsShowing { get { return isShowing; } set { isShowing = value; } }
 
-        public Notepad(Texture2D sprite, int x, int y, int width, int height)
+        public Notepad(Texture2D sprite, int x, int y, int width, int height, SpriteFont font)
         {
             this.sprite = sprite;
             destinationRectangle = new Rectangle(x, y, width, height);
+            this.font = font;
+            applicationText = "Identify malicious applications through:\n - Poor icon resolution (White)\n - Suspicious property information(475GB)\n - Inconsistent tooltip information";
         }
 
         public void Update()
@@ -30,8 +33,6 @@ namespace HackYourSummerProjectTwo
                 destinationRectangle.X = cursor.X - 50;
                 destinationRectangle.Y = cursor.Y - 50;
             }
-
-            prevMouse = currMouse;
         }
 
         public void Draw(SpriteBatch sb)
@@ -39,6 +40,8 @@ namespace HackYourSummerProjectTwo
             if (isShowing)
             {
                 sb.Draw(sprite, destinationRectangle, Color.White);
+                sb.DrawString(font, "Malicious Application Identification", new Vector2(destinationRectangle.X + 70, destinationRectangle.Y), Color.Black);
+                sb.DrawString(font, applicationText, new Vector2(destinationRectangle.X + 5, destinationRectangle.Y + 20), Color.Black);
             }
         }
     }

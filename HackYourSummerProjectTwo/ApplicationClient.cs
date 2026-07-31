@@ -11,7 +11,7 @@ namespace HackYourSummerProjectTwo
         Hard
     }
 
-    internal class ClubClient
+    internal class ApplicationClient
     {
         private Texture2D sprite;
         private SpriteFont font;
@@ -19,7 +19,6 @@ namespace HackYourSummerProjectTwo
         private Rectangle clientRectangle;
         private Rectangle propertiesMenuRectangle;
         private string propertiesText;
-        private Rectangle tooltipRectangle;
         private string tooltipText;
         private MouseState currMouse;
         private MouseState prevMouse;
@@ -28,14 +27,13 @@ namespace HackYourSummerProjectTwo
         private bool isShowingProperties;
         private bool isPhony;
         private bool isShowingTooltip;
-
         private int timer;
         private int tooltipX;
         private int tooltipY;
 
         public bool IsPhony { get { return isPhony; } set { isPhony = value; } }
 
-        public ClubClient(Texture2D sprite, int x, int y, int width, int height, DifficultyLevel difficultyLevel, SpriteFont font)
+        public ApplicationClient(Texture2D sprite, int x, int y, int width, int height, DifficultyLevel difficultyLevel, SpriteFont font)
         {
             this.sprite = sprite;
             this.font = font;
@@ -43,27 +41,27 @@ namespace HackYourSummerProjectTwo
             isShowingTooltip = false;
             rng = new Random();
             clientRectangle = new Rectangle(x, y, width, height);
-            propertiesMenuRectangle = new Rectangle(x + width + 12, y - 12, 250, 150);
+            propertiesMenuRectangle = new Rectangle(x + width + 12, y - 12, 263, 150);
             timer = 0;
             tooltipX = 0;
             tooltipY = 0;
 
             isPhony = (rng.Next(0, 2) == 0) ? true : false;
 
-            color = Color.DarkBlue;
-            propertiesText = "Name: Application.Ink\nType: Shortcut\nLocation: C:\\Users\\JohnDoe\\Desktop\nSize: 1.70 KB";
-            tooltipText = "Location: C:\\Users\\JohnDoe\\Desktop";
+            color = Color.Black;
+            propertiesText = "Name: Application.Ink\nType: Shortcut\nLocation: C:\\Users\\JohnDoe\\Downloads\nSize: 1.70 KB";
+            tooltipText = "Location: C:\\Users\\JohnDoe\\Downloads";
 
             switch (difficultyLevel)
             {
                 case DifficultyLevel.Easy:
-                    color = (isPhony) ? Color.LightBlue : Color.DarkBlue;
+                    color = (isPhony) ? Color.White : Color.Black;
                     break;
                 case DifficultyLevel.Medium:
-                    propertiesText = (isPhony) ? "Name: Phony.Ink\nType: Text Document\nLocation: OS (C:)\nSize: 475GB" : "Name: Application.Ink\nType: Shortcut\nLocation: C:\\Users\\JohnDoe\\Desktop\nSize: 1.70 KB";
+                    propertiesText = (isPhony) ? "Name: Phony.Ink\nType: Text Document\nLocation: OS (C:)\nSize: 475GB" : "Name: Application.Ink\nType: Shortcut\nLocation: C:\\Users\\JohnDoe\\Downloads\nSize: 1.70 KB";
                     break;
                 case DifficultyLevel.Hard:
-                    tooltipText = (isPhony) ? "Location: OS (C:)" : "Location: C:\\Users\\JohnDoe\\Desktop";
+                    tooltipText = (isPhony) ? "Location: C:\\Users\\JohnDoe\\Desktop" : "Location: C:\\Users\\JohnDoe\\Downloads";
                     break;
                 default:
                     break;
@@ -97,7 +95,7 @@ namespace HackYourSummerProjectTwo
                 }
                 if (timer >= 50)
                 {
-                    if (!isShowingProperties)
+                    if (isShowingProperties == false)
                     {
                         isShowingTooltip = true;
                     }
@@ -120,10 +118,11 @@ namespace HackYourSummerProjectTwo
         public void Draw(SpriteBatch sb)
         {
             sb.Draw(sprite, clientRectangle, color);
+
             if (isShowingProperties)
             {
                 sb.Draw(sprite, propertiesMenuRectangle, Color.White);
-                sb.DrawString(font, propertiesText, new Vector2(propertiesMenuRectangle.X, propertiesMenuRectangle.Y), Color.Black);
+                sb.DrawString(font, propertiesText, new Vector2(propertiesMenuRectangle.X + 1, propertiesMenuRectangle.Y), Color.Black);
             }
 
             if (isShowingTooltip)

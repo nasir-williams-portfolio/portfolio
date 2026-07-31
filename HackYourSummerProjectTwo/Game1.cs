@@ -14,12 +14,18 @@ namespace HackYourSummerProjectTwo
         private Texture2D placeholderTexture;
         private SpriteFont placeholderFont;
         private Queue clientQueue;
-        private ClubClient currentClient;
+        private ApplicationClient currentClient;
         private Button acceptButton;
         private Button denyButton;
         private Button notepadButton;
         private Notepad notepad;
         private Random rng;
+
+        private Vector2 notificationVector;
+        private float opacity;
+        private bool notificationIsMoving;
+        private string notificationText;
+        private ArrayList notificationList;
 
         public Game1()
         {
@@ -30,6 +36,10 @@ namespace HackYourSummerProjectTwo
 
         protected override void Initialize()
         {
+            notificationVector = new Vector2(10, 462);
+            opacity = 1f;
+            notificationList = new ArrayList();
+
             base.Initialize();
         }
 
@@ -42,10 +52,10 @@ namespace HackYourSummerProjectTwo
             acceptButton = new Button(placeholderTexture, 275, 380, 75, 25, Color.Green);
             denyButton = new Button(placeholderTexture, 450, 380, 75, 25, Color.Red);
             notepadButton = new Button(placeholderTexture, 750, 50, 20, 20, Color.White);
-            notepad = new Notepad(placeholderTexture, 200, 120, 400, 240);
+            notepad = new Notepad(placeholderTexture, 200, 120, 350, 240, placeholderFont);
             rng = new Random();
             clientQueue = new Queue();
-            clientQueue.Enqueue(new ClubClient(placeholderTexture, 350, 190, 100, 100, DifficultyLevel.Easy, placeholderFont));
+            clientQueue.Enqueue(new ApplicationClient(placeholderTexture, 350, 190, 100, 100, DifficultyLevel.Hard, placeholderFont));
 
             acceptButton.OnButtonClick += AcceptClient;
             denyButton.OnButtonClick += DenyClient;
@@ -57,12 +67,14 @@ namespace HackYourSummerProjectTwo
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
 
-            currentClient = (ClubClient)clientQueue.Peek();
+            currentClient = (ApplicationClient)clientQueue.Peek();
             currentClient.Update();
             notepadButton.Update();
             acceptButton.Update();
             denyButton.Update();
             notepad.Update();
+
+            TriggerNotification();
 
             base.Update(gameTime);
         }
@@ -79,6 +91,11 @@ namespace HackYourSummerProjectTwo
             denyButton.Draw(_spriteBatch);
             notepad.Draw(_spriteBatch);
 
+            if (notificationIsMoving)
+            {
+                _spriteBatch.DrawString(placeholderFont, notificationList[notificationList.Count - 1].ToString(), notificationVector, new Color(Color.Black, opacity));
+            }
+
             _spriteBatch.End();
 
             base.Draw(gameTime);
@@ -86,25 +103,40 @@ namespace HackYourSummerProjectTwo
 
         protected void AcceptClient()
         {
-            System.Diagnostics.Debug.WriteLine((currentClient.IsPhony) ? "Bad" : "Good");
-
             clientQueue.Dequeue();
-            clientQueue.Enqueue(new ClubClient(placeholderTexture, 350, 190, 100, 100, (DifficultyLevel)rng.Next(0, 3), placeholderFont));
-            currentClient = (ClubClient)clientQueue.Peek();
+            clientQueue.Enqueue(new ApplicationClient(placeholderTexture, 350, 190, 100, 100, (DifficultyLevel)rng.Next(0, 3), placeholderFont));
+            currentClient = (ApplicationClient)clientQueue.Peek();
+
+            notificationVector.Y = 462;
+            opacity = 1f;
+            notificationIsMoving = true;
+            notificationList.Add(notificationText = (currentClient.IsPhony) ? "Suspicious Program Downloaded" : "Program Downloaded");
         }
 
         protected void DenyClient()
         {
-            System.Diagnostics.Debug.WriteLine((currentClient.IsPhony) ? "Good" : "Bad");
-
             clientQueue.Dequeue();
-            clientQueue.Enqueue(new ClubClient(placeholderTexture, 350, 190, 100, 100, (DifficultyLevel)rng.Next(0, 3), placeholderFont));
-            currentClient = (ClubClient)clientQueue.Peek();
+            clientQueue.Enqueue(new ApplicationClient(placeholderTexture, 350, 190, 100, 100, (DifficultyLevel)rng.Next(0, 3), placeholderFont));
+            currentClient = (ApplicationClient)clientQueue.Peek();
+
+            notificationVector.Y = 462;
+            opacity = 1f;
+            notificationIsMoving = true;
+            notificationList.Add((currentClient.IsPhony) ? "Suspicious Program Deleted" : "Program Deleted");
         }
 
         protected void ToggleNotepad()
         {
             notepad.IsShowing = !notepad.IsShowing;
+        }
+
+        protected void TriggerNotification()
+        {
+            if (notificationVector.Y > 240 && notificationIsMoving)
+            {
+                notificationVector.Y -= 2;
+                opacity -= 0.01f;
+            }
         }
     }
 }
