@@ -21,11 +21,7 @@ namespace HackYourSummerProjectTwo
         private Notepad notepad;
         private Random rng;
 
-        private Vector2 notificationVector;
-        private float opacity;
-        private bool notificationIsMoving;
-        private string notificationText;
-        private ArrayList notificationList;
+        private ArrayList notificationArrayList;
 
         public Game1()
         {
@@ -36,9 +32,7 @@ namespace HackYourSummerProjectTwo
 
         protected override void Initialize()
         {
-            notificationVector = new Vector2(10, 462);
-            opacity = 1f;
-            notificationList = new ArrayList();
+            notificationArrayList = new ArrayList();
 
             base.Initialize();
         }
@@ -74,7 +68,15 @@ namespace HackYourSummerProjectTwo
             denyButton.Update();
             notepad.Update();
 
-            TriggerNotification();
+            for (int i = 0; i < notificationArrayList.Count; i++)
+            {
+                Notification currentNotification = (Notification)notificationArrayList[i];
+                currentNotification.Update();
+                if (currentNotification.IsDismissed)
+                {
+                    notificationArrayList.Remove(i);
+                }
+            }
 
             base.Update(gameTime);
         }
@@ -91,9 +93,9 @@ namespace HackYourSummerProjectTwo
             denyButton.Draw(_spriteBatch);
             notepad.Draw(_spriteBatch);
 
-            if (notificationIsMoving)
+            foreach (Notification notification in notificationArrayList)
             {
-                _spriteBatch.DrawString(placeholderFont, notificationList[notificationList.Count - 1].ToString(), notificationVector, new Color(Color.Black, opacity));
+                notification.Draw(_spriteBatch);
             }
 
             _spriteBatch.End();
@@ -103,40 +105,24 @@ namespace HackYourSummerProjectTwo
 
         protected void AcceptClient()
         {
-            notificationList.Add(notificationText = (currentClient.IsPhony) ? "Bad Program Accepted :(" : "Good Program Accepted");
+            notificationArrayList.Add(new Notification(placeholderFont, (currentClient.IsPhony) ? "Bad Program Accepted :(" : "Good Program Accepted"));
             clientQueue.Dequeue();
             clientQueue.Enqueue(new ApplicationClient(placeholderTexture, 350, 190, 100, 100, (DifficultyLevel)rng.Next(0, 3), placeholderFont));
             currentClient = (ApplicationClient)clientQueue.Peek();
-
-            notificationVector.Y = 462;
-            opacity = 1f;
-            notificationIsMoving = true;
         }
 
         protected void DenyClient()
         {
-            notificationList.Add((currentClient.IsPhony) ? "Bad Program Denied" : "Good Program Denied :(");
+            notificationArrayList.Add(new Notification(placeholderFont, (currentClient.IsPhony) ? "Bad Program Denied" : "Good Program Denied :("));
             clientQueue.Dequeue();
             clientQueue.Enqueue(new ApplicationClient(placeholderTexture, 350, 190, 100, 100, (DifficultyLevel)rng.Next(0, 3), placeholderFont));
             currentClient = (ApplicationClient)clientQueue.Peek();
-
-            notificationVector.Y = 462;
-            opacity = 1f;
-            notificationIsMoving = true;
         }
 
         protected void ToggleNotepad()
         {
             notepad.IsShowing = !notepad.IsShowing;
         }
-
-        protected void TriggerNotification()
-        {
-            if (notificationVector.Y > 240 && notificationIsMoving)
-            {
-                notificationVector.Y -= 1;
-                opacity -= 0.005f;
-            }
-        }
     }
+
 }
