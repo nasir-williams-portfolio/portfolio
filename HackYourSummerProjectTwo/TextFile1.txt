@@ -1,1 +1,4 @@
-﻿
+﻿Dev Log
+7.31.26 | 11:21 AM
+Just spent what has to have been the last 30 minutes fighting the urge to yank my hair out of my head because I couldn't figure out why the program was
+incorrectly rating the assessments, just to figure out that it was rating the assessments of the next program instead of the one that just finished

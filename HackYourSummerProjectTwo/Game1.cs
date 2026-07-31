@@ -103,6 +103,7 @@ namespace HackYourSummerProjectTwo
 
         protected void AcceptClient()
         {
+            notificationList.Add(notificationText = (currentClient.IsPhony) ? "Bad Program Accepted :(" : "Good Program Accepted");
             clientQueue.Dequeue();
             clientQueue.Enqueue(new ApplicationClient(placeholderTexture, 350, 190, 100, 100, (DifficultyLevel)rng.Next(0, 3), placeholderFont));
             currentClient = (ApplicationClient)clientQueue.Peek();
@@ -110,11 +111,11 @@ namespace HackYourSummerProjectTwo
             notificationVector.Y = 462;
             opacity = 1f;
             notificationIsMoving = true;
-            notificationList.Add(notificationText = (currentClient.IsPhony) ? "Suspicious Program Downloaded" : "Program Downloaded");
         }
 
         protected void DenyClient()
         {
+            notificationList.Add((currentClient.IsPhony) ? "Bad Program Denied" : "Good Program Denied :(");
             clientQueue.Dequeue();
             clientQueue.Enqueue(new ApplicationClient(placeholderTexture, 350, 190, 100, 100, (DifficultyLevel)rng.Next(0, 3), placeholderFont));
             currentClient = (ApplicationClient)clientQueue.Peek();
@@ -122,7 +123,6 @@ namespace HackYourSummerProjectTwo
             notificationVector.Y = 462;
             opacity = 1f;
             notificationIsMoving = true;
-            notificationList.Add((currentClient.IsPhony) ? "Suspicious Program Deleted" : "Program Deleted");
         }
 
         protected void ToggleNotepad()
@@ -134,8 +134,8 @@ namespace HackYourSummerProjectTwo
         {
             if (notificationVector.Y > 240 && notificationIsMoving)
             {
-                notificationVector.Y -= 2;
-                opacity -= 0.01f;
+                notificationVector.Y -= 1;
+                opacity -= 0.005f;
             }
         }
     }

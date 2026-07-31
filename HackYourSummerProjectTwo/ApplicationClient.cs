@@ -31,7 +31,7 @@ namespace HackYourSummerProjectTwo
         private int tooltipX;
         private int tooltipY;
 
-        public bool IsPhony { get { return isPhony; } set { isPhony = value; } }
+        public bool IsPhony { get { return isPhony; } }
 
         public ApplicationClient(Texture2D sprite, int x, int y, int width, int height, DifficultyLevel difficultyLevel, SpriteFont font)
         {
