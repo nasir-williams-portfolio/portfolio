@@ -1,5 +1,5 @@
 ﻿Changes I'd like to add
-[ ] some kind of a progress bar that goes up and down based on whether or not you correctly assessed the program
+[X] some kind of a progress bar that goes up and down based on whether or not you correctly assessed the program
 [X] title screen, main menu, and level select
 [ ] tutorial level
 [ ] fail and pass level screen
@@ -12,3 +12,4 @@
 [X] the level's come locked and as you complete them, more get unlocked
 [ ] achievements
 [ ] general gameplay statistics
+[X] You have to click a button to get back to the level selector after passing or failing a level

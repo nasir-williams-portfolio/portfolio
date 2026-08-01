@@ -28,6 +28,7 @@ namespace HackYourSummerProjectTwo
         private Button acceptButton;
         private Button denyButton;
         private Button notepadButton;
+        private Button returnToLevelSelect;
         private Notepad notepad;
         private Random rng;
 
@@ -37,6 +38,8 @@ namespace HackYourSummerProjectTwo
         private Button settingsButton;
         private List<LevelSelector> levels;
         private LevelSelector currentLevel;
+        private int assessmentMeter;
+        private bool levelFinished;
 
         public Game1()
         {
@@ -50,7 +53,8 @@ namespace HackYourSummerProjectTwo
             notificationArrayList = new ArrayList();
             currentGameState = GameState.TitleScreen;
             levels = new List<LevelSelector>();
-
+            assessmentMeter = 0;
+            levelFinished = false;
 
             base.Initialize();
         }
@@ -66,6 +70,7 @@ namespace HackYourSummerProjectTwo
             notepadButton = new Button(placeholderTexture, 750, 50, 20, 20, Color.White);
             playButton = new Button(placeholderTexture, 368, 228, 75, 25, Color.White);
             settingsButton = new Button(placeholderTexture, 368, 260, 75, 25, Color.Gray);
+            returnToLevelSelect = new Button(placeholderTexture, 368, 228, 75, 25, Color.Pink);
             notepad = new Notepad(placeholderTexture, 200, 120, 350, 240, placeholderFont);
             rng = new Random();
             clientList = new ArrayList();
@@ -74,6 +79,7 @@ namespace HackYourSummerProjectTwo
             denyButton.OnButtonClick += DenyClient;
             notepadButton.OnButtonClick += ToggleNotepad;
             playButton.OnButtonClick += NavigateToLevelSelect;
+            returnToLevelSelect.OnButtonClick += NavigateToLevelSelect;
             settingsButton.OnButtonClick += NavigateToSettingsMenu;
 
             for (int i = 0; i < 10; i++)
@@ -126,17 +132,24 @@ namespace HackYourSummerProjectTwo
                     }
                     break;
                 case GameState.PrimaryGameScreen:
-                    if (clientList.Count == 0)
+                    if (levelFinished == false)
                     {
-                        currentLevel.IsCompleted = true;
-                        NavigateToLevelSelect();
-                    }
+                        if (clientList.Count == 0)
+                        {
+                            currentLevel.IsCompleted = true;
+                            levelFinished = true;
+                        }
 
-                    currentClient.Update();
-                    notepadButton.Update();
-                    acceptButton.Update();
-                    denyButton.Update();
-                    notepad.Update();
+                        currentClient.Update();
+                        notepadButton.Update();
+                        acceptButton.Update();
+                        denyButton.Update();
+                        notepad.Update();
+                    }
+                    else
+                    {
+                        returnToLevelSelect.Update();
+                    }
 
                     for (int i = 0; i < notificationArrayList.Count; i++)
                     {
@@ -160,7 +173,6 @@ namespace HackYourSummerProjectTwo
             GraphicsDevice.Clear(Color.CornflowerBlue);
 
             _spriteBatch.Begin();
-            _spriteBatch.DrawString(placeholderFont, $"{currentGameState.ToString()}", Vector2.One, Color.Black);
 
             switch (currentGameState)
             {
@@ -180,7 +192,7 @@ namespace HackYourSummerProjectTwo
                     }
                     break;
                 case GameState.PrimaryGameScreen:
-                    _spriteBatch.DrawString(placeholderFont, $"Selected Level {levels.IndexOf(currentLevel) + 1}", new Vector2(0, 15), Color.Black);
+                    _spriteBatch.DrawString(placeholderFont, $"Selected Level: {levels.IndexOf(currentLevel) + 1}\nAssessment Meter: {assessmentMeter}", Vector2.One, Color.Black);
                     currentClient.Draw(_spriteBatch);
                     notepadButton.Draw(_spriteBatch);
                     acceptButton.Draw(_spriteBatch);
@@ -190,6 +202,11 @@ namespace HackYourSummerProjectTwo
                     foreach (Notification notification in notificationArrayList)
                     {
                         notification.Draw(_spriteBatch);
+                    }
+
+                    if (levelFinished)
+                    {
+                        returnToLevelSelect.Draw(_spriteBatch);
                     }
                     break;
                 default:
@@ -204,20 +221,30 @@ namespace HackYourSummerProjectTwo
         protected void AcceptClient()
         {
             notificationArrayList.Add(new Notification(placeholderFont, (currentClient.IsPhony) ? "Bad Program Accepted :(" : "Good Program Accepted"));
-            clientList.RemoveAt(0);
+            assessmentMeter += (currentClient.IsPhony) ? -1 : 1;
             if (clientList.Count > 0)
             {
-                currentClient = (ApplicationClient)clientList[0];
+                clientList.RemoveAt(0);
+                System.Diagnostics.Debug.WriteLine(clientList.Count);
+                if (clientList.Count > 0)
+                {
+                    currentClient = (ApplicationClient)clientList[0];
+                }
             }
         }
 
         protected void DenyClient()
         {
             notificationArrayList.Add(new Notification(placeholderFont, (currentClient.IsPhony) ? "Bad Program Denied" : "Good Program Denied :("));
-            clientList.RemoveAt(0);
+            assessmentMeter += (currentClient.IsPhony) ? 1 : -1;
             if (clientList.Count > 0)
             {
-                currentClient = (ApplicationClient)clientList[0];
+                clientList.RemoveAt(0);
+                System.Diagnostics.Debug.WriteLine(clientList.Count);
+                if (clientList.Count > 0)
+                {
+                    currentClient = (ApplicationClient)clientList[0];
+                }
             }
         }
 
@@ -228,6 +255,7 @@ namespace HackYourSummerProjectTwo
 
         protected void NavigateToLevelSelect()
         {
+            levelFinished = true;
             currentGameState = GameState.LevelSelect;
 
             if (levels[levels.IndexOf(currentLevel)].IsCompleted)
@@ -244,6 +272,8 @@ namespace HackYourSummerProjectTwo
 
         protected void NavigateToPrimaryGameScreen()
         {
+            levelFinished = false;
+            assessmentMeter = 0;
             PopulateClientList((levels.IndexOf(currentLevel) + 1) * 2);
             currentGameState = GameState.PrimaryGameScreen;
             foreach (LevelSelector selector in levels)
