@@ -12,15 +12,18 @@ namespace HackYourSummerProjectTwo
         private Rectangle destinationRectangle;
         private bool isLocked;
         private bool beenClicked;
+        private bool isCompleted;
 
         public bool BeenClicked { get { return beenClicked; } set { beenClicked = value; } }
         public bool IsLocked { set { IsLocked = value; } }
+        public bool IsCompleted { get { return isCompleted; } set { isCompleted = value; } }
 
         public LevelSelector(Texture2D sprite, Vector2 location, bool isLocked)
         {
             this.sprite = sprite;
             this.isLocked = isLocked;
             beenClicked = false;
+            isCompleted = false;
             destinationRectangle = new Rectangle((int)location.X, (int)location.Y, 30, 30);
         }
 

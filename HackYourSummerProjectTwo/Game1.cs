@@ -3,6 +3,7 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using System;
 using System.Collections;
+using System.Collections.Generic;
 
 namespace HackYourSummerProjectTwo
 {
@@ -34,8 +35,9 @@ namespace HackYourSummerProjectTwo
         private GameState currentGameState;
         private Button playButton;
         private Button settingsButton;
-        private ArrayList levels;
+        private List<LevelSelector> levels;
         private int currentLevel;
+        private bool levelComplete;
 
         public Game1()
         {
@@ -48,9 +50,9 @@ namespace HackYourSummerProjectTwo
         {
             notificationArrayList = new ArrayList();
             currentGameState = GameState.TitleScreen;
-            levels = new ArrayList();
+            levels = new List<LevelSelector>();
             currentLevel = 0;
-
+            levelComplete = false;
 
             base.Initialize();
         }
@@ -125,8 +127,10 @@ namespace HackYourSummerProjectTwo
                 case GameState.PrimaryGameScreen:
                     if (clientList.Count == 0)
                     {
-                        currentGameState = GameState.LevelSelect;
+                        NavigateToLevelSelect();
+                        levels[currentLevel - 1].IsCompleted = true;
                     }
+
                     currentClient.Update();
                     notepadButton.Update();
                     acceptButton.Update();
@@ -224,6 +228,11 @@ namespace HackYourSummerProjectTwo
         protected void NavigateToLevelSelect()
         {
             currentGameState = GameState.LevelSelect;
+            PopulateClientList(2);
+            if (levels[currentLevel - 1].IsCompleted)
+            {
+                levels[currentLevel].IsLocked = false;
+            }
         }
 
         protected void NavigateToSettingsMenu()
@@ -234,7 +243,6 @@ namespace HackYourSummerProjectTwo
         protected void NavigateToPrimaryGameScreen(int level)
         {
             currentLevel = level + 1;
-            PopulateClientList(2);
             currentGameState = GameState.PrimaryGameScreen;
             foreach (LevelSelector selector in levels)
             {
