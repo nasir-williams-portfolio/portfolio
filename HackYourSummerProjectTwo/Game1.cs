@@ -36,8 +36,7 @@ namespace HackYourSummerProjectTwo
         private Button playButton;
         private Button settingsButton;
         private List<LevelSelector> levels;
-        private int currentLevel;
-        private bool levelComplete;
+        private LevelSelector currentLevel;
 
         public Game1()
         {
@@ -51,8 +50,7 @@ namespace HackYourSummerProjectTwo
             notificationArrayList = new ArrayList();
             currentGameState = GameState.TitleScreen;
             levels = new List<LevelSelector>();
-            currentLevel = 0;
-            levelComplete = false;
+
 
             base.Initialize();
         }
@@ -82,17 +80,19 @@ namespace HackYourSummerProjectTwo
             {
                 if (i == 0)
                 {
-                    levels.Add(new LevelSelector(placeholderTexture, new Vector2(50, 50), false));
+                    levels.Add(new LevelSelector(placeholderTexture, new Vector2(50, 130), false));
                 }
-                if (i < 5 && i > 0)
+                else if (i < 5 && i > 0)
                 {
-                    levels.Add(new LevelSelector(placeholderTexture, new Vector2(50 + (i * 35), 50), true));
+                    levels.Add(new LevelSelector(placeholderTexture, new Vector2(50 + (150 * i), 130), true));
                 }
                 else
                 {
-                    levels.Add(new LevelSelector(placeholderTexture, new Vector2(50 + (35 * (i - 5)), 85), true));
+                    levels.Add(new LevelSelector(placeholderTexture, new Vector2(50 + (150 * (i - 5)), 280), true));
                 }
             }
+
+            currentLevel = levels[0];
         }
 
         protected override void Update(GameTime gameTime)
@@ -120,15 +120,16 @@ namespace HackYourSummerProjectTwo
                         selector.Update();
                         if (selector.BeenClicked == true)
                         {
-                            NavigateToPrimaryGameScreen(levels.IndexOf(selector));
+                            currentLevel = selector;
+                            NavigateToPrimaryGameScreen();
                         }
                     }
                     break;
                 case GameState.PrimaryGameScreen:
                     if (clientList.Count == 0)
                     {
+                        currentLevel.IsCompleted = true;
                         NavigateToLevelSelect();
-                        levels[currentLevel - 1].IsCompleted = true;
                     }
 
                     currentClient.Update();
@@ -179,7 +180,7 @@ namespace HackYourSummerProjectTwo
                     }
                     break;
                 case GameState.PrimaryGameScreen:
-                    _spriteBatch.DrawString(placeholderFont, $"Selected Level {currentLevel}", new Vector2(0, 15), Color.Black);
+                    _spriteBatch.DrawString(placeholderFont, $"Selected Level {levels.IndexOf(currentLevel) + 1}", new Vector2(0, 15), Color.Black);
                     currentClient.Draw(_spriteBatch);
                     notepadButton.Draw(_spriteBatch);
                     acceptButton.Draw(_spriteBatch);
@@ -228,11 +229,12 @@ namespace HackYourSummerProjectTwo
         protected void NavigateToLevelSelect()
         {
             currentGameState = GameState.LevelSelect;
-            PopulateClientList(2);
-            if (levels[currentLevel - 1].IsCompleted)
+
+            if (levels[levels.IndexOf(currentLevel)].IsCompleted)
             {
-                levels[currentLevel].IsLocked = false;
+                levels[levels.IndexOf(currentLevel) + 1].IsLocked = false; //this will throw an error if it runs on the 9th level
             }
+            notificationArrayList.Clear();
         }
 
         protected void NavigateToSettingsMenu()
@@ -240,13 +242,16 @@ namespace HackYourSummerProjectTwo
             currentGameState = GameState.Settings;
         }
 
-        protected void NavigateToPrimaryGameScreen(int level)
+        protected void NavigateToPrimaryGameScreen()
         {
-            currentLevel = level + 1;
+            PopulateClientList((levels.IndexOf(currentLevel) + 1) * 2);
             currentGameState = GameState.PrimaryGameScreen;
             foreach (LevelSelector selector in levels)
             {
-                selector.BeenClicked = false;
+                if (selector.BeenClicked)
+                {
+                    selector.BeenClicked = false;
+                }
             }
         }
 
