@@ -40,6 +40,7 @@ namespace HackYourSummerProjectTwo
         private LevelSelector currentLevel;
         private int assessmentMeter;
         private bool levelFinished;
+        private int minimumAssessmentNum;
 
         public Game1()
         {
@@ -136,7 +137,11 @@ namespace HackYourSummerProjectTwo
                     {
                         if (clientList.Count == 0)
                         {
-                            currentLevel.IsCompleted = true;
+                            if (assessmentMeter >= minimumAssessmentNum)
+                            {
+                                currentLevel.IsCompleted = true;
+                            }
+
                             levelFinished = true;
                         }
 
@@ -192,7 +197,7 @@ namespace HackYourSummerProjectTwo
                     }
                     break;
                 case GameState.PrimaryGameScreen:
-                    _spriteBatch.DrawString(placeholderFont, $"Selected Level: {levels.IndexOf(currentLevel) + 1}\nAssessment Meter: {assessmentMeter}", Vector2.One, Color.Black);
+                    _spriteBatch.DrawString(placeholderFont, $"Selected Level: {levels.IndexOf(currentLevel) + 1}\nAssessment Meter: {assessmentMeter}/{minimumAssessmentNum * 2}", Vector2.One, Color.Black);
                     currentClient.Draw(_spriteBatch);
                     notepadButton.Draw(_spriteBatch);
                     acceptButton.Draw(_spriteBatch);
@@ -207,6 +212,7 @@ namespace HackYourSummerProjectTwo
                     if (levelFinished)
                     {
                         returnToLevelSelect.Draw(_spriteBatch);
+                        _spriteBatch.DrawString(placeholderFont, (assessmentMeter >= minimumAssessmentNum) ? "Level Passed" : "Level Failed", new Vector2(368, 228), Color.Black);
                     }
                     break;
                 default:
@@ -287,6 +293,7 @@ namespace HackYourSummerProjectTwo
 
         public void PopulateClientList(int numberOfClients)
         {
+            minimumAssessmentNum = numberOfClients / 2;
             for (int i = 0; i < numberOfClients; i++)
             {
                 clientList.Add(new ApplicationClient(placeholderTexture, 350, 190, 100, 100, (DifficultyLevel)rng.Next(0, 3), placeholderFont));
