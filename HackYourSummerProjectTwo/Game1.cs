@@ -22,7 +22,7 @@ namespace HackYourSummerProjectTwo
 
         private Texture2D placeholderTexture;
         private SpriteFont placeholderFont;
-        private Queue clientQueue;
+        private ArrayList clientList;
         private ApplicationClient currentClient;
         private Button acceptButton;
         private Button denyButton;
@@ -68,7 +68,7 @@ namespace HackYourSummerProjectTwo
             settingsButton = new Button(placeholderTexture, 368, 260, 75, 25, Color.Gray);
             notepad = new Notepad(placeholderTexture, 200, 120, 350, 240, placeholderFont);
             rng = new Random();
-            clientQueue = new Queue();
+            clientList = new ArrayList();
 
             acceptButton.OnButtonClick += AcceptClient;
             denyButton.OnButtonClick += DenyClient;
@@ -123,7 +123,10 @@ namespace HackYourSummerProjectTwo
                     }
                     break;
                 case GameState.PrimaryGameScreen:
-
+                    if (clientList.Count == 0)
+                    {
+                        currentGameState = GameState.LevelSelect;
+                    }
                     currentClient.Update();
                     notepadButton.Update();
                     acceptButton.Update();
@@ -196,17 +199,21 @@ namespace HackYourSummerProjectTwo
         protected void AcceptClient()
         {
             notificationArrayList.Add(new Notification(placeholderFont, (currentClient.IsPhony) ? "Bad Program Accepted :(" : "Good Program Accepted"));
-            clientQueue.Dequeue();
-            clientQueue.Enqueue(new ApplicationClient(placeholderTexture, 350, 190, 100, 100, (DifficultyLevel)rng.Next(0, 3), placeholderFont));
-            currentClient = (ApplicationClient)clientQueue.Peek();
+            clientList.RemoveAt(0);
+            if (clientList.Count > 0)
+            {
+                currentClient = (ApplicationClient)clientList[0];
+            }
         }
 
         protected void DenyClient()
         {
             notificationArrayList.Add(new Notification(placeholderFont, (currentClient.IsPhony) ? "Bad Program Denied" : "Good Program Denied :("));
-            clientQueue.Dequeue();
-            clientQueue.Enqueue(new ApplicationClient(placeholderTexture, 350, 190, 100, 100, (DifficultyLevel)rng.Next(0, 3), placeholderFont));
-            currentClient = (ApplicationClient)clientQueue.Peek();
+            clientList.RemoveAt(0);
+            if (clientList.Count > 0)
+            {
+                currentClient = (ApplicationClient)clientList[0];
+            }
         }
 
         protected void ToggleNotepad()
@@ -227,9 +234,21 @@ namespace HackYourSummerProjectTwo
         protected void NavigateToPrimaryGameScreen(int level)
         {
             currentLevel = level + 1;
-            clientQueue.Enqueue(new ApplicationClient(placeholderTexture, 350, 190, 100, 100, (DifficultyLevel)level, placeholderFont));
-            currentClient = (ApplicationClient)clientQueue.Peek();
+            PopulateClientList(2);
             currentGameState = GameState.PrimaryGameScreen;
+            foreach (LevelSelector selector in levels)
+            {
+                selector.BeenClicked = false;
+            }
+        }
+
+        public void PopulateClientList(int numberOfClients)
+        {
+            for (int i = 0; i < numberOfClients; i++)
+            {
+                clientList.Add(new ApplicationClient(placeholderTexture, 350, 190, 100, 100, (DifficultyLevel)rng.Next(0, 3), placeholderFont));
+            }
+            currentClient = (ApplicationClient)clientList[0];
         }
     }
 

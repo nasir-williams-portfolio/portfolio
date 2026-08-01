@@ -14,6 +14,7 @@ namespace HackYourSummerProjectTwo
         private bool beenClicked;
 
         public bool BeenClicked { get { return beenClicked; } set { beenClicked = value; } }
+        public bool IsLocked { set { IsLocked = value; } }
 
         public LevelSelector(Texture2D sprite, Vector2 location, bool isLocked)
         {
