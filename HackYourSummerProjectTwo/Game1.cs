@@ -29,6 +29,7 @@ namespace HackYourSummerProjectTwo
         private Button denyButton;
         private Button notepadButton;
         private Button returnToLevelSelect;
+        private Button levelReset;
         private Notepad notepad;
         private Random rng;
 
@@ -71,7 +72,10 @@ namespace HackYourSummerProjectTwo
             notepadButton = new Button(placeholderTexture, 750, 50, 20, 20, Color.White);
             playButton = new Button(placeholderTexture, 368, 228, 75, 25, Color.White);
             settingsButton = new Button(placeholderTexture, 368, 260, 75, 25, Color.Gray);
-            returnToLevelSelect = new Button(placeholderTexture, 368, 228, 75, 25, Color.Pink);
+
+            returnToLevelSelect = new Button(placeholderTexture, 445, 320, 100, 25, Color.LightPink);
+            levelReset = new Button(placeholderTexture, 225, 320, 100, 25, Color.LightBlue);
+
             notepad = new Notepad(placeholderTexture, 200, 120, 300, 240, placeholderFont);
             rng = new Random();
             clientList = new ArrayList();
@@ -82,6 +86,7 @@ namespace HackYourSummerProjectTwo
             playButton.OnButtonClick += NavigateToLevelSelect;
             returnToLevelSelect.OnButtonClick += NavigateToLevelSelect;
             settingsButton.OnButtonClick += NavigateToSettingsMenu;
+            levelReset.OnButtonClick += NavigateToPrimaryGameScreen;
 
             for (int i = 0; i < 10; i++)
             {
@@ -154,6 +159,7 @@ namespace HackYourSummerProjectTwo
                     else
                     {
                         returnToLevelSelect.Update();
+                        levelReset.Update();
                     }
 
                     for (int i = 0; i < notificationArrayList.Count; i++)
@@ -211,8 +217,10 @@ namespace HackYourSummerProjectTwo
 
                     if (levelFinished)
                     {
+                        _spriteBatch.Draw(placeholderTexture, new Rectangle(175, 77, 450, 275), new Color(Color.Gray, 0.75f));
                         returnToLevelSelect.Draw(_spriteBatch);
-                        _spriteBatch.DrawString(placeholderFont, (assessmentMeter >= minimumAssessmentNum) ? "Level Passed" : "Level Failed", new Vector2(368, 228), Color.Black);
+                        levelReset.Draw(_spriteBatch);
+                        _spriteBatch.DrawString(placeholderFont, (assessmentMeter >= minimumAssessmentNum) ? "Level Passed" : "Level Failed", new Vector2(175, 77), Color.Black);
                     }
                     break;
                 default:
