@@ -7,11 +7,17 @@ namespace HackYourSummerProjectTwo
     internal class Notepad
     {
         private Texture2D sprite;
-        private Rectangle destinationRectangle;
-        private MouseState currMouse;
         private SpriteFont font;
+        private Rectangle destinationRectangle;
+        private Rectangle cursor;
+        private MouseState currMouse;
+        private MouseState prevMouse;
+        private Vector2 clickLocation;
+        private Vector2 difference;
+        private Vector2 previousLocation;
         private bool isShowing;
         private string applicationText;
+        private bool clickedInRectangle;
 
         public bool IsShowing { get { return isShowing; } set { isShowing = value; } }
 
@@ -26,13 +32,32 @@ namespace HackYourSummerProjectTwo
         public void Update()
         {
             currMouse = Mouse.GetState();
-            Rectangle cursor = new Rectangle(currMouse.X, currMouse.Y, 1, 1);
+            cursor = new Rectangle(currMouse.X, currMouse.Y, 1, 1);
 
-            if (currMouse.LeftButton == ButtonState.Pressed && destinationRectangle.Contains(cursor))
+            if (currMouse.LeftButton == ButtonState.Pressed)
             {
-                destinationRectangle.X = cursor.X - 50;
-                destinationRectangle.Y = cursor.Y - 50;
+                if (prevMouse.LeftButton == ButtonState.Released)
+                {
+                    if (destinationRectangle.Contains(cursor))
+                    {
+                        clickLocation = new Vector2(cursor.X, cursor.Y);
+                        previousLocation = new Vector2(destinationRectangle.X, destinationRectangle.Y);
+                        clickedInRectangle = true;
+                    }
+                    else
+                    {
+                        clickedInRectangle = false;
+                    }
+                }
+                else if (clickedInRectangle == true)
+                {
+                    difference = new Vector2(currMouse.X - clickLocation.X, currMouse.Y - clickLocation.Y);
+                    destinationRectangle.X = (int)(difference.X + previousLocation.X);
+                    destinationRectangle.Y = (int)(difference.Y + previousLocation.Y);
+                }
             }
+
+            prevMouse = currMouse;
         }
 
         public void Draw(SpriteBatch sb)
