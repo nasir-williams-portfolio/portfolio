@@ -71,7 +71,7 @@ namespace HackYourSummerProjectTwo
             playButton = new Button(placeholderTexture, 368, 228, 75, 25, Color.White);
             settingsButton = new Button(placeholderTexture, 368, 260, 75, 25, Color.Gray);
             returnToLevelSelect = new Button(placeholderTexture, 368, 228, 75, 25, Color.Pink);
-            notepad = new Notepad(placeholderTexture, 200, 120, 350, 240, placeholderFont);
+            notepad = new Notepad(placeholderTexture, 200, 120, 300, 240, placeholderFont);
             rng = new Random();
             clientList = new ArrayList();
 

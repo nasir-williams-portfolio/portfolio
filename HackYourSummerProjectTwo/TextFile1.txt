@@ -1,15 +1,16 @@
 ﻿Changes I'd like to add
 [X] some kind of a progress bar that goes up and down based on whether or not you correctly assessed the program
 [X] title screen, main menu, and level select
-[ ] tutorial level
-[ ] fail and pass level screen
+[X] You have to click a button to get back to the level selector after passing or failing a level
+[X] the level's come locked and as you complete them, more get unlocked
 [X] a set amount of programs to go through in a single level
-[ ] switching between tabs in the notepad
+[X] switching between tabs in the notepad
+
 [ ] a specific amount of correct assessments to reach per level to complete the level
 [ ] a timer for if you don't reach the minimum amount of correct assessments in a level
 [ ] your timer goes up and down when your assessment is right and wrong, respectively
 [ ] a combo indicator
-[X] the level's come locked and as you complete them, more get unlocked
 [ ] achievements
 [ ] general gameplay statistics
-[X] You have to click a button to get back to the level selector after passing or failing a level
+[ ] tutorial level
+[ ] fail and pass level screen
