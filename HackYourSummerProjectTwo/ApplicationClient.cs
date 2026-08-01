@@ -22,7 +22,6 @@ namespace HackYourSummerProjectTwo
         private string tooltipText;
         private MouseState currMouse;
         private MouseState prevMouse;
-        private Rectangle cursor;
         private Color color;
         private bool isShowingProperties;
         private bool isPhony;
@@ -71,11 +70,10 @@ namespace HackYourSummerProjectTwo
         public void Update()
         {
             currMouse = Mouse.GetState();
-            cursor = new Rectangle(currMouse.X, currMouse.Y, 1, 1);
 
             if (currMouse.RightButton == ButtonState.Pressed && prevMouse.RightButton == ButtonState.Released)
             {
-                if (clientRectangle.Contains(cursor))
+                if (clientRectangle.Contains(currMouse.Position))
                 {
                     isShowingProperties = !isShowingProperties;
                 }
@@ -85,7 +83,7 @@ namespace HackYourSummerProjectTwo
                 }
             }
 
-            if (clientRectangle.Contains(cursor))
+            if (clientRectangle.Contains(currMouse.Position))
             {
                 timer++;
                 if (timer == 49)

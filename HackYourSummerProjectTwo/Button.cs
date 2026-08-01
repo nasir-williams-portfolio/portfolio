@@ -24,11 +24,10 @@ namespace HackYourSummerProjectTwo
         public void Update()
         {
             currMouse = Mouse.GetState();
-            Rectangle cursor = new Rectangle(currMouse.X, currMouse.Y, 1, 1);
 
             if (currMouse.LeftButton == ButtonState.Pressed && prevMouse.LeftButton == ButtonState.Released)
             {
-                if (destinationRectangle.Contains(cursor) && OnButtonClick != null)
+                if (destinationRectangle.Contains(currMouse.Position) && OnButtonClick != null)
                 {
                     OnButtonClick();
                 }

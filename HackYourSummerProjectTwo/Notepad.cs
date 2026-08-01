@@ -9,7 +9,6 @@ namespace HackYourSummerProjectTwo
         private Texture2D sprite;
         private SpriteFont font;
         private Rectangle destinationRectangle;
-        private Rectangle cursor;
         private MouseState currMouse;
         private MouseState prevMouse;
         private Vector2 clickLocation;
@@ -32,15 +31,14 @@ namespace HackYourSummerProjectTwo
         public void Update()
         {
             currMouse = Mouse.GetState();
-            cursor = new Rectangle(currMouse.X, currMouse.Y, 1, 1);
 
             if (currMouse.LeftButton == ButtonState.Pressed)
             {
                 if (prevMouse.LeftButton == ButtonState.Released)
                 {
-                    if (destinationRectangle.Contains(cursor))
+                    if (destinationRectangle.Contains(currMouse.Position))
                     {
-                        clickLocation = new Vector2(cursor.X, cursor.Y);
+                        clickLocation = new Vector2(currMouse.Position.X, currMouse.Position.Y);
                         previousLocation = new Vector2(destinationRectangle.X, destinationRectangle.Y);
                         clickedInRectangle = true;
                     }

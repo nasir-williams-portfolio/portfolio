@@ -9,3 +9,10 @@
 - a timer for if you don't reach the minimum amount of correct assessments in a level
 - your timer goes up and down when your assessment is right and wrong, respectively
 - a combo indicator
+- the level's come locked and as you complete them, more get unlocked
+- achievements
+- general gameplay statistics
+
+Changes that have been added from the above list
+	- level select
+	- 
