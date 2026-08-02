@@ -210,7 +210,6 @@ namespace HackYourSummerProjectTwo
             switch (currentGameState)
             {
                 case GameState.TitleScreen:
-
                     break;
                 case GameState.MainMenu:
                     playButton.Draw(_spriteBatch);
