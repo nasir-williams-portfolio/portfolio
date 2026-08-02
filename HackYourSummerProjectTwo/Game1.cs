@@ -21,7 +21,7 @@ namespace HackYourSummerProjectTwo
         #region Monogame Specific Variables
         private GraphicsDeviceManager _graphics;
         private SpriteBatch _spriteBatch;
-        private Texture2D placeholderTexture, animatedBackgroundSpriteTexture, cursorTexture;
+        private Texture2D placeholderTexture, animatedBackgroundTexture, animatedForegroundTexture, cursorTexture;
         private SpriteFont placeholderFont;
         #endregion
 
@@ -74,7 +74,8 @@ namespace HackYourSummerProjectTwo
             _spriteBatch = new SpriteBatch(GraphicsDevice);
             placeholderTexture = Content.Load<Texture2D>("pixel");
             placeholderFont = Content.Load<SpriteFont>("arial12");
-            animatedBackgroundSpriteTexture = Content.Load<Texture2D>("The Night Shift- Title Card v2");
+            animatedBackgroundTexture = Content.Load<Texture2D>("The Night Shift- Title Card v2");
+            animatedForegroundTexture = Content.Load<Texture2D>("The Night Shift- Title Text v2");
             cursorTexture = Content.Load<Texture2D>("The Night Shift- Cursor");
 
             acceptButton = new Button(placeholderTexture, 275, 380, 75, 25, Color.Green);
@@ -87,7 +88,7 @@ namespace HackYourSummerProjectTwo
 
             notepad = new Notepad(placeholderTexture, 200, 120, 300, 240, placeholderFont);
             rng = new Random();
-            animatedBackground = new AnimatedBackground(animatedBackgroundSpriteTexture);
+            animatedBackground = new AnimatedBackground(animatedBackgroundTexture, animatedForegroundTexture);
             cursor = new Cursor(cursorTexture);
             clientList = new ArrayList();
 
@@ -131,7 +132,7 @@ namespace HackYourSummerProjectTwo
             {
                 case GameState.TitleScreen:
                     animatedBackground.Update(gameTime);
-                    if (Keyboard.GetState().GetPressedKeyCount() > 0)
+                    if (animatedBackground.ForegroundOpacity == 0)
                     {
                         currentGameState = GameState.MainMenu;
                     }
@@ -200,14 +201,16 @@ namespace HackYourSummerProjectTwo
 
         protected override void Draw(GameTime gameTime)
         {
-            GraphicsDevice.Clear(Color.CornflowerBlue);
+            GraphicsDevice.Clear(Color.Black);
 
             _spriteBatch.Begin(SpriteSortMode.Deferred, null, SamplerState.PointClamp, null, null);
+
+            animatedBackground.Draw(_spriteBatch);
 
             switch (currentGameState)
             {
                 case GameState.TitleScreen:
-                    animatedBackground.Draw(_spriteBatch);
+
                     break;
                 case GameState.MainMenu:
                     playButton.Draw(_spriteBatch);
