@@ -14,3 +14,5 @@
 [ ] achievements
 [ ] general gameplay statistics
 [ ] tutorial level
+
+**ctrl+f "MAYDAY" for things that might go bump in the night**

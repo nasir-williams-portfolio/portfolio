@@ -30,19 +30,17 @@ namespace HackYourSummerProjectTwo
         private Button notepadButton;
         private Button returnToLevelSelect;
         private Button levelReset;
+        private Button playButton;
+        private Button settingsButton;
         private Notepad notepad;
         private Random rng;
         private ArrayList notificationArrayList;
-        private GameState currentGameState;
-        private Button playButton;
-        private Button settingsButton;
         private List<LevelSelector> levels;
         private LevelSelector currentLevel;
-
+        private GameState currentGameState;
         private int assessmentMeter;
         private bool levelFinished;
         private int minimumAssessmentNum;
-
         private int timer;
         private int levelTimeAllotment;
 
@@ -60,7 +58,6 @@ namespace HackYourSummerProjectTwo
             levels = new List<LevelSelector>();
             assessmentMeter = 0;
             levelFinished = false;
-
             timer = 0;
 
             base.Initialize();
@@ -191,7 +188,7 @@ namespace HackYourSummerProjectTwo
         {
             GraphicsDevice.Clear(Color.CornflowerBlue);
 
-            _spriteBatch.Begin();
+            _spriteBatch.Begin(SpriteSortMode.Deferred, null, SamplerState.PointClamp, null, null);
 
             switch (currentGameState)
             {
@@ -284,7 +281,7 @@ namespace HackYourSummerProjectTwo
 
             if (levels[levels.IndexOf(currentLevel)].IsCompleted)
             {
-                levels[levels.IndexOf(currentLevel) + 1].IsLocked = false; //this will throw an error if it runs on the 9th level
+                levels[levels.IndexOf(currentLevel) + 1].IsLocked = false; //MAYDAY: this will throw an error if it runs on the 9th level
             }
             notificationArrayList.Clear();
         }
@@ -322,5 +319,4 @@ namespace HackYourSummerProjectTwo
             currentClient = (ApplicationClient)clientList[0];
         }
     }
-
 }
