@@ -18,37 +18,43 @@ namespace HackYourSummerProjectTwo
 
     public class Game1 : Game
     {
+        #region Monogame Specific Variables
         private GraphicsDeviceManager _graphics;
         private SpriteBatch _spriteBatch;
-
-        private Texture2D placeholderTexture;
+        private Texture2D placeholderTexture, animatedBackgroundSpriteTexture, cursorTexture;
         private SpriteFont placeholderFont;
-        private ArrayList clientList;
+        #endregion
+
+        #region Homebrew Type Variables
         private ApplicationClient currentClient;
-        private Button acceptButton;
-        private Button denyButton;
-        private Button notepadButton;
-        private Button returnToLevelSelect;
-        private Button levelReset;
-        private Button playButton;
-        private Button settingsButton;
+        private Button acceptButton, denyButton, notepadButton, returnToLevelSelectButton, levelResetButton, playButton, settingsButton;
         private Notepad notepad;
-        private Random rng;
-        private ArrayList notificationArrayList;
-        private List<LevelSelector> levels;
         private LevelSelector currentLevel;
         private GameState currentGameState;
+        private AnimatedBackground animatedBackground;
+        private Cursor cursor;
+        #endregion
+
+        #region Container Variables
+        private ArrayList clientList;
+        private ArrayList notificationArrayList;
+        private List<LevelSelector> levels;
+        #endregion
+
+        #region Miscellaneous (Mostly Primitive) Variables
+        private Random rng;
         private int assessmentMeter;
         private bool levelFinished;
         private int minimumAssessmentNum;
         private int timer;
         private int levelTimeAllotment;
+        #endregion
 
         public Game1()
         {
             _graphics = new GraphicsDeviceManager(this);
             Content.RootDirectory = "Content";
-            IsMouseVisible = true;
+            IsMouseVisible = false;
         }
 
         protected override void Initialize()
@@ -68,27 +74,32 @@ namespace HackYourSummerProjectTwo
             _spriteBatch = new SpriteBatch(GraphicsDevice);
             placeholderTexture = Content.Load<Texture2D>("pixel");
             placeholderFont = Content.Load<SpriteFont>("arial12");
+            animatedBackgroundSpriteTexture = Content.Load<Texture2D>("The Night Shift- Title Card v2");
+            cursorTexture = Content.Load<Texture2D>("The Night Shift- Cursor");
 
             acceptButton = new Button(placeholderTexture, 275, 380, 75, 25, Color.Green);
             denyButton = new Button(placeholderTexture, 450, 380, 75, 25, Color.Red);
             notepadButton = new Button(placeholderTexture, 750, 50, 20, 20, Color.White);
             playButton = new Button(placeholderTexture, 368, 228, 75, 25, Color.White);
             settingsButton = new Button(placeholderTexture, 368, 260, 75, 25, Color.Gray);
-
-            returnToLevelSelect = new Button(placeholderTexture, 445, 320, 100, 25, Color.LightPink);
-            levelReset = new Button(placeholderTexture, 225, 320, 100, 25, Color.LightBlue);
+            returnToLevelSelectButton = new Button(placeholderTexture, 445, 320, 100, 25, Color.LightPink);
+            levelResetButton = new Button(placeholderTexture, 225, 320, 100, 25, Color.LightBlue);
 
             notepad = new Notepad(placeholderTexture, 200, 120, 300, 240, placeholderFont);
             rng = new Random();
+            animatedBackground = new AnimatedBackground(animatedBackgroundSpriteTexture);
+            cursor = new Cursor(cursorTexture);
             clientList = new ArrayList();
 
+            #region Button Subscriptions
             acceptButton.OnButtonClick += AcceptClient;
             denyButton.OnButtonClick += DenyClient;
             notepadButton.OnButtonClick += ToggleNotepad;
             playButton.OnButtonClick += NavigateToLevelSelect;
-            returnToLevelSelect.OnButtonClick += NavigateToLevelSelect;
+            returnToLevelSelectButton.OnButtonClick += NavigateToLevelSelect;
             settingsButton.OnButtonClick += NavigateToSettingsMenu;
-            levelReset.OnButtonClick += NavigateToPrimaryGameScreen;
+            levelResetButton.OnButtonClick += NavigateToPrimaryGameScreen;
+            #endregion
 
             for (int i = 0; i < 10; i++)
             {
@@ -114,9 +125,12 @@ namespace HackYourSummerProjectTwo
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
 
+            cursor.Update();
+
             switch (currentGameState)
             {
                 case GameState.TitleScreen:
+                    animatedBackground.Update(gameTime);
                     if (Keyboard.GetState().GetPressedKeyCount() > 0)
                     {
                         currentGameState = GameState.MainMenu;
@@ -162,8 +176,8 @@ namespace HackYourSummerProjectTwo
                     }
                     else
                     {
-                        returnToLevelSelect.Update();
-                        levelReset.Update();
+                        returnToLevelSelectButton.Update();
+                        levelResetButton.Update();
                     }
 
 
@@ -193,7 +207,7 @@ namespace HackYourSummerProjectTwo
             switch (currentGameState)
             {
                 case GameState.TitleScreen:
-                    _spriteBatch.DrawString(placeholderFont, "Welcome to The Night Shift", new Vector2(302, 240), Color.Black);
+                    animatedBackground.Draw(_spriteBatch);
                     break;
                 case GameState.MainMenu:
                     playButton.Draw(_spriteBatch);
@@ -224,14 +238,16 @@ namespace HackYourSummerProjectTwo
                     if (levelFinished || (levelTimeAllotment - (timer / 60) == 0))
                     {
                         _spriteBatch.Draw(placeholderTexture, new Rectangle(175, 77, 450, 275), new Color(Color.Gray, 0.75f));
-                        returnToLevelSelect.Draw(_spriteBatch);
-                        levelReset.Draw(_spriteBatch);
+                        returnToLevelSelectButton.Draw(_spriteBatch);
+                        levelResetButton.Draw(_spriteBatch);
                         _spriteBatch.DrawString(placeholderFont, (assessmentMeter >= minimumAssessmentNum) ? "Level Passed" : "Level Failed", new Vector2(175, 77), Color.Black);
                     }
                     break;
                 default:
                     break;
             }
+
+            cursor.Draw(_spriteBatch);
 
             _spriteBatch.End();
 
