@@ -44,6 +44,7 @@ namespace HackYourSummerProjectTwo
         private int minimumAssessmentNum;
 
         private int timer;
+        private int levelTimeAllotment;
 
         public Game1()
         {
@@ -145,9 +146,8 @@ namespace HackYourSummerProjectTwo
                 case GameState.PrimaryGameScreen:
                     if (levelFinished == false)
                     {
-                        if (clientList.Count == 0 || (10 - (timer / 60) == 0))
+                        if (clientList.Count == 0 || (levelTimeAllotment - (timer / 60) == 0))
                         {
-                            System.Diagnostics.Debug.WriteLine("Entered");
                             if (assessmentMeter >= minimumAssessmentNum)
                             {
                                 currentLevel.IsCompleted = true;
@@ -211,7 +211,7 @@ namespace HackYourSummerProjectTwo
                     }
                     break;
                 case GameState.PrimaryGameScreen:
-                    _spriteBatch.DrawString(placeholderFont, $"Selected Level: {levels.IndexOf(currentLevel) + 1}\nAssessment Meter: {assessmentMeter}/{minimumAssessmentNum * 2}\n{10 - (timer / 60)}", Vector2.One, Color.Black);
+                    _spriteBatch.DrawString(placeholderFont, $"Selected Level: {levels.IndexOf(currentLevel) + 1}\nAssessment Meter: {assessmentMeter}/{minimumAssessmentNum * 2}\n{levelTimeAllotment - (timer / 60)}", Vector2.One, Color.Black);
 
                     currentClient.Draw(_spriteBatch);
                     notepadButton.Draw(_spriteBatch);
@@ -224,7 +224,7 @@ namespace HackYourSummerProjectTwo
                         notification.Draw(_spriteBatch);
                     }
 
-                    if (levelFinished || (10 - (timer / 60) == 0))
+                    if (levelFinished || (levelTimeAllotment - (timer / 60) == 0))
                     {
                         _spriteBatch.Draw(placeholderTexture, new Rectangle(175, 77, 450, 275), new Color(Color.Gray, 0.75f));
                         returnToLevelSelect.Draw(_spriteBatch);
@@ -300,6 +300,7 @@ namespace HackYourSummerProjectTwo
             levelFinished = false;
             assessmentMeter = 0;
             PopulateClientList((levels.IndexOf(currentLevel) + 1) * 2);
+            levelTimeAllotment = 10 + (clientList.Count * 3);
             currentGameState = GameState.PrimaryGameScreen;
             foreach (LevelSelector selector in levels)
             {
