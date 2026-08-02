@@ -145,7 +145,7 @@ namespace HackYourSummerProjectTwo
                 case GameState.PrimaryGameScreen:
                     if (levelFinished == false)
                     {
-                        if (clientList.Count == 0 || (20 - (timer / 60) == 0))
+                        if (clientList.Count == 0 || (10 - (timer / 60) == 0))
                         {
                             System.Diagnostics.Debug.WriteLine("Entered");
                             if (assessmentMeter >= minimumAssessmentNum)
@@ -211,7 +211,7 @@ namespace HackYourSummerProjectTwo
                     }
                     break;
                 case GameState.PrimaryGameScreen:
-                    _spriteBatch.DrawString(placeholderFont, $"Selected Level: {levels.IndexOf(currentLevel) + 1}\nAssessment Meter: {assessmentMeter}/{minimumAssessmentNum * 2}\n{20 - (timer / 60)}", Vector2.One, Color.Black);
+                    _spriteBatch.DrawString(placeholderFont, $"Selected Level: {levels.IndexOf(currentLevel) + 1}\nAssessment Meter: {assessmentMeter}/{minimumAssessmentNum * 2}\n{10 - (timer / 60)}", Vector2.One, Color.Black);
 
                     currentClient.Draw(_spriteBatch);
                     notepadButton.Draw(_spriteBatch);
@@ -224,7 +224,7 @@ namespace HackYourSummerProjectTwo
                         notification.Draw(_spriteBatch);
                     }
 
-                    if (levelFinished || (20 - (timer / 60) == 0))
+                    if (levelFinished || (10 - (timer / 60) == 0))
                     {
                         _spriteBatch.Draw(placeholderTexture, new Rectangle(175, 77, 450, 275), new Color(Color.Gray, 0.75f));
                         returnToLevelSelect.Draw(_spriteBatch);
@@ -245,6 +245,7 @@ namespace HackYourSummerProjectTwo
         {
             notificationArrayList.Add(new Notification(placeholderFont, (currentClient.IsPhony) ? "Bad Program Accepted :(" : "Good Program Accepted"));
             assessmentMeter += (currentClient.IsPhony) ? -1 : 1;
+            timer += (currentClient.IsPhony) ? 60 : -60;
             if (clientList.Count > 0)
             {
                 clientList.RemoveAt(0);
@@ -260,6 +261,7 @@ namespace HackYourSummerProjectTwo
         {
             notificationArrayList.Add(new Notification(placeholderFont, (currentClient.IsPhony) ? "Bad Program Denied" : "Good Program Denied :("));
             assessmentMeter += (currentClient.IsPhony) ? 1 : -1;
+            timer += (currentClient.IsPhony) ? -60 : 60;
             if (clientList.Count > 0)
             {
                 clientList.RemoveAt(0);
@@ -310,6 +312,7 @@ namespace HackYourSummerProjectTwo
 
         public void PopulateClientList(int numberOfClients)
         {
+            clientList.Clear();
             minimumAssessmentNum = numberOfClients / 2;
             for (int i = 0; i < numberOfClients; i++)
             {
