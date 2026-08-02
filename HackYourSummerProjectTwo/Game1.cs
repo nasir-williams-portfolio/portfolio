@@ -32,16 +32,18 @@ namespace HackYourSummerProjectTwo
         private Button levelReset;
         private Notepad notepad;
         private Random rng;
-
         private ArrayList notificationArrayList;
         private GameState currentGameState;
         private Button playButton;
         private Button settingsButton;
         private List<LevelSelector> levels;
         private LevelSelector currentLevel;
+
         private int assessmentMeter;
         private bool levelFinished;
         private int minimumAssessmentNum;
+
+        private int timer;
 
         public Game1()
         {
@@ -57,6 +59,8 @@ namespace HackYourSummerProjectTwo
             levels = new List<LevelSelector>();
             assessmentMeter = 0;
             levelFinished = false;
+
+            timer = 0;
 
             base.Initialize();
         }
@@ -136,12 +140,14 @@ namespace HackYourSummerProjectTwo
                             NavigateToPrimaryGameScreen();
                         }
                     }
+                    timer = 0;
                     break;
                 case GameState.PrimaryGameScreen:
                     if (levelFinished == false)
                     {
-                        if (clientList.Count == 0)
+                        if (clientList.Count == 0 || (20 - (timer / 60) == 0))
                         {
+                            System.Diagnostics.Debug.WriteLine("Entered");
                             if (assessmentMeter >= minimumAssessmentNum)
                             {
                                 currentLevel.IsCompleted = true;
@@ -155,12 +161,14 @@ namespace HackYourSummerProjectTwo
                         acceptButton.Update();
                         denyButton.Update();
                         notepad.Update();
+                        timer++;
                     }
                     else
                     {
                         returnToLevelSelect.Update();
                         levelReset.Update();
                     }
+
 
                     for (int i = 0; i < notificationArrayList.Count; i++)
                     {
@@ -188,7 +196,7 @@ namespace HackYourSummerProjectTwo
             switch (currentGameState)
             {
                 case GameState.TitleScreen:
-                    _spriteBatch.DrawString(placeholderFont, "Welcome to Midnight at Club Key", new Vector2(400 - (placeholderFont.MeasureString("Welcome to Midnight at Club Key").X / 2), 240), Color.Black);
+                    _spriteBatch.DrawString(placeholderFont, "Welcome to The Night Shift", new Vector2(302, 240), Color.Black);
                     break;
                 case GameState.MainMenu:
                     playButton.Draw(_spriteBatch);
@@ -203,7 +211,8 @@ namespace HackYourSummerProjectTwo
                     }
                     break;
                 case GameState.PrimaryGameScreen:
-                    _spriteBatch.DrawString(placeholderFont, $"Selected Level: {levels.IndexOf(currentLevel) + 1}\nAssessment Meter: {assessmentMeter}/{minimumAssessmentNum * 2}", Vector2.One, Color.Black);
+                    _spriteBatch.DrawString(placeholderFont, $"Selected Level: {levels.IndexOf(currentLevel) + 1}\nAssessment Meter: {assessmentMeter}/{minimumAssessmentNum * 2}\n{20 - (timer / 60)}", Vector2.One, Color.Black);
+
                     currentClient.Draw(_spriteBatch);
                     notepadButton.Draw(_spriteBatch);
                     acceptButton.Draw(_spriteBatch);
@@ -215,7 +224,7 @@ namespace HackYourSummerProjectTwo
                         notification.Draw(_spriteBatch);
                     }
 
-                    if (levelFinished)
+                    if (levelFinished || (20 - (timer / 60) == 0))
                     {
                         _spriteBatch.Draw(placeholderTexture, new Rectangle(175, 77, 450, 275), new Color(Color.Gray, 0.75f));
                         returnToLevelSelect.Draw(_spriteBatch);
@@ -239,7 +248,7 @@ namespace HackYourSummerProjectTwo
             if (clientList.Count > 0)
             {
                 clientList.RemoveAt(0);
-                System.Diagnostics.Debug.WriteLine(clientList.Count);
+
                 if (clientList.Count > 0)
                 {
                     currentClient = (ApplicationClient)clientList[0];
@@ -254,7 +263,6 @@ namespace HackYourSummerProjectTwo
             if (clientList.Count > 0)
             {
                 clientList.RemoveAt(0);
-                System.Diagnostics.Debug.WriteLine(clientList.Count);
                 if (clientList.Count > 0)
                 {
                     currentClient = (ApplicationClient)clientList[0];
@@ -286,6 +294,7 @@ namespace HackYourSummerProjectTwo
 
         protected void NavigateToPrimaryGameScreen()
         {
+            timer = 0;
             levelFinished = false;
             assessmentMeter = 0;
             PopulateClientList((levels.IndexOf(currentLevel) + 1) * 2);
