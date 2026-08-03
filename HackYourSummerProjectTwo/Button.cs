@@ -10,8 +10,10 @@ namespace HackYourSummerProjectTwo
         public OnButtonClickDelegate OnButtonClick;
         private Texture2D sprite;
         private Rectangle destinationRectangle;
+        private Rectangle sourceRectangle;
         private MouseState currMouse;
         private MouseState prevMouse;
+        private Vector2 clickLocation;
         private Color color;
 
         public Button(Texture2D sprite, int x, int y, int width, int height, Color color)
@@ -19,18 +21,37 @@ namespace HackYourSummerProjectTwo
             this.sprite = sprite;
             this.color = color;
             destinationRectangle = new Rectangle(x, y, width, height);
+            sourceRectangle = new Rectangle(0, 0, sprite.Width, sprite.Height / 2);
+            clickLocation = new Vector2();
         }
 
         public void Update()
         {
             currMouse = Mouse.GetState();
 
-            if (currMouse.LeftButton == ButtonState.Pressed && prevMouse.LeftButton == ButtonState.Released)
+            if (currMouse.LeftButton == ButtonState.Pressed)
             {
-                if (destinationRectangle.Contains(currMouse.Position) && OnButtonClick != null)
+                if (prevMouse.LeftButton == ButtonState.Released)
                 {
-                    OnButtonClick();
+                    clickLocation = currMouse.Position.ToVector2();
+                    if (destinationRectangle.Contains(currMouse.Position) && OnButtonClick != null)
+                    {
+                        OnButtonClick();
+                    }
                 }
+
+                if (destinationRectangle.Contains(clickLocation))
+                {
+                    sourceRectangle.Y = 14;
+                }
+                else
+                {
+                    sourceRectangle.Y = 0;
+                }
+            }
+            else
+            {
+                sourceRectangle.Y = 0;
             }
 
             prevMouse = currMouse;
@@ -38,7 +59,7 @@ namespace HackYourSummerProjectTwo
 
         public void Draw(SpriteBatch sb)
         {
-            sb.Draw(sprite, destinationRectangle, color);
+            sb.Draw(sprite, destinationRectangle, sourceRectangle, color);
         }
     }
 }

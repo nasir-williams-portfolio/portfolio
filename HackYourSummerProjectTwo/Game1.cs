@@ -21,18 +21,19 @@ namespace HackYourSummerProjectTwo
         #region Monogame Specific Variables
         private GraphicsDeviceManager _graphics;
         private SpriteBatch _spriteBatch;
-        private Texture2D placeholderTexture, animatedBackgroundTexture, animatedForegroundTexture, cursorTexture;
+        private Texture2D placeholderTexture, levelSelectIconTexture, levelSelectMenuTexture, animatedBackgroundTexture, animatedForegroundTexture, cursorTexture, gameModeWindowTexture, buttonTexture;
         private SpriteFont placeholderFont;
         #endregion
 
         #region Homebrew Type Variables
         private ApplicationClient currentClient;
-        private Button acceptButton, denyButton, notepadButton, returnToLevelSelectButton, levelResetButton, playButton, settingsButton;
+        private Button acceptButton, denyButton, notepadButton, returnToLevelSelectButton, levelResetButton;
         private Notepad notepad;
         private LevelSelector currentLevel;
         private GameState currentGameState;
         private AnimatedBackground animatedBackground;
         private Cursor cursor;
+        private GameModeWindow programModeWindow;
         #endregion
 
         #region Container Variables
@@ -72,19 +73,25 @@ namespace HackYourSummerProjectTwo
         protected override void LoadContent()
         {
             _spriteBatch = new SpriteBatch(GraphicsDevice);
+
+            #region Texture Assignments
             placeholderTexture = Content.Load<Texture2D>("pixel");
             placeholderFont = Content.Load<SpriteFont>("arial12");
             animatedBackgroundTexture = Content.Load<Texture2D>("The Night Shift- Title Card v2");
             animatedForegroundTexture = Content.Load<Texture2D>("The Night Shift- Title Text v2");
             cursorTexture = Content.Load<Texture2D>("The Night Shift- Cursor");
+            gameModeWindowTexture = Content.Load<Texture2D>("The Night Shift- Game Mode Window");
+            buttonTexture = Content.Load<Texture2D>("The Night Shift- Buttons");
+            levelSelectIconTexture = Content.Load<Texture2D>("The Night Shift- Level Select Icon");
+            levelSelectMenuTexture = Content.Load<Texture2D>("The Night Shift- Level Select Menu");
+            #endregion
 
             acceptButton = new Button(placeholderTexture, 275, 380, 75, 25, Color.Green);
             denyButton = new Button(placeholderTexture, 450, 380, 75, 25, Color.Red);
             notepadButton = new Button(placeholderTexture, 750, 50, 20, 20, Color.White);
-            playButton = new Button(placeholderTexture, 368, 228, 75, 25, Color.White);
-            settingsButton = new Button(placeholderTexture, 368, 260, 75, 25, Color.Gray);
             returnToLevelSelectButton = new Button(placeholderTexture, 445, 320, 100, 25, Color.LightPink);
             levelResetButton = new Button(placeholderTexture, 225, 320, 100, 25, Color.LightBlue);
+            programModeWindow = new GameModeWindow(gameModeWindowTexture, buttonTexture, new Vector2(253, 67));
 
             notepad = new Notepad(placeholderTexture, 200, 120, 300, 240, placeholderFont);
             rng = new Random();
@@ -96,28 +103,25 @@ namespace HackYourSummerProjectTwo
             acceptButton.OnButtonClick += AcceptClient;
             denyButton.OnButtonClick += DenyClient;
             notepadButton.OnButtonClick += ToggleNotepad;
-            playButton.OnButtonClick += NavigateToLevelSelect;
             returnToLevelSelectButton.OnButtonClick += NavigateToLevelSelect;
-            settingsButton.OnButtonClick += NavigateToSettingsMenu;
             levelResetButton.OnButtonClick += NavigateToPrimaryGameScreen;
+
+            programModeWindow.Buttons[0].OnButtonClick += NavigateToLevelSelect;
             #endregion
 
             for (int i = 0; i < 10; i++)
             {
-                if (i == 0)
+                if (i < 5)
                 {
-                    levels.Add(new LevelSelector(placeholderTexture, new Vector2(50, 130), false));
-                }
-                else if (i < 5 && i > 0)
-                {
-                    levels.Add(new LevelSelector(placeholderTexture, new Vector2(50 + (150 * i), 130), true));
+                    levels.Add(new LevelSelector(levelSelectIconTexture, new Vector2(189 + (i * 90), 165), true));
                 }
                 else
                 {
-                    levels.Add(new LevelSelector(placeholderTexture, new Vector2(50 + (150 * (i - 5)), 280), true));
+                    levels.Add(new LevelSelector(levelSelectIconTexture, new Vector2(189 + ((i - 5) * 90), 255), true));
                 }
             }
 
+            levels[0].IsLocked = false;
             currentLevel = levels[0];
         }
 
@@ -138,8 +142,7 @@ namespace HackYourSummerProjectTwo
                     }
                     break;
                 case GameState.MainMenu:
-                    playButton.Update();
-                    settingsButton.Update();
+                    programModeWindow.Update();
                     break;
                 case GameState.Settings:
                     break;
@@ -212,12 +215,12 @@ namespace HackYourSummerProjectTwo
                 case GameState.TitleScreen:
                     break;
                 case GameState.MainMenu:
-                    playButton.Draw(_spriteBatch);
-                    settingsButton.Draw(_spriteBatch);
+                    programModeWindow.Draw(_spriteBatch);
                     break;
                 case GameState.Settings:
                     break;
-                case GameState.LevelSelect:
+                case GameState.LevelSelect://64,46
+                    _spriteBatch.Draw(levelSelectMenuTexture, new Rectangle(125, 119, 550, 242), Color.White);
                     foreach (LevelSelector selector in levels)
                     {
                         selector.Draw(_spriteBatch);
@@ -302,11 +305,6 @@ namespace HackYourSummerProjectTwo
                 levels[levels.IndexOf(currentLevel) + 1].IsLocked = false; //MAYDAY: this will throw an error if it runs on the 9th level
             }
             notificationArrayList.Clear();
-        }
-
-        protected void NavigateToSettingsMenu()
-        {
-            currentGameState = GameState.Settings;
         }
 
         protected void NavigateToPrimaryGameScreen()

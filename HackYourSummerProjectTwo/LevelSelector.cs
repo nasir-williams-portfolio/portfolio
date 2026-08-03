@@ -10,6 +10,7 @@ namespace HackYourSummerProjectTwo
     {
         private Texture2D sprite;
         private Rectangle destinationRectangle;
+        private Rectangle sourceRectangle;
         private bool isLocked;
         private bool beenClicked;
         private bool isCompleted;
@@ -24,7 +25,9 @@ namespace HackYourSummerProjectTwo
             this.isLocked = isLocked;
             beenClicked = false;
             isCompleted = false;
-            destinationRectangle = new Rectangle((int)location.X, (int)location.Y, 100, 100);
+            destinationRectangle = new Rectangle((int)location.X, (int)location.Y, 60, 60);
+            sourceRectangle = new Rectangle(0, 0, sprite.Width, sprite.Height / 2);
+
         }
 
         public void Update()
@@ -33,11 +36,13 @@ namespace HackYourSummerProjectTwo
             {
                 beenClicked = true;
             }
+
+            sourceRectangle.Y = (isLocked) ? sprite.Height / 2 : 0;
         }
 
         public void Draw(SpriteBatch sb)
         {
-            sb.Draw(sprite, destinationRectangle, (isLocked) ? Color.Gray : Color.Blue);
+            sb.Draw(sprite, destinationRectangle, sourceRectangle, Color.White);
         }
     }
 }
