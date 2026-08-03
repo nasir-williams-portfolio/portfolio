@@ -92,6 +92,18 @@
 /processorParam:TextureFormat=Color
 /build:The Night Shift- Level Select Menu.png
 
+#begin The Night Shift- Program Icons.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:The Night Shift- Program Icons.png
+
 #begin The Night Shift- Title Card v2.png
 /importer:TextureImporter
 /processor:TextureProcessor

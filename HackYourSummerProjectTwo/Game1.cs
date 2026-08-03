@@ -21,7 +21,7 @@ namespace HackYourSummerProjectTwo
         #region Monogame Specific Variables
         private GraphicsDeviceManager _graphics;
         private SpriteBatch _spriteBatch;
-        private Texture2D placeholderTexture, levelSelectIconTexture, levelSelectMenuTexture, animatedBackgroundTexture, animatedForegroundTexture, cursorTexture, gameModeWindowTexture, buttonTexture;
+        private Texture2D placeholderTexture, programIconTextures, levelSelectIconTexture, levelSelectMenuTexture, animatedBackgroundTexture, animatedForegroundTexture, cursorTexture, gameModeWindowTexture, buttonTexture;
         private SpriteFont placeholderFont;
         #endregion
 
@@ -84,6 +84,7 @@ namespace HackYourSummerProjectTwo
             buttonTexture = Content.Load<Texture2D>("The Night Shift- Buttons");
             levelSelectIconTexture = Content.Load<Texture2D>("The Night Shift- Level Select Icon");
             levelSelectMenuTexture = Content.Load<Texture2D>("The Night Shift- Level Select Menu");
+            programIconTextures = Content.Load<Texture2D>("The Night Shift- Program Icons");
             #endregion
 
             acceptButton = new Button(placeholderTexture, 275, 380, 75, 25, Color.Green);
@@ -330,7 +331,7 @@ namespace HackYourSummerProjectTwo
             minimumAssessmentNum = numberOfClients / 2;
             for (int i = 0; i < numberOfClients; i++)
             {
-                clientList.Add(new ApplicationClient(placeholderTexture, 350, 190, 100, 100, (DifficultyLevel)rng.Next(0, 3), placeholderFont));
+                clientList.Add(new ApplicationClient(programIconTextures, 272, 112, 256, 256, 0, placeholderFont));
             }
             currentClient = (ApplicationClient)clientList[0];
         }
