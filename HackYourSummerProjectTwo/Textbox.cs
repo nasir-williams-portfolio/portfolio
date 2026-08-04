@@ -10,16 +10,22 @@ namespace HackYourSummerProjectTwo
         private string[,] characters;
         private Rectangle[] sourceRectangles;
         private Vector2 location;
-        private Color color;
+        private int opacity;
+        private int rgb;
 
-        public string Phrase { set { phrase = value; TranslateString(); } }
+        public string Phrase { set { phrase = value; TranslateString(); } get { return phrase; } }
+        public int Opacity { get { return opacity; } set { opacity = value; } }
+        public int RGB { get { return rgb; } set { rgb = value; } }
 
-        public Textbox(string phrase, Texture2D spritesheet, Color color, Vector2 location)
+        public float Y { get { return location.Y; } set { location.Y = value; } }
+
+        public Textbox(string phrase, Texture2D spritesheet, Vector2 location)
         {
             this.phrase = phrase;
             this.spritesheet = spritesheet;
-            this.color = color;
             this.location = location;
+            opacity = 254;
+            rgb = 254;
 
             characters = new string[4, 10]
             {
@@ -36,7 +42,7 @@ namespace HackYourSummerProjectTwo
         {
             for (int i = 0; i < sourceRectangles.Length; i++)
             {
-                sb.Draw(spritesheet, new Vector2(location.X + (((sourceRectangles[i].Width) * i)), location.Y), sourceRectangles[i], color);
+                sb.Draw(spritesheet, new Vector2(location.X + (((sourceRectangles[i].Width) * i)), location.Y), sourceRectangles[i], new Color(rgb, rgb, rgb, opacity));
             }
         }
 

@@ -17,5 +17,6 @@
 
 it brings me great sadness to say, you're likely going to have to know every kind of button size you'll need, put it in a spritesheet, and go from there
 Once again, I come bearing bad news, you will have to go back at some point and adjust ALL of the textures to be the same resolution so you don't have to resize them in the program
+something something, you should have more of a mistake buffer in the levels, not just "miss one restart"
 
 **ctrl+f "MAYDAY" for things that might go bump in the night**

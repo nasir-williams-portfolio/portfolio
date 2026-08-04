@@ -40,9 +40,10 @@ namespace HackYourSummerProjectTwo
 
         #region Container Variables
         private ArrayList clientList;
-        private ArrayList notificationArrayList;
+        private List<Notification> notificationArrayList;
         private List<LevelSelector> levels;
         private ArrayList assessmentBar;
+        private List<Notification> timeNotificationArrayList;
         #endregion
 
         #region Miscellaneous (Mostly Primitive) Variables
@@ -64,7 +65,8 @@ namespace HackYourSummerProjectTwo
         protected override void Initialize()
         {
             currentGameState = GameState.TitleScreen;
-            notificationArrayList = new ArrayList();
+            notificationArrayList = new List<Notification>();
+            timeNotificationArrayList = new List<Notification>();
             levels = new List<LevelSelector>();
             clientList = new ArrayList();
             assessmentBar = new ArrayList();
@@ -106,8 +108,8 @@ namespace HackYourSummerProjectTwo
             animatedBackground = new AnimatedBackground(animatedBackgroundTexture, animatedForegroundTexture);
             cursor = new Cursor(cursorTexture);
 
-            stopwatch = new Textbox("", charactersTexture, Color.White, new Vector2(717, 448));
-            level = new Textbox("", charactersTexture, Color.White, new Vector2(679, 448));
+            stopwatch = new Textbox("", charactersTexture, new Vector2(717, 448));
+            level = new Textbox("", charactersTexture, new Vector2(679, 448));
 
             #region Button Subscriptions
             acceptButton.OnButtonClick += AcceptClient;
@@ -196,11 +198,19 @@ namespace HackYourSummerProjectTwo
 
                     for (int i = 0; i < notificationArrayList.Count; i++)
                     {
-                        Notification currentNotification = (Notification)notificationArrayList[i];
-                        currentNotification.Update();
-                        if (currentNotification.IsDismissed)
+                        notificationArrayList[i].Update();
+                        if (notificationArrayList[i].IsDismissed)
                         {
-                            notificationArrayList.Remove(i);
+                            notificationArrayList.RemoveAt(i);
+                        }
+                    }
+
+                    for (int i = 0; i < timeNotificationArrayList.Count; i++)
+                    {
+                        timeNotificationArrayList[i].Update();
+                        if (timeNotificationArrayList[i].IsDismissed)
+                        {
+                            timeNotificationArrayList.RemoveAt(i);
                         }
                     }
 
@@ -245,6 +255,11 @@ namespace HackYourSummerProjectTwo
                     notepad.Draw(_spriteBatch);
 
                     foreach (Notification notification in notificationArrayList)
+                    {
+                        notification.Draw(_spriteBatch);
+                    }
+
+                    foreach (Notification notification in timeNotificationArrayList)
                     {
                         notification.Draw(_spriteBatch);
                     }
@@ -296,7 +311,7 @@ namespace HackYourSummerProjectTwo
 
         protected void AcceptClient()
         {
-            notificationArrayList.Add(new Notification(placeholderFont, (currentClient.IsPhony) ? "Bad Program Accepted :(" : "Good Program Accepted"));
+            notificationArrayList.Add(new Notification(new Textbox((currentClient.IsPhony) ? "Bad Program Accepted" : "Good Program Accepted", charactersTexture, new Vector2(10, 412))));
 
             if (!currentClient.IsPhony)
             {
@@ -309,6 +324,8 @@ namespace HackYourSummerProjectTwo
 
             assessmentMeter += (currentClient.IsPhony) ? -1 : 1;
             timer += (currentClient.IsPhony) ? 60 : -60;
+            timeNotificationArrayList.Add(new Notification(new Textbox((currentClient.IsPhony) ? "-1" : "+1", charactersTexture, new Vector2(717, 412))));
+
             if (clientList.Count > 0)
             {
                 clientList.RemoveAt(0);
@@ -322,17 +339,21 @@ namespace HackYourSummerProjectTwo
 
         protected void DenyClient()
         {
-            notificationArrayList.Add(new Notification(placeholderFont, (currentClient.IsPhony) ? "Bad Program Denied" : "Good Program Denied :("));
+            notificationArrayList.Add(new Notification(new Textbox((currentClient.IsPhony) ? "Bad Program Denied" : "Good Program Denied", charactersTexture, new Vector2(10, 412))));
+
             if (currentClient.IsPhony)
             {
-                assessmentBar.Add(new Cursor(placeholderTexture));
+                assessmentBar.Add(new Cursor(placeholderTexture));//MAYDAY: Eventually you'll remove this placeholderTexture and when you do you'll either have to make another constructor for the cursor class or find something else unique you can add to this ArrayList
             }
             else
             {
                 assessmentBar.RemoveAt(assessmentBar.Count - 1);
             }
+
             assessmentMeter += (currentClient.IsPhony) ? 1 : -1;
             timer += (currentClient.IsPhony) ? -60 : 60;
+            timeNotificationArrayList.Add(new Notification(new Textbox((currentClient.IsPhony) ? "+1" : "-1", charactersTexture, new Vector2(717, 412))));
+
             if (clientList.Count > 0)
             {
                 clientList.RemoveAt(0);
@@ -363,6 +384,7 @@ namespace HackYourSummerProjectTwo
 
         protected void NavigateToPrimaryGameScreen()
         {
+            assessmentBar.Clear();
             timer = 0;
             levelFinished = false;
             assessmentMeter = 0;
