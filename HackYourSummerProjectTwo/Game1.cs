@@ -21,7 +21,7 @@ namespace HackYourSummerProjectTwo
         #region Monogame Specific Variables
         private GraphicsDeviceManager _graphics;
         private SpriteBatch _spriteBatch;
-        private Texture2D placeholderTexture, programIconTextures, levelSelectIconTexture, levelSelectMenuTexture, animatedBackgroundTexture, animatedForegroundTexture, cursorTexture, gameModeWindowTexture, buttonTexture;
+        private Texture2D placeholderTexture, charactersTexture, taskbarTexture, programIconTextures, levelSelectIconTexture, levelSelectMenuTexture, animatedBackgroundTexture, animatedForegroundTexture, cursorTexture, gameModeWindowTexture, buttonTexture;
         private SpriteFont placeholderFont;
         #endregion
 
@@ -34,6 +34,7 @@ namespace HackYourSummerProjectTwo
         private AnimatedBackground animatedBackground;
         private Cursor cursor;
         private GameModeWindow programModeWindow;
+        private Textbox stopclock;
         #endregion
 
         #region Container Variables
@@ -43,12 +44,12 @@ namespace HackYourSummerProjectTwo
         #endregion
 
         #region Miscellaneous (Mostly Primitive) Variables
-        private Random rng;
         private int assessmentMeter;
         private bool levelFinished;
         private int minimumAssessmentNum;
         private int timer;
         private int levelTimeAllotment;
+        private DateTime timerFormatter;
         #endregion
 
         public Game1()
@@ -85,20 +86,23 @@ namespace HackYourSummerProjectTwo
             levelSelectIconTexture = Content.Load<Texture2D>("The Night Shift- Level Select Icon");
             levelSelectMenuTexture = Content.Load<Texture2D>("The Night Shift- Level Select Menu");
             programIconTextures = Content.Load<Texture2D>("The Night Shift- Program Icons");
+            taskbarTexture = Content.Load<Texture2D>("The Night Shift- Taskbar");
+            charactersTexture = Content.Load<Texture2D>("The Night Shift- Characters");
             #endregion
+
+            clientList = new ArrayList();
 
             acceptButton = new Button(placeholderTexture, 275, 380, 75, 25, Color.Green);
             denyButton = new Button(placeholderTexture, 450, 380, 75, 25, Color.Red);
             notepadButton = new Button(placeholderTexture, 750, 50, 20, 20, Color.White);
             returnToLevelSelectButton = new Button(placeholderTexture, 445, 320, 100, 25, Color.LightPink);
             levelResetButton = new Button(placeholderTexture, 225, 320, 100, 25, Color.LightBlue);
-            programModeWindow = new GameModeWindow(gameModeWindowTexture, buttonTexture, new Vector2(253, 67));
 
+            programModeWindow = new GameModeWindow(gameModeWindowTexture, buttonTexture, new Vector2(253, 67));
+            stopclock = new Textbox("", charactersTexture, Color.White, new Vector2(717, 448)); //80x34
             notepad = new Notepad(placeholderTexture, 200, 120, 300, 240, placeholderFont);
-            rng = new Random();
             animatedBackground = new AnimatedBackground(animatedBackgroundTexture, animatedForegroundTexture);
             cursor = new Cursor(cursorTexture);
-            clientList = new ArrayList();
 
             #region Button Subscriptions
             acceptButton.OnButtonClick += AcceptClient;
@@ -185,7 +189,6 @@ namespace HackYourSummerProjectTwo
                         levelResetButton.Update();
                     }
 
-
                     for (int i = 0; i < notificationArrayList.Count; i++)
                     {
                         Notification currentNotification = (Notification)notificationArrayList[i];
@@ -195,6 +198,7 @@ namespace HackYourSummerProjectTwo
                             notificationArrayList.Remove(i);
                         }
                     }
+
                     break;
                 default:
                     break;
@@ -220,7 +224,7 @@ namespace HackYourSummerProjectTwo
                     break;
                 case GameState.Settings:
                     break;
-                case GameState.LevelSelect://64,46
+                case GameState.LevelSelect:
                     _spriteBatch.Draw(levelSelectMenuTexture, new Rectangle(125, 119, 550, 242), Color.White);
                     foreach (LevelSelector selector in levels)
                     {
@@ -228,8 +232,9 @@ namespace HackYourSummerProjectTwo
                     }
                     break;
                 case GameState.PrimaryGameScreen:
-                    _spriteBatch.DrawString(placeholderFont, $"Selected Level: {levels.IndexOf(currentLevel) + 1}\nAssessment Meter: {assessmentMeter}/{minimumAssessmentNum * 2}\n{levelTimeAllotment - (timer / 60)}", Vector2.One, Color.Black);
+                    _spriteBatch.DrawString(placeholderFont, $"Selected Level: {levels.IndexOf(currentLevel) + 1}\nAssessment Meter: {assessmentMeter}/{minimumAssessmentNum * 2}\n{Mouse.GetState().X},{Mouse.GetState().Y}", Vector2.One, Color.White);
 
+                    _spriteBatch.Draw(taskbarTexture, new Rectangle(0, 0, 800, 480), Color.White);
                     currentClient.Draw(_spriteBatch);
                     notepadButton.Draw(_spriteBatch);
                     acceptButton.Draw(_spriteBatch);
@@ -248,6 +253,11 @@ namespace HackYourSummerProjectTwo
                         levelResetButton.Draw(_spriteBatch);
                         _spriteBatch.DrawString(placeholderFont, (assessmentMeter >= minimumAssessmentNum) ? "Level Passed" : "Level Failed", new Vector2(175, 77), Color.Black);
                     }
+
+                    timerFormatter = new DateTime(2026, 8, 3, 0, 0, levelTimeAllotment - (timer / 60));
+                    stopclock.Phrase = timerFormatter.ToString("mm:ss");
+                    stopclock.Draw(_spriteBatch);
+
                     break;
                 default:
                     break;
