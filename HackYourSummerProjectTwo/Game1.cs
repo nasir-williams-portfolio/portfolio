@@ -21,8 +21,9 @@ namespace HackYourSummerProjectTwo
         #region Monogame Specific Variables
         private GraphicsDeviceManager _graphics;
         private SpriteBatch _spriteBatch;
-        private Texture2D placeholderTexture, charactersTexture, taskbarTexture, programIconTextures, levelSelectIconTexture, levelSelectMenuTexture, animatedBackgroundTexture,
-            animatedForegroundTexture, cursorTexture, gameModeWindowTexture, buttonTexture, assessmentBarTexture, notepadFrameTexture;
+        private Texture2D placeholderTexture, charactersTexture, taskbarTexture, programIconTextures, levelSelectIconTexture,
+            levelSelectMenuTexture, animatedBackgroundTexture, animatedForegroundTexture, cursorTexture, gameModeWindowTexture, buttonTexture,
+             assessmentBarTexture, notepadFrameTexture, textBackgroundTexture, propertiesBackgroundTexture;
         private SpriteFont placeholderFont;
         #endregion
 
@@ -96,6 +97,8 @@ namespace HackYourSummerProjectTwo
             charactersTexture = Content.Load<Texture2D>("The Night Shift- Characters");
             assessmentBarTexture = Content.Load<Texture2D>("The Night Shift- AssessmentBarFillers");
             notepadFrameTexture = Content.Load<Texture2D>("The Night Shift- Notepad Frame");
+            textBackgroundTexture = Content.Load<Texture2D>("The Night Shift- Text Background");
+            propertiesBackgroundTexture = Content.Load<Texture2D>("The Night Shift- PropertiesMenuFrame");
             #endregion
 
             acceptButton = new Button(buttonTexture, 161, 360, 240, 54, new Rectangle(0, 0, 240, 54));
@@ -409,7 +412,7 @@ namespace HackYourSummerProjectTwo
             minimumAssessmentNum = 8;
             for (int i = 0; i < 8; i++)
             {
-                clientList.Add(new ApplicationClient(programIconTextures, 272, 112, 256, 256, 0, placeholderFont));
+                clientList.Add(new ApplicationClient(programIconTextures, 272, 112, 256, 256, 0, charactersTexture, textBackgroundTexture, propertiesBackgroundTexture));
             }
             currentClient = (ApplicationClient)clientList[0];
         }
