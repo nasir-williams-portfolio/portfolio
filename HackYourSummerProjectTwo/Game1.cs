@@ -88,7 +88,7 @@ namespace HackYourSummerProjectTwo
             animatedForegroundTexture = Content.Load<Texture2D>("The Night Shift- Title Text v2");
             cursorTexture = Content.Load<Texture2D>("The Night Shift- Cursor");
             gameModeWindowTexture = Content.Load<Texture2D>("The Night Shift- Game Mode Window");
-            buttonTexture = Content.Load<Texture2D>("The Night Shift- Buttons");
+            buttonTexture = Content.Load<Texture2D>("The Night Shift- Labeled Buttons");
             levelSelectIconTexture = Content.Load<Texture2D>("The Night Shift- Level Select Icon");
             levelSelectMenuTexture = Content.Load<Texture2D>("The Night Shift- Level Select Menu");
             programIconTextures = Content.Load<Texture2D>("The Night Shift- Program Icons");
@@ -97,11 +97,11 @@ namespace HackYourSummerProjectTwo
             assessmentBarTexture = Content.Load<Texture2D>("The Night Shift- AssessmentBarFillers");
             #endregion
 
-            acceptButton = new Button(placeholderTexture, 275, 380, 75, 25, Color.Green);
-            denyButton = new Button(placeholderTexture, 450, 380, 75, 25, Color.Red);
-            notepadButton = new Button(placeholderTexture, 750, 50, 20, 20, Color.White);
-            returnToLevelSelectButton = new Button(placeholderTexture, 445, 320, 100, 25, Color.LightPink);
-            levelResetButton = new Button(placeholderTexture, 225, 320, 100, 25, Color.LightBlue);
+            acceptButton = new Button(buttonTexture, 161, 360, 240, 54, new Rectangle(0, 0, 240, 54));
+            denyButton = new Button(buttonTexture, 455, 360, 184, 54, new Rectangle(0, 54, 184, 54));
+            notepadButton = new Button(buttonTexture, 740, 2, 58, 54, new Rectangle(0, 324, 58, 54));
+            returnToLevelSelectButton = new Button(buttonTexture, 445, 275, 126, 54, new Rectangle(0, 216, 126, 54));
+            levelResetButton = new Button(buttonTexture, 225, 275, 154, 54, new Rectangle(0, 162, 154, 54));
 
             programModeWindow = new GameModeWindow(gameModeWindowTexture, buttonTexture, new Vector2(253, 67));
             notepad = new Notepad(placeholderTexture, 200, 120, 300, 240, placeholderFont);
@@ -266,10 +266,12 @@ namespace HackYourSummerProjectTwo
 
                     if (levelFinished || (levelTimeAllotment - (timer / 60) == 0))
                     {
-                        _spriteBatch.Draw(placeholderTexture, new Rectangle(175, 77, 450, 275), new Color(Color.Gray, 0.75f));
+                        _spriteBatch.Draw(levelSelectMenuTexture, new Rectangle(125, 119, 550, 242), Color.White);
+
                         returnToLevelSelectButton.Draw(_spriteBatch);
                         levelResetButton.Draw(_spriteBatch);
-                        _spriteBatch.DrawString(placeholderFont, (assessmentMeter >= minimumAssessmentNum) ? "Level Passed" : "Level Failed", new Vector2(175, 77), Color.Black);
+                        Textbox placeholderText = new Textbox((assessmentMeter >= minimumAssessmentNum) ? "Level Passed" : "Level Failed", charactersTexture, new Vector2(316, 233));
+                        placeholderText.Draw(_spriteBatch);
                     }
 
                     timerFormatter = new DateTime(2026, 8, 3, 0, 0, levelTimeAllotment - (timer / 60));
@@ -319,7 +321,7 @@ namespace HackYourSummerProjectTwo
             }
             else
             {
-                assessmentBar.RemoveAt(assessmentBar.Count - 1);
+                if (assessmentBar.Count > 0) { assessmentBar.RemoveAt(assessmentBar.Count - 1); }
             }
 
             assessmentMeter += (currentClient.IsPhony) ? -1 : 1;
@@ -347,7 +349,7 @@ namespace HackYourSummerProjectTwo
             }
             else
             {
-                assessmentBar.RemoveAt(assessmentBar.Count - 1);
+                if (assessmentBar.Count > 0) { assessmentBar.RemoveAt(assessmentBar.Count - 1); }
             }
 
             assessmentMeter += (currentClient.IsPhony) ? 1 : -1;

@@ -19,8 +19,8 @@ namespace HackYourSummerProjectTwo
             this.windowTexture = windowTexture;
             this.buttonTexture = buttonTexture;
             destinationRectangle = new Rectangle((int)location.X, (int)location.Y, windowTexture.Width * 2, windowTexture.Height * 2);
-            restartGameModeButton = new Button(buttonTexture, (int)location.X + 196, (int)location.Y + 312, 28, 28, Color.White);
-            selectGameModeButton = new Button(buttonTexture, (int)location.X + 46, (int)location.Y + 312, 28, 28, Color.White);
+            restartGameModeButton = new Button(buttonTexture, (int)location.X + 196, (int)location.Y + 306, 58, 54, new Rectangle(0, 270, 58, 54));
+            selectGameModeButton = new Button(buttonTexture, (int)location.X + 46, (int)location.Y + 306, 128, 54, new Rectangle(0, 108, 128, 54));
 
             buttons = new Button[2];
             buttons[0] = selectGameModeButton;

@@ -14,14 +14,14 @@ namespace HackYourSummerProjectTwo
         private MouseState currMouse;
         private MouseState prevMouse;
         private Vector2 clickLocation;
-        private Color color;
+        private int width;
 
-        public Button(Texture2D sprite, int x, int y, int width, int height, Color color)
+        public Button(Texture2D sprite, int x, int y, int width, int height, Rectangle sourceRectangle)
         {
             this.sprite = sprite;
-            this.color = color;
+            this.width = width;
             destinationRectangle = new Rectangle(x, y, width, height);
-            sourceRectangle = new Rectangle(0, 0, sprite.Width, sprite.Height / 2);
+            this.sourceRectangle = sourceRectangle;
             clickLocation = new Vector2();
         }
 
@@ -34,24 +34,25 @@ namespace HackYourSummerProjectTwo
                 if (prevMouse.LeftButton == ButtonState.Released)
                 {
                     clickLocation = currMouse.Position.ToVector2();
-                    if (destinationRectangle.Contains(currMouse.Position) && OnButtonClick != null)
-                    {
-                        OnButtonClick();
-                    }
                 }
 
                 if (destinationRectangle.Contains(clickLocation))
                 {
-                    sourceRectangle.Y = 14;
+                    sourceRectangle.X = 240;
                 }
                 else
                 {
-                    sourceRectangle.Y = 0;
+                    sourceRectangle.X = 0;
                 }
             }
             else
             {
-                sourceRectangle.Y = 0;
+                sourceRectangle.X = 0;
+            }
+
+            if (currMouse.LeftButton == ButtonState.Released && prevMouse.LeftButton == ButtonState.Pressed && destinationRectangle.Contains(currMouse.Position) && OnButtonClick != null)
+            {
+                OnButtonClick();
             }
 
             prevMouse = currMouse;
@@ -59,7 +60,7 @@ namespace HackYourSummerProjectTwo
 
         public void Draw(SpriteBatch sb)
         {
-            sb.Draw(sprite, destinationRectangle, sourceRectangle, color);
+            sb.Draw(sprite, destinationRectangle, sourceRectangle, Color.White);
         }
     }
 }
