@@ -21,7 +21,8 @@ namespace HackYourSummerProjectTwo
         #region Monogame Specific Variables
         private GraphicsDeviceManager _graphics;
         private SpriteBatch _spriteBatch;
-        private Texture2D placeholderTexture, charactersTexture, taskbarTexture, programIconTextures, levelSelectIconTexture, levelSelectMenuTexture, animatedBackgroundTexture, animatedForegroundTexture, cursorTexture, gameModeWindowTexture, buttonTexture;
+        private Texture2D placeholderTexture, charactersTexture, taskbarTexture, programIconTextures, levelSelectIconTexture, levelSelectMenuTexture, animatedBackgroundTexture,
+            animatedForegroundTexture, cursorTexture, gameModeWindowTexture, buttonTexture, assessmentBarTexture;
         private SpriteFont placeholderFont;
         #endregion
 
@@ -34,13 +35,14 @@ namespace HackYourSummerProjectTwo
         private AnimatedBackground animatedBackground;
         private Cursor cursor;
         private GameModeWindow programModeWindow;
-        private Textbox stopclock;
+        private Textbox stopwatch, level;
         #endregion
 
         #region Container Variables
         private ArrayList clientList;
         private ArrayList notificationArrayList;
         private List<LevelSelector> levels;
+        private ArrayList assessmentBar;
         #endregion
 
         #region Miscellaneous (Mostly Primitive) Variables
@@ -61,9 +63,11 @@ namespace HackYourSummerProjectTwo
 
         protected override void Initialize()
         {
-            notificationArrayList = new ArrayList();
             currentGameState = GameState.TitleScreen;
+            notificationArrayList = new ArrayList();
             levels = new List<LevelSelector>();
+            clientList = new ArrayList();
+            assessmentBar = new ArrayList();
             assessmentMeter = 0;
             levelFinished = false;
             timer = 0;
@@ -88,9 +92,8 @@ namespace HackYourSummerProjectTwo
             programIconTextures = Content.Load<Texture2D>("The Night Shift- Program Icons");
             taskbarTexture = Content.Load<Texture2D>("The Night Shift- Taskbar");
             charactersTexture = Content.Load<Texture2D>("The Night Shift- Characters");
+            assessmentBarTexture = Content.Load<Texture2D>("The Night Shift- AssessmentBarFillers");
             #endregion
-
-            clientList = new ArrayList();
 
             acceptButton = new Button(placeholderTexture, 275, 380, 75, 25, Color.Green);
             denyButton = new Button(placeholderTexture, 450, 380, 75, 25, Color.Red);
@@ -99,10 +102,12 @@ namespace HackYourSummerProjectTwo
             levelResetButton = new Button(placeholderTexture, 225, 320, 100, 25, Color.LightBlue);
 
             programModeWindow = new GameModeWindow(gameModeWindowTexture, buttonTexture, new Vector2(253, 67));
-            stopclock = new Textbox("", charactersTexture, Color.White, new Vector2(717, 448)); //80x34
             notepad = new Notepad(placeholderTexture, 200, 120, 300, 240, placeholderFont);
             animatedBackground = new AnimatedBackground(animatedBackgroundTexture, animatedForegroundTexture);
             cursor = new Cursor(cursorTexture);
+
+            stopwatch = new Textbox("", charactersTexture, Color.White, new Vector2(717, 448));
+            level = new Textbox("", charactersTexture, Color.White, new Vector2(679, 448));
 
             #region Button Subscriptions
             acceptButton.OnButtonClick += AcceptClient;
@@ -232,8 +237,6 @@ namespace HackYourSummerProjectTwo
                     }
                     break;
                 case GameState.PrimaryGameScreen:
-                    _spriteBatch.DrawString(placeholderFont, $"Selected Level: {levels.IndexOf(currentLevel) + 1}\nAssessment Meter: {assessmentMeter}/{minimumAssessmentNum * 2}\n{Mouse.GetState().X},{Mouse.GetState().Y}", Vector2.One, Color.White);
-
                     _spriteBatch.Draw(taskbarTexture, new Rectangle(0, 0, 800, 480), Color.White);
                     currentClient.Draw(_spriteBatch);
                     notepadButton.Draw(_spriteBatch);
@@ -255,9 +258,30 @@ namespace HackYourSummerProjectTwo
                     }
 
                     timerFormatter = new DateTime(2026, 8, 3, 0, 0, levelTimeAllotment - (timer / 60));
-                    stopclock.Phrase = timerFormatter.ToString("mm:ss");
-                    stopclock.Draw(_spriteBatch);
+                    stopwatch.Phrase = timerFormatter.ToString("mm:ss");
+                    stopwatch.Draw(_spriteBatch);
 
+                    level.Phrase = (levels.IndexOf(currentLevel) + 1).ToString();
+                    level.Draw(_spriteBatch);
+
+                    foreach (Cursor tracker in assessmentBar)
+                    {
+                        int yValue;
+                        if (assessmentBar.IndexOf(tracker) == 0)
+                        {
+                            yValue = 0;
+                        }
+                        else if (assessmentBar.IndexOf(tracker) == assessmentBar.Count - 1)
+                        {
+                            yValue = 52;
+                        }
+                        else
+                        {
+                            yValue = 26;
+                        }
+
+                        _spriteBatch.Draw(assessmentBarTexture, new Rectangle(142 + (64 * assessmentBar.IndexOf(tracker)), 442, 64, 26), new Rectangle(0, yValue, 64, 26), Color.White);
+                    }
                     break;
                 default:
                     break;
@@ -273,6 +297,16 @@ namespace HackYourSummerProjectTwo
         protected void AcceptClient()
         {
             notificationArrayList.Add(new Notification(placeholderFont, (currentClient.IsPhony) ? "Bad Program Accepted :(" : "Good Program Accepted"));
+
+            if (!currentClient.IsPhony)
+            {
+                assessmentBar.Add(new Cursor(placeholderTexture));
+            }
+            else
+            {
+                assessmentBar.RemoveAt(assessmentBar.Count - 1);
+            }
+
             assessmentMeter += (currentClient.IsPhony) ? -1 : 1;
             timer += (currentClient.IsPhony) ? 60 : -60;
             if (clientList.Count > 0)
@@ -289,6 +323,14 @@ namespace HackYourSummerProjectTwo
         protected void DenyClient()
         {
             notificationArrayList.Add(new Notification(placeholderFont, (currentClient.IsPhony) ? "Bad Program Denied" : "Good Program Denied :("));
+            if (currentClient.IsPhony)
+            {
+                assessmentBar.Add(new Cursor(placeholderTexture));
+            }
+            else
+            {
+                assessmentBar.RemoveAt(assessmentBar.Count - 1);
+            }
             assessmentMeter += (currentClient.IsPhony) ? 1 : -1;
             timer += (currentClient.IsPhony) ? -60 : 60;
             if (clientList.Count > 0)
@@ -309,6 +351,7 @@ namespace HackYourSummerProjectTwo
         protected void NavigateToLevelSelect()
         {
             levelFinished = true;
+            assessmentBar.Clear();
             currentGameState = GameState.LevelSelect;
 
             if (levels[levels.IndexOf(currentLevel)].IsCompleted)
@@ -323,7 +366,7 @@ namespace HackYourSummerProjectTwo
             timer = 0;
             levelFinished = false;
             assessmentMeter = 0;
-            PopulateClientList((levels.IndexOf(currentLevel) + 1) * 2);
+            PopulateClientList();
             levelTimeAllotment = 10 + (clientList.Count * 3);
             currentGameState = GameState.PrimaryGameScreen;
             foreach (LevelSelector selector in levels)
@@ -335,11 +378,11 @@ namespace HackYourSummerProjectTwo
             }
         }
 
-        public void PopulateClientList(int numberOfClients)
+        public void PopulateClientList()
         {
             clientList.Clear();
-            minimumAssessmentNum = numberOfClients / 2;
-            for (int i = 0; i < numberOfClients; i++)
+            minimumAssessmentNum = 8;
+            for (int i = 0; i < 8; i++)
             {
                 clientList.Add(new ApplicationClient(programIconTextures, 272, 112, 256, 256, 0, placeholderFont));
             }

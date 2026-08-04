@@ -32,6 +32,18 @@
 /processorParam:TextureFormat=Color
 /build:pixel.png
 
+#begin The Night Shift- AssessmentBarFillers.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:The Night Shift- AssessmentBarFillers.png
+
 #begin The Night Shift- Buttons.png
 /importer:TextureImporter
 /processor:TextureProcessor
