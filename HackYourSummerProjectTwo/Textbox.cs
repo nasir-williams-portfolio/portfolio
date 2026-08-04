@@ -18,6 +18,7 @@ namespace HackYourSummerProjectTwo
         public int RGB { get { return rgb; } set { rgb = value; } }
 
         public float Y { get { return location.Y; } set { location.Y = value; } }
+        public float X { get { return location.X; } set { location.X = value; } }
 
         public Textbox(string phrase, Texture2D spritesheet, Vector2 location)
         {

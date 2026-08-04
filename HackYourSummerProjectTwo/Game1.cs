@@ -22,7 +22,7 @@ namespace HackYourSummerProjectTwo
         private GraphicsDeviceManager _graphics;
         private SpriteBatch _spriteBatch;
         private Texture2D placeholderTexture, charactersTexture, taskbarTexture, programIconTextures, levelSelectIconTexture, levelSelectMenuTexture, animatedBackgroundTexture,
-            animatedForegroundTexture, cursorTexture, gameModeWindowTexture, buttonTexture, assessmentBarTexture;
+            animatedForegroundTexture, cursorTexture, gameModeWindowTexture, buttonTexture, assessmentBarTexture, notepadFrameTexture;
         private SpriteFont placeholderFont;
         #endregion
 
@@ -95,6 +95,7 @@ namespace HackYourSummerProjectTwo
             taskbarTexture = Content.Load<Texture2D>("The Night Shift- Taskbar");
             charactersTexture = Content.Load<Texture2D>("The Night Shift- Characters");
             assessmentBarTexture = Content.Load<Texture2D>("The Night Shift- AssessmentBarFillers");
+            notepadFrameTexture = Content.Load<Texture2D>("The Night Shift- Notepad Frame");
             #endregion
 
             acceptButton = new Button(buttonTexture, 161, 360, 240, 54, new Rectangle(0, 0, 240, 54));
@@ -104,7 +105,7 @@ namespace HackYourSummerProjectTwo
             levelResetButton = new Button(buttonTexture, 225, 275, 154, 54, new Rectangle(0, 162, 154, 54));
 
             programModeWindow = new GameModeWindow(gameModeWindowTexture, buttonTexture, new Vector2(253, 67));
-            notepad = new Notepad(placeholderTexture, 200, 120, 300, 240, placeholderFont);
+            notepad = new Notepad(notepadFrameTexture, 200, 120, 301, 240, new Rectangle(0, 0, 301, 240), charactersTexture);
             animatedBackground = new AnimatedBackground(animatedBackgroundTexture, animatedForegroundTexture);
             cursor = new Cursor(cursorTexture);
 
@@ -368,7 +369,7 @@ namespace HackYourSummerProjectTwo
 
         protected void ToggleNotepad()
         {
-            notepad.IsShowing = !notepad.IsShowing;
+            notepad.IsShowing = true;
         }
 
         protected void NavigateToLevelSelect()

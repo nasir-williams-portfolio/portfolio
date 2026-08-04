@@ -1,6 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using System.Collections.Generic;
 
 namespace HackYourSummerProjectTwo
 {
@@ -9,6 +10,8 @@ namespace HackYourSummerProjectTwo
         private Texture2D sprite;
         private SpriteFont font;
         private Rectangle destinationRectangle;
+        private Rectangle sourceRectangle;
+        private Rectangle exitButton;
         private MouseState currMouse;
         private MouseState prevMouse;
         private Vector2 clickLocation;
@@ -20,79 +23,113 @@ namespace HackYourSummerProjectTwo
         private bool clickedInRectangle;
         private Rectangle[] tabs;
         private Rectangle currentTab;
+        private List<Textbox> instructions;
 
         public bool IsShowing { get { return isShowing; } set { isShowing = value; } }
 
-        public Notepad(Texture2D sprite, int x, int y, int width, int height, SpriteFont font)
+        public Notepad(Texture2D sprite, int x, int y, int width, int height, Rectangle sourceRectangle, Texture2D characters)
         {
             this.sprite = sprite;
-            this.font = font;
+            this.sourceRectangle = sourceRectangle;
             tabs = new Rectangle[3];
             for (int i = 0; i < tabs.Length; i++)
             {
-                tabs[i] = new Rectangle(x + (i * 100), y, 90, 20);
+                tabs[i] = new Rectangle((10 + (i * 8)) + destinationRectangle.X, destinationRectangle.Y, 6, 4);
             }
+            exitButton = new Rectangle(x + 282, y + 6, 14, 14);
 
             currentTab = tabs[0];
             destinationRectangle = new Rectangle(x, y, width, height);
-            applicationText = "Identify malicious applications through:\n - Poor icon resolution (White)";
-            notepadTitle = "Malicious Application Identification: Icon Resolution";
+
+            instructions = new List<Textbox>();
+            for (int i = 0; i < 3; i++)
+            {
+                instructions.Add(new Textbox("", characters, new Vector2(x + 20, y + 20)));
+            }
+
+            new Textbox("", characters, new Vector2(x + 20, y + 20));
         }
 
         public void Update()
         {
             currMouse = Mouse.GetState();
 
-            if (currMouse.LeftButton == ButtonState.Pressed)
+            if (isShowing)
             {
-                if (prevMouse.LeftButton == ButtonState.Released)
+                if (currMouse.LeftButton == ButtonState.Pressed)
                 {
-                    if (destinationRectangle.Contains(currMouse.Position))
+                    if (prevMouse.LeftButton == ButtonState.Released)
                     {
-                        clickLocation = new Vector2(currMouse.Position.X, currMouse.Position.Y);
-                        previousLocation = new Vector2(destinationRectangle.X, destinationRectangle.Y);
-                        clickedInRectangle = true;
-                    }
-                    else
-                    {
-                        clickedInRectangle = false;
-                    }
-
-                    foreach (Rectangle tab in tabs)
-                    {
-                        if (tab.Contains(currMouse.Position))
+                        if (exitButton.Contains(currMouse.Position))
                         {
-                            currentTab = tab;
+                            isShowing = false;
+                        }
+
+                        if (destinationRectangle.Contains(currMouse.Position))
+                        {
+                            clickLocation = new Vector2(currMouse.Position.X, currMouse.Position.Y);
+                            previousLocation = new Vector2(destinationRectangle.X, destinationRectangle.Y);
+                            clickedInRectangle = true;
+                        }
+                        else
+                        {
+                            clickedInRectangle = false;
+                        }
+
+                        foreach (Rectangle tab in tabs)
+                        {
+                            if (tab.Contains(currMouse.Position))
+                            {
+                                currentTab = tab;
+                            }
+                        }
+                    }
+                    else if (clickedInRectangle == true)
+                    {
+                        difference = new Vector2(currMouse.X - clickLocation.X, currMouse.Y - clickLocation.Y);
+                        destinationRectangle.X = (int)(difference.X + previousLocation.X);
+                        destinationRectangle.Y = (int)(difference.Y + previousLocation.Y);
+                        for (int i = 0; i < tabs.Length; i++)
+                        {
+                            tabs[i].X = (int)destinationRectangle.X + (10 + (i * 8));
+                            tabs[i].Y = (int)destinationRectangle.Y;
+                        }
+                        exitButton.X = (int)destinationRectangle.X + 282;
+                        exitButton.Y = (int)destinationRectangle.Y + 6;
+
+                        foreach (Textbox line in instructions)
+                        {
+                            line.X = (int)destinationRectangle.X + 20;
+                            line.Y = (int)destinationRectangle.Y + (20 * (instructions.IndexOf(line) + 1));
                         }
                     }
                 }
-                else if (clickedInRectangle == true)
+
+                for (int i = 0; i < tabs.Length; i++)
                 {
-                    difference = new Vector2(currMouse.X - clickLocation.X, currMouse.Y - clickLocation.Y);
-                    destinationRectangle.X = (int)(difference.X + previousLocation.X);
-                    destinationRectangle.Y = (int)(difference.Y + previousLocation.Y);
-                    for (int i = 0; i < tabs.Length; i++)
+                    if (tabs[i].Equals(currentTab))
                     {
-                        tabs[i].X = (int)destinationRectangle.X + (i * 100);
-                        tabs[i].Y = (int)destinationRectangle.Y;
+                        sourceRectangle.Y = i * 240;
                     }
                 }
             }
 
-            if (tabs[0].Equals(currentTab))
+            switch (sourceRectangle.Y)
             {
-                applicationText = "Identify malicious applications through:\n - Poor icon resolution (White)";
-                notepadTitle = "Malicious Application Identification: Icon Resolution";
-            }
-            else if (tabs[1].Equals(currentTab))
-            {
-                applicationText = "Identify malicious applications through:\n - Suspicious property information(475GB)";
-                notepadTitle = "Malicious Application Identification: Suspicious property information";
-            }
-            else
-            {
-                applicationText = "Identify malicious applications through:\n - Inconsistent tooltip information";
-                notepadTitle = "Malicious Application Identification: Inconsistent tooltip information";
+                case 0:
+                    instructions[0].Phrase = "deny glitches";
+                    break;
+                case 240:
+                    instructions[0].Phrase = "deny tooltips with";
+                    instructions[1].Phrase = "odd locations";
+                    break;
+                case 480:
+                    instructions[0].Phrase = "deny location";
+                    instructions[1].Phrase = "discrepancies in";
+                    instructions[2].Phrase = "tooltip-properties";
+                    break;
+                default:
+                    break;
             }
 
             prevMouse = currMouse;
@@ -102,13 +139,25 @@ namespace HackYourSummerProjectTwo
         {
             if (isShowing)
             {
-                sb.Draw(sprite, destinationRectangle, Color.White);
-
-                sb.DrawString(font, notepadTitle, new Vector2(destinationRectangle.X, destinationRectangle.Y + 20), Color.Black);
-                sb.DrawString(font, applicationText, new Vector2(destinationRectangle.X + 5, destinationRectangle.Y + 36), Color.Black);
-                foreach (Rectangle tab in tabs)
+                sb.Draw(sprite, destinationRectangle, sourceRectangle, Color.White);
+                switch (sourceRectangle.Y)
                 {
-                    sb.Draw(sprite, tab, (tab.Equals(currentTab) ? Color.Blue : Color.Gray));
+                    case 0:
+                        instructions[0].Draw(sb);
+                        break;
+                    case 240:
+                        instructions[0].Draw(sb);
+                        instructions[1].Draw(sb);
+                        break;
+                    case 480:
+                        instructions[0].Draw(sb);
+                        instructions[1].Draw(sb);
+                        instructions[2].Draw(sb);
+                        break;
+                }
+                foreach (Textbox line in instructions)
+                {
+                    line.Draw(sb);
                 }
             }
         }
