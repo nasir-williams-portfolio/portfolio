@@ -410,9 +410,10 @@ namespace HackYourSummerProjectTwo
         {
             clientList.Clear();
             minimumAssessmentNum = 8;
+
             for (int i = 0; i < 8; i++)
             {
-                clientList.Add(new ApplicationClient(programIconTextures, 272, 112, 256, 256, 0, charactersTexture, textBackgroundTexture, propertiesBackgroundTexture));
+                clientList.Add(new ApplicationClient(programIconTextures, 272, 112, 256, 256, 0, charactersTexture, textBackgroundTexture));
             }
             currentClient = (ApplicationClient)clientList[0];
         }

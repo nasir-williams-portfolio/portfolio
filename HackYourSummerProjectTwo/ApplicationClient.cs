@@ -15,12 +15,9 @@ namespace HackYourSummerProjectTwo
     {
         private Texture2D sprite;
         private Texture2D characters;
-        private Texture2D tooltipBackground;
-        private Texture2D propertiesBackground;
         private Random rng;
         private Rectangle clientRectangle;
         private Rectangle clientSourceRectangle;
-        private Rectangle propertiesMenuRectangle;
         private string propertiesText;
         private string tooltipText;
         private MouseState currMouse;
@@ -29,27 +26,25 @@ namespace HackYourSummerProjectTwo
         private bool isPhony;
         private bool isShowingTooltip;
         private int timer;
-        private int tooltipX;
-        private int tooltipY;
+        private Frame tooltipFrame;
+        private Frame propertiesFrame;
+
+        private Textbox properties;
+        private Textbox tooltip;
 
         public bool IsPhony { get { return isPhony; } }
 
-        public ApplicationClient(Texture2D sprite, int x, int y, int width, int height, DifficultyLevel difficultyLevel, Texture2D characters, Texture2D tooltipBackground, Texture2D propertiesBackground)
+        public ApplicationClient(Texture2D sprite, int x, int y, int width, int height, DifficultyLevel difficultyLevel, Texture2D characters, Texture2D textBackground)
         {
             this.sprite = sprite;
             this.characters = characters;
-            this.tooltipBackground = tooltipBackground;
-            this.propertiesBackground = propertiesBackground;
             isShowingProperties = false;
             isShowingTooltip = false;
             rng = new Random();
             clientRectangle = new Rectangle(x, y, width, width);
             clientSourceRectangle = new Rectangle(0, rng.Next(0, 6) * 128, 128, 128);
 
-            propertiesMenuRectangle = new Rectangle(x + width + 12, y - 12, 150, 250);//properties menu needs to be fixed :(
             timer = 0;
-            tooltipX = 0;
-            tooltipY = 0;
 
             isPhony = (rng.Next(0, 2) == 0) ? true : false;
 
@@ -70,6 +65,12 @@ namespace HackYourSummerProjectTwo
                 default:
                     break;
             }
+
+            properties = new Textbox(propertiesText, characters, new Vector2(506, 162));
+            tooltip = new Textbox(tooltipText, characters, new Vector2(0, 0));
+
+            propertiesFrame = new Frame(textBackground, 500, 150, properties.Phrase.Length * 14 + 10, 200);
+            tooltipFrame = new Frame(textBackground, 0, 0, properties.Phrase.Length * 14 + 10, 32);
         }
 
         public void Update()
@@ -93,8 +94,10 @@ namespace HackYourSummerProjectTwo
                 timer++;
                 if (timer == 49)
                 {
-                    tooltipX = Mouse.GetState().X;
-                    tooltipY = Mouse.GetState().Y;
+                    tooltip.X = Mouse.GetState().X;
+                    tooltip.Y = Mouse.GetState().Y;
+                    tooltipFrame.X = Mouse.GetState().X - 6;
+                    tooltipFrame.Y = Mouse.GetState().Y - 12;
                 }
                 if (timer >= 50)
                 {
@@ -115,6 +118,8 @@ namespace HackYourSummerProjectTwo
                 isShowingTooltip = false;
             }
 
+            tooltipFrame.Update();
+
             prevMouse = currMouse;
         }
 
@@ -124,15 +129,13 @@ namespace HackYourSummerProjectTwo
 
             if (isShowingProperties)
             {
-                Textbox properties = new Textbox(propertiesText, characters, new Vector2(propertiesMenuRectangle.X + 1, propertiesMenuRectangle.Y));
-                sb.Draw(propertiesBackground, propertiesMenuRectangle, Color.White);
+                propertiesFrame.Draw(sb);
                 properties.Draw(sb);
             }
 
             if (isShowingTooltip)
             {
-                Textbox tooltip = new Textbox(tooltipText, characters, new Vector2(tooltipX + 1, tooltipY));
-                sb.Draw(tooltipBackground, new Rectangle(tooltipX - 2, tooltipY - 3, (tooltip.Phrase.Length * 14) + 3, 20), Color.White);
+                tooltipFrame.Draw(sb);
                 tooltip.Draw(sb);
             }
         }
