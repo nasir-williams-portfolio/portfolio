@@ -23,8 +23,8 @@ namespace HackYourSummerProjectTwo
         private SpriteBatch _spriteBatch;
         private Texture2D placeholderTexture, charactersTexture, taskbarTexture, programIconTextures, levelSelectIconTexture,
             levelSelectMenuTexture, animatedBackgroundTexture, animatedForegroundTexture, cursorTexture, gameModeWindowTexture, buttonTexture,
-             assessmentBarTexture, notepadFrameTexture, textBackgroundTexture, propertiesBackgroundTexture;
-        private SpriteFont placeholderFont;
+             assessmentBarTexture, notepadFrameTexture, textBackgroundTexture;
+        private SpriteFont font;
         #endregion
 
         #region Homebrew Type Variables
@@ -36,7 +36,7 @@ namespace HackYourSummerProjectTwo
         private AnimatedBackground animatedBackground;
         private Cursor cursor;
         private GameModeWindow programModeWindow;
-        private Textbox stopwatch, level;
+        private string stopwatch, level;
         #endregion
 
         #region Container Variables
@@ -83,8 +83,8 @@ namespace HackYourSummerProjectTwo
             _spriteBatch = new SpriteBatch(GraphicsDevice);
 
             #region Texture Assignments
+            font = Content.Load<SpriteFont>("font10");
             placeholderTexture = Content.Load<Texture2D>("pixel");
-            placeholderFont = Content.Load<SpriteFont>("arial12");
             animatedBackgroundTexture = Content.Load<Texture2D>("The Night Shift- Title Card v2");
             animatedForegroundTexture = Content.Load<Texture2D>("The Night Shift- Title Text v2");
             cursorTexture = Content.Load<Texture2D>("The Night Shift- Cursor");
@@ -98,7 +98,6 @@ namespace HackYourSummerProjectTwo
             assessmentBarTexture = Content.Load<Texture2D>("The Night Shift- AssessmentBarFillers");
             notepadFrameTexture = Content.Load<Texture2D>("The Night Shift- Notepad Frame");
             textBackgroundTexture = Content.Load<Texture2D>("The Night Shift- Text Background");
-            propertiesBackgroundTexture = Content.Load<Texture2D>("The Night Shift- PropertiesMenuFrame");
             #endregion
 
             acceptButton = new Button(buttonTexture, 161, 360, 240, 54, new Rectangle(0, 0, 240, 54));
@@ -108,12 +107,9 @@ namespace HackYourSummerProjectTwo
             levelResetButton = new Button(buttonTexture, 225, 275, 154, 54, new Rectangle(0, 162, 154, 54));
 
             programModeWindow = new GameModeWindow(gameModeWindowTexture, buttonTexture, new Vector2(253, 67));
-            notepad = new Notepad(notepadFrameTexture, 200, 120, 301, 240, new Rectangle(0, 0, 301, 240), charactersTexture);
+            notepad = new Notepad(notepadFrameTexture, 200, 120, 301, 240, new Rectangle(0, 0, 301, 240), font);
             animatedBackground = new AnimatedBackground(animatedBackgroundTexture, animatedForegroundTexture);
             cursor = new Cursor(cursorTexture);
-
-            stopwatch = new Textbox("", charactersTexture, new Vector2(717, 448));
-            level = new Textbox("", charactersTexture, new Vector2(679, 448));
 
             #region Button Subscriptions
             acceptButton.OnButtonClick += AcceptClient;
@@ -274,16 +270,16 @@ namespace HackYourSummerProjectTwo
 
                         returnToLevelSelectButton.Draw(_spriteBatch);
                         levelResetButton.Draw(_spriteBatch);
-                        Textbox placeholderText = new Textbox((assessmentMeter >= minimumAssessmentNum) ? "Level Passed" : "Level Failed", charactersTexture, new Vector2(316, 233));
-                        placeholderText.Draw(_spriteBatch);
+                        string score = (assessmentMeter >= minimumAssessmentNum) ? "Level Passed" : "Level Failed";
+                        _spriteBatch.DrawString(font, score, new Vector2(400 - (font.MeasureString(score).X / 2), 220), Color.White);
                     }
 
                     timerFormatter = new DateTime(2026, 8, 3, 0, 0, levelTimeAllotment - (timer / 60));
-                    stopwatch.Phrase = timerFormatter.ToString("mm:ss");
-                    stopwatch.Draw(_spriteBatch);
+                    stopwatch = timerFormatter.ToString("mm:ss");
+                    _spriteBatch.DrawString(font, stopwatch, new Vector2(717, 448), Color.White);
 
-                    level.Phrase = (levels.IndexOf(currentLevel) + 1).ToString();
-                    level.Draw(_spriteBatch);
+                    level = (levels.IndexOf(currentLevel) + 1).ToString();
+                    _spriteBatch.DrawString(font, level, new Vector2(679, 448), Color.White);
 
                     foreach (Cursor tracker in assessmentBar)
                     {
@@ -317,7 +313,7 @@ namespace HackYourSummerProjectTwo
 
         protected void AcceptClient()
         {
-            notificationArrayList.Add(new Notification(new Textbox((currentClient.IsPhony) ? "Bad Program Accepted" : "Good Program Accepted", charactersTexture, new Vector2(10, 412))));
+            notificationArrayList.Add(new Notification(font, (currentClient.IsPhony) ? "Bad Program Accepted" : "Good Program Accepted", new Vector2(10, 412)));
 
             if (!currentClient.IsPhony)
             {
@@ -330,7 +326,7 @@ namespace HackYourSummerProjectTwo
 
             assessmentMeter += (currentClient.IsPhony) ? -1 : 1;
             timer += (currentClient.IsPhony) ? 60 : -60;
-            timeNotificationArrayList.Add(new Notification(new Textbox((currentClient.IsPhony) ? "-1" : "+1", charactersTexture, new Vector2(717, 412))));
+            timeNotificationArrayList.Add(new Notification(font, (currentClient.IsPhony) ? "-1" : "+1", new Vector2(717, 412)));
 
             if (clientList.Count > 0)
             {
@@ -345,7 +341,7 @@ namespace HackYourSummerProjectTwo
 
         protected void DenyClient()
         {
-            notificationArrayList.Add(new Notification(new Textbox((currentClient.IsPhony) ? "Bad Program Denied" : "Good Program Denied", charactersTexture, new Vector2(10, 412))));
+            notificationArrayList.Add(new Notification(font, (currentClient.IsPhony) ? "Bad Program Denied" : "Good Program Denied", new Vector2(10, 412)));
 
             if (currentClient.IsPhony)
             {
@@ -358,7 +354,7 @@ namespace HackYourSummerProjectTwo
 
             assessmentMeter += (currentClient.IsPhony) ? 1 : -1;
             timer += (currentClient.IsPhony) ? -60 : 60;
-            timeNotificationArrayList.Add(new Notification(new Textbox((currentClient.IsPhony) ? "+1" : "-1", charactersTexture, new Vector2(717, 412))));
+            timeNotificationArrayList.Add(new Notification(font, (currentClient.IsPhony) ? "+1" : "-1", new Vector2(717, 412)));
 
             if (clientList.Count > 0)
             {
@@ -411,9 +407,11 @@ namespace HackYourSummerProjectTwo
             clientList.Clear();
             minimumAssessmentNum = 8;
 
+            Random rng = new Random();
+
             for (int i = 0; i < 8; i++)
             {
-                clientList.Add(new ApplicationClient(programIconTextures, 272, 112, 256, 256, 0, charactersTexture, textBackgroundTexture));
+                clientList.Add(new ApplicationClient(programIconTextures, 272, 112, 256, 256, (DifficultyLevel)rng.Next(0, 3), font, textBackgroundTexture));
             }
             currentClient = (ApplicationClient)clientList[0];
         }

@@ -1,35 +1,10 @@
-﻿Changes I'd like to add
-[X] some kind of a progress bar that goes up and down based on whether or not you correctly assessed the program
-[X] title screen, main menu, and level select
-[X] You have to click a button to get back to the level selector after passing or failing a level
-[X] the level's come locked and as you complete them, more get unlocked
-[X] a set amount of programs to go through in a single level
-[X] switching between tabs in the notepad
-[X] a specific amount of correct assessments to reach per level to complete the level
-[X] a timer for if you don't reach the minimum amount of correct assessments in a level
-[X] your timer goes up and down when your assessment is right and wrong, respectively
-[X] fail and pass level screen
-
-[ ] a combo indicator
+﻿[ ] a combo indicator for getting several correct assessments in a row
 [ ] achievements
 [ ] general gameplay statistics
-[ ] tutorial level
+[ ] some kind of tutorial or instruction screen
 
-it brings me great sadness to say, you're likely going to have to know every kind of button size you'll need, put it in a spritesheet, and go from there
 Once again, I come bearing bad news, you will have to go back at some point and adjust ALL of the textures to be the same resolution so you don't have to resize them in the program
 something something, you should have more of a mistake buffer in the levels, not just "miss one restart"
+When you locate a sufficient enough amount of a will to live, delete Textbox.cs and replace all the text with regular Spritefont text
 
 **ctrl+f "MAYDAY" for things that might go bump in the night**
-
-
-Location: Innocuous
-Location: Suspicious
-
-//applicationText = "Identify malicious applications through:\n - Poor icon resolution (White)";
-                    //notepadTitle = "Malicious Application Identification: Icon Resolution";
-
-//applicationText = "Identify malicious applications through:\n - Suspicious property information(475GB)";
-                    //notepadTitle = "Malicious Application Identification: Suspicious property information";
-
-//applicationText = "Identify malicious applications through:\n - Inconsistent tooltip information";
-                    //notepadTitle = "Malicious Application Identification: Inconsistent tooltip information";

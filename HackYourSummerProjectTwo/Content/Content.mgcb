@@ -13,12 +13,12 @@
 
 #---------------------------------- Content ---------------------------------#
 
-#begin arial12.spritefont
+#begin font10.spritefont
 /importer:FontDescriptionImporter
 /processor:FontDescriptionProcessor
 /processorParam:PremultiplyAlpha=True
 /processorParam:TextureFormat=Compressed
-/build:arial12.spritefont
+/build:font10.spritefont
 
 #begin pixel.png
 /importer:TextureImporter

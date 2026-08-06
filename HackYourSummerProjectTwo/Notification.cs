@@ -1,29 +1,39 @@
-﻿using Microsoft.Xna.Framework.Graphics;
+﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 
 namespace HackYourSummerProjectTwo
 {
     internal class Notification
     {
-        private Textbox text;
+        private SpriteFont font;
+        private Vector2 location;
+        private string text;
+        private int opacity;
+        private int rgb;
         private bool isDismissed;
 
         public bool IsDismissed { get { return isDismissed; } }
 
-        public Notification(Textbox text)
+        public Notification(SpriteFont font, string text, Vector2 location)
         {
+            this.font = font;
             this.text = text;
+            this.location = location;
             isDismissed = false;
+
+            opacity = 255;
+            rgb = 255;
         }
 
         public void Update()
         {
-            if (text.Y > 240 && !isDismissed)
+            if (location.Y > 240 && !isDismissed)
             {
-                text.Y -= 1;
-                text.Opacity -= 2;
-                text.RGB -= 2;
+                location.Y -= 1;
+                opacity -= 2;
+                rgb -= 2;
             }
-            else if (text.Y == 240)
+            else if (location.Y == 240)
             {
                 isDismissed = true;
             }
@@ -31,7 +41,7 @@ namespace HackYourSummerProjectTwo
 
         public void Draw(SpriteBatch sb)
         {
-            text.Draw(sb);
+            sb.DrawString(font, text, location, new Color(rgb, rgb, rgb, opacity));
         }
     }
 }

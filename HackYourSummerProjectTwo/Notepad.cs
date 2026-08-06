@@ -18,17 +18,17 @@ namespace HackYourSummerProjectTwo
         private Vector2 difference;
         private Vector2 previousLocation;
         private bool isShowing;
-        private string applicationText;
-        private string notepadTitle;
         private bool clickedInRectangle;
         private Rectangle[] tabs;
         private Rectangle currentTab;
-        private List<Textbox> instructions;
+        private List<string> instructions;
+        private Vector2 instructionsVector;
 
         public bool IsShowing { get { return isShowing; } set { isShowing = value; } }
 
-        public Notepad(Texture2D sprite, int x, int y, int width, int height, Rectangle sourceRectangle, Texture2D characters)
+        public Notepad(Texture2D sprite, int x, int y, int width, int height, Rectangle sourceRectangle, SpriteFont font)
         {
+            this.font = font;
             this.sprite = sprite;
             this.sourceRectangle = sourceRectangle;
             tabs = new Rectangle[3];
@@ -41,13 +41,11 @@ namespace HackYourSummerProjectTwo
             currentTab = tabs[0];
             destinationRectangle = new Rectangle(x, y, width, height);
 
-            instructions = new List<Textbox>();
-            for (int i = 0; i < 3; i++)
-            {
-                instructions.Add(new Textbox("", characters, new Vector2(x + 20, y + 20)));
-            }
-
-            new Textbox("", characters, new Vector2(x + 20, y + 20));
+            instructions = new List<string>();
+            instructions.Add("deny programs that look \nglitchy");
+            instructions.Add("deny programs with suspicious \ntooltips");
+            instructions.Add("deny programs with \ndiscrepancies between the \ntooltip and properties menu");
+            instructionsVector = new Vector2(destinationRectangle.X + 20, destinationRectangle.Y + 20);
         }
 
         public void Update()
@@ -97,40 +95,20 @@ namespace HackYourSummerProjectTwo
                         exitButton.X = (int)destinationRectangle.X + 282;
                         exitButton.Y = (int)destinationRectangle.Y + 6;
 
-                        foreach (Textbox line in instructions)
-                        {
-                            line.X = (int)destinationRectangle.X + 20;
-                            line.Y = (int)destinationRectangle.Y + (20 * (instructions.IndexOf(line) + 1));
-                        }
-                    }
-                }
-
-                for (int i = 0; i < tabs.Length; i++)
-                {
-                    if (tabs[i].Equals(currentTab))
-                    {
-                        sourceRectangle.Y = i * 240;
+                        instructionsVector.X = (int)destinationRectangle.X + 20;
+                        instructionsVector.Y = (int)destinationRectangle.Y + 20;
                     }
                 }
             }
 
-            switch (sourceRectangle.Y)
+            for (int i = 0; i < tabs.Length; i++)
             {
-                case 0:
-                    instructions[0].Phrase = "deny glitches";
-                    break;
-                case 240:
-                    instructions[0].Phrase = "deny tooltips with";
-                    instructions[1].Phrase = "odd locations";
-                    break;
-                case 480:
-                    instructions[0].Phrase = "deny location";
-                    instructions[1].Phrase = "discrepancies in";
-                    instructions[2].Phrase = "tooltip-properties";
-                    break;
-                default:
-                    break;
+                if (tabs[i].Equals(currentTab))
+                {
+                    sourceRectangle.Y = i * 240;
+                }
             }
+
 
             prevMouse = currMouse;
         }
@@ -140,24 +118,18 @@ namespace HackYourSummerProjectTwo
             if (isShowing)
             {
                 sb.Draw(sprite, destinationRectangle, sourceRectangle, Color.White);
+
                 switch (sourceRectangle.Y)
                 {
                     case 0:
-                        instructions[0].Draw(sb);
+                        sb.DrawString(font, instructions[0], instructionsVector, Color.White);
                         break;
                     case 240:
-                        instructions[0].Draw(sb);
-                        instructions[1].Draw(sb);
+                        sb.DrawString(font, instructions[1], instructionsVector, Color.White);
                         break;
                     case 480:
-                        instructions[0].Draw(sb);
-                        instructions[1].Draw(sb);
-                        instructions[2].Draw(sb);
+                        sb.DrawString(font, instructions[2], instructionsVector, Color.White);
                         break;
-                }
-                foreach (Textbox line in instructions)
-                {
-                    line.Draw(sb);
                 }
             }
         }

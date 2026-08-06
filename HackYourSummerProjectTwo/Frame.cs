@@ -13,10 +13,10 @@ namespace HackYourSummerProjectTwo
         private int width;
         private int height;
 
-        public int X { set { x = value; } }
-        public int Y { set { y = value; } }
-        public int Width { set { width = value; } }
-        public int Height { set { height = value; } }
+        public int X { get { return x; } set { x = value; } }
+        public int Y { get { return y; } set { y = value; } }
+        public int Width { get { return width; } set { width = value; } }
+        public int Height { get { return height; } set { height = value; } }
 
 
         public Frame(Texture2D texture, int x, int y, int width, int height)
