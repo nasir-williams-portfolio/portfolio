@@ -28,15 +28,15 @@ namespace HackYourSummerProjectTwo
         #endregion
 
         #region Homebrew Type Variables
-        private ApplicationClient currentClient;
         private Button acceptButton, denyButton, notepadButton, returnToLevelSelectButton, levelResetButton;
-        private Notepad notepad;
+        private AnimatedBackground animatedBackground;
+        private GameModeWindow programModeWindow;
+        private ApplicationClient currentClient;
         private LevelSelector currentLevel;
         private GameState currentGameState;
-        private AnimatedBackground animatedBackground;
+        private string stopwatch;
+        private Notepad notepad;
         private Cursor cursor;
-        private GameModeWindow programModeWindow;
-        private string stopwatch, level;
         #endregion
 
         #region Container Variables
@@ -48,11 +48,8 @@ namespace HackYourSummerProjectTwo
         #endregion
 
         #region Miscellaneous (Mostly Primitive) Variables
-        private int assessmentMeter;
         private bool levelFinished;
-        private int minimumAssessmentNum;
-        private int timer;
-        private int levelTimeAllotment;
+        private int minimumAssessmentNum, timer, levelTimeAllotment, level, assessmentMeter;
         private DateTime timerFormatter;
         #endregion
 
@@ -173,7 +170,7 @@ namespace HackYourSummerProjectTwo
                 case GameState.PrimaryGameScreen:
                     if (levelFinished == false)
                     {
-                        if (clientList.Count == 0 || (levelTimeAllotment - (timer / 60) == 0))
+                        if (clientList.Count == 0 || (levelTimeAllotment - (timer / 60) == 0) || assessmentMeter == minimumAssessmentNum)
                         {
                             if (assessmentMeter >= minimumAssessmentNum)
                             {
@@ -276,10 +273,10 @@ namespace HackYourSummerProjectTwo
 
                     timerFormatter = new DateTime(2026, 8, 3, 0, 0, levelTimeAllotment - (timer / 60));
                     stopwatch = timerFormatter.ToString("mm:ss");
-                    _spriteBatch.DrawString(font, stopwatch, new Vector2(717, 448), Color.White);
+                    _spriteBatch.DrawString(font, stopwatch, new Vector2(730, 448), Color.White);
 
-                    level = (levels.IndexOf(currentLevel) + 1).ToString();
-                    _spriteBatch.DrawString(font, level, new Vector2(679, 448), Color.White);
+                    level = (levels.IndexOf(currentLevel) + 1);
+                    _spriteBatch.DrawString(font, level.ToString(), new Vector2(668 + Math.Abs(18 - font.MeasureString(level.ToString()).X / 2), 448), Color.White);
 
                     foreach (Cursor tracker in assessmentBar)
                     {
@@ -326,12 +323,11 @@ namespace HackYourSummerProjectTwo
 
             assessmentMeter += (currentClient.IsPhony) ? -1 : 1;
             timer += (currentClient.IsPhony) ? 60 : -60;
-            timeNotificationArrayList.Add(new Notification(font, (currentClient.IsPhony) ? "-1" : "+1", new Vector2(717, 412)));
+            timeNotificationArrayList.Add(new Notification(font, (currentClient.IsPhony) ? "-1" : "+1", new Vector2(760, 412)));
 
             if (clientList.Count > 0)
             {
                 clientList.RemoveAt(0);
-
                 if (clientList.Count > 0)
                 {
                     currentClient = (ApplicationClient)clientList[0];
@@ -354,7 +350,7 @@ namespace HackYourSummerProjectTwo
 
             assessmentMeter += (currentClient.IsPhony) ? 1 : -1;
             timer += (currentClient.IsPhony) ? -60 : 60;
-            timeNotificationArrayList.Add(new Notification(font, (currentClient.IsPhony) ? "+1" : "-1", new Vector2(717, 412)));
+            timeNotificationArrayList.Add(new Notification(font, (currentClient.IsPhony) ? "+1" : "-1", new Vector2(760, 412)));
 
             if (clientList.Count > 0)
             {
@@ -377,9 +373,9 @@ namespace HackYourSummerProjectTwo
             assessmentBar.Clear();
             currentGameState = GameState.LevelSelect;
 
-            if (levels[levels.IndexOf(currentLevel)].IsCompleted)
+            if (levels[levels.IndexOf(currentLevel)].IsCompleted && levels.IndexOf(currentLevel) != 9)
             {
-                levels[levels.IndexOf(currentLevel) + 1].IsLocked = false; //MAYDAY: this will throw an error if it runs on the 9th level
+                levels[levels.IndexOf(currentLevel) + 1].IsLocked = false;
             }
             notificationArrayList.Clear();
         }
@@ -391,7 +387,7 @@ namespace HackYourSummerProjectTwo
             levelFinished = false;
             assessmentMeter = 0;
             PopulateClientList();
-            levelTimeAllotment = 10 + (clientList.Count * 3);
+            levelTimeAllotment = 10 + (level * 5);
             currentGameState = GameState.PrimaryGameScreen;
             foreach (LevelSelector selector in levels)
             {
@@ -408,10 +404,31 @@ namespace HackYourSummerProjectTwo
             minimumAssessmentNum = 8;
 
             Random rng = new Random();
+            int difficultyLevel = 0;
 
-            for (int i = 0; i < 8; i++)
+            switch (levels.IndexOf(currentLevel))
             {
-                clientList.Add(new ApplicationClient(programIconTextures, 272, 112, 256, 256, (DifficultyLevel)rng.Next(0, 3), font, textBackgroundTexture));
+                case 0:
+                case 1:
+                case 2:
+                    difficultyLevel = 0;
+                    break;
+                case 3:
+                case 4:
+                case 5:
+                    difficultyLevel = rng.Next(0, 2);
+                    break;
+                case 6:
+                case 7:
+                case 8:
+                case 9:
+                    difficultyLevel = rng.Next(0, 3);
+                    break;
+            }
+
+            for (int i = 0; i < 12; i++)
+            {
+                clientList.Add(new ApplicationClient(programIconTextures, 272, 112, 256, 256, (DifficultyLevel)difficultyLevel, font, textBackgroundTexture));
             }
             currentClient = (ApplicationClient)clientList[0];
         }
