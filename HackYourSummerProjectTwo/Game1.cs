@@ -30,7 +30,7 @@ namespace HackYourSummerProjectTwo
         #endregion
 
         #region Homebrew Type Variables
-        private Button acceptButton, denyButton, notepadButton, returnToLevelSelectButton, levelResetButton;
+        private Button acceptButton, denyButton, notepadButton, returnToLevelSelectButton, levelRestartButton, backButton;
         private AnimatedBackground animatedBackground;
         private GameModeWindow programModeWindow;
         private ApplicationClient currentClient;
@@ -47,6 +47,7 @@ namespace HackYourSummerProjectTwo
         private List<LevelSelector> levels;
         private ArrayList assessmentBar;
         private List<Notification> timeNotificationArrayList;
+        private Stack screenQueue;
         #endregion
 
         #region Miscellaneous (Mostly Primitive) Variables
@@ -73,6 +74,7 @@ namespace HackYourSummerProjectTwo
             assessmentMeter = 0;
             levelFinished = false;
             timer = 0;
+            screenQueue = new Stack();
 
             base.Initialize();
         }
@@ -103,7 +105,8 @@ namespace HackYourSummerProjectTwo
             denyButton = new Button(buttonTexture, 455, 360, 184, 54, new Rectangle(0, 54, 184, 54));
             notepadButton = new Button(buttonTexture, 740, 2, 58, 54, new Rectangle(0, 324, 58, 54));
             returnToLevelSelectButton = new Button(buttonTexture, 445, 275, 126, 54, new Rectangle(0, 216, 126, 54));
-            levelResetButton = new Button(buttonTexture, 225, 275, 154, 54, new Rectangle(0, 162, 154, 54));
+            levelRestartButton = new Button(buttonTexture, 225, 275, 154, 54, new Rectangle(0, 162, 154, 54));
+            backButton = new Button(buttonTexture, 106, 102, 58, 54, new Rectangle(0, 378, 58, 54));
 
             programModeWindow = new GameModeWindow(gameModeWindowTexture, buttonTexture, new Vector2(253, 67));
             notepad = new Notepad(notepadFrameTexture, 200, 120, 296, 240, font);
@@ -115,9 +118,12 @@ namespace HackYourSummerProjectTwo
             denyButton.OnButtonClick += DenyClient;
             notepadButton.OnButtonClick += ToggleNotepad;
             returnToLevelSelectButton.OnButtonClick += NavigateToLevelSelect;
-            levelResetButton.OnButtonClick += NavigateToPrimaryGameScreen;
+            levelRestartButton.OnButtonClick += NavigateToPrimaryGameScreen;
+            backButton.OnButtonClick += NavigateBackwards;
+
 
             programModeWindow.Buttons[0].OnButtonClick += NavigateToLevelSelect;
+            programModeWindow.Buttons[1].OnButtonClick += ResetGameMode;
             #endregion
 
             for (int i = 0; i < 10; i++)
@@ -152,6 +158,7 @@ namespace HackYourSummerProjectTwo
                     if (animatedBackground.ForegroundOpacity == 0)
                     {
                         currentGameState = GameState.MainMenu;
+                        screenQueue.Push(currentGameState);
                     }
                     break;
                 case GameState.MainMenu:
@@ -160,6 +167,7 @@ namespace HackYourSummerProjectTwo
                 case GameState.Settings:
                     break;
                 case GameState.LevelSelect:
+                    backButton.Update();
                     foreach (LevelSelector selector in levels)
                     {
                         selector.Update();
@@ -194,7 +202,7 @@ namespace HackYourSummerProjectTwo
                     else
                     {
                         returnToLevelSelectButton.Update();
-                        levelResetButton.Update();
+                        levelRestartButton.Update();
                     }
 
                     for (int i = 0; i < notificationArrayList.Count; i++)
@@ -235,6 +243,7 @@ namespace HackYourSummerProjectTwo
             switch (currentGameState)
             {
                 case GameState.TitleScreen:
+
                     break;
                 case GameState.MainMenu:
                     programModeWindow.Draw(_spriteBatch);
@@ -247,6 +256,7 @@ namespace HackYourSummerProjectTwo
                     {
                         selector.Draw(_spriteBatch);
                     }
+                    backButton.Draw(_spriteBatch);
                     break;
                 case GameState.PrimaryGameScreen:
                     _spriteBatch.Draw(taskbarTexture, new Rectangle(0, 0, 800, 480), Color.White);
@@ -271,7 +281,7 @@ namespace HackYourSummerProjectTwo
                         _spriteBatch.Draw(levelSelectMenuTexture, new Rectangle(125, 119, 550, 242), Color.White);
 
                         returnToLevelSelectButton.Draw(_spriteBatch);
-                        levelResetButton.Draw(_spriteBatch);
+                        levelRestartButton.Draw(_spriteBatch);
                         string score = (assessmentMeter >= minimumAssessmentNum) ? "Level Passed" : "Level Failed";
                         _spriteBatch.DrawString(font, score, new Vector2(400 - (font.MeasureString(score).X / 2), 220), Color.White);
                     }
@@ -403,7 +413,7 @@ namespace HackYourSummerProjectTwo
             }
         }
 
-        public void PopulateClientList()
+        protected void PopulateClientList()
         {
             clientList.Clear();
             minimumAssessmentNum = 8;
@@ -436,6 +446,24 @@ namespace HackYourSummerProjectTwo
                 clientList.Add(new ApplicationClient(programIconTextures, 272, 112, 256, 256, (DifficultyLevel)difficultyLevel, font, textBackgroundTexture));
             }
             currentClient = (ApplicationClient)clientList[0];
+        }
+
+        protected void NavigateBackwards()
+        {
+            currentGameState = (GameState)screenQueue.Pop();
+            screenQueue.Push(currentGameState);
+        }
+
+        protected void ResetGameMode()
+        {
+            for (int i = 0; i < levels.Count; i++)
+            {
+                if (i != 0)
+                {
+                    levels[i].IsLocked = true;
+                }
+                levels[i].IsCompleted = false;
+            }
         }
     }
 }
