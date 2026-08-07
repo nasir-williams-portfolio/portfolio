@@ -25,6 +25,8 @@ namespace HackYourSummerProjectTwo
             levelSelectMenuTexture, animatedBackgroundTexture, animatedForegroundTexture, cursorTexture, gameModeWindowTexture, buttonTexture,
              assessmentBarTexture, notepadFrameTexture, textBackgroundTexture;
         private SpriteFont font;
+        private KeyboardState currKeyboardState;
+        private KeyboardState prevKeyboardState;
         #endregion
 
         #region Homebrew Type Variables
@@ -104,7 +106,7 @@ namespace HackYourSummerProjectTwo
             levelResetButton = new Button(buttonTexture, 225, 275, 154, 54, new Rectangle(0, 162, 154, 54));
 
             programModeWindow = new GameModeWindow(gameModeWindowTexture, buttonTexture, new Vector2(253, 67));
-            notepad = new Notepad(notepadFrameTexture, 200, 120, 301, 240, new Rectangle(0, 0, 301, 240), font);
+            notepad = new Notepad(notepadFrameTexture, 200, 120, 296, 240, font);
             animatedBackground = new AnimatedBackground(animatedBackgroundTexture, animatedForegroundTexture);
             cursor = new Cursor(cursorTexture);
 
@@ -138,6 +140,8 @@ namespace HackYourSummerProjectTwo
         {
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
+
+            currKeyboardState = Keyboard.GetState();
 
             cursor.Update();
 
@@ -216,6 +220,7 @@ namespace HackYourSummerProjectTwo
                     break;
             }
 
+            prevKeyboardState = currKeyboardState;
             base.Update(gameTime);
         }
 
@@ -275,7 +280,6 @@ namespace HackYourSummerProjectTwo
                     stopwatch = timerFormatter.ToString("mm:ss");
                     _spriteBatch.DrawString(font, stopwatch, new Vector2(730, 448), Color.White);
 
-                    level = (levels.IndexOf(currentLevel) + 1);
                     _spriteBatch.DrawString(font, level.ToString(), new Vector2(668 + Math.Abs(18 - font.MeasureString(level.ToString()).X / 2), 448), Color.White);
 
                     foreach (Cursor tracker in assessmentBar)
@@ -382,12 +386,13 @@ namespace HackYourSummerProjectTwo
 
         protected void NavigateToPrimaryGameScreen()
         {
+            level = (levels.IndexOf(currentLevel) + 1);
             assessmentBar.Clear();
             timer = 0;
             levelFinished = false;
             assessmentMeter = 0;
             PopulateClientList();
-            levelTimeAllotment = 10 + (level * 5);
+            levelTimeAllotment = 10 + (level * 4);
             currentGameState = GameState.PrimaryGameScreen;
             foreach (LevelSelector selector in levels)
             {

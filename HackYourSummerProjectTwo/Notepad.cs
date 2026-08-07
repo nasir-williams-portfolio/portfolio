@@ -26,17 +26,17 @@ namespace HackYourSummerProjectTwo
 
         public bool IsShowing { get { return isShowing; } set { isShowing = value; } }
 
-        public Notepad(Texture2D sprite, int x, int y, int width, int height, Rectangle sourceRectangle, SpriteFont font)
+        public Notepad(Texture2D sprite, int x, int y, int width, int height, SpriteFont font)
         {
             this.font = font;
             this.sprite = sprite;
-            this.sourceRectangle = sourceRectangle;
+            this.sourceRectangle = new Rectangle(0, 0, 296, 240);
             tabs = new Rectangle[3];
             for (int i = 0; i < tabs.Length; i++)
             {
-                tabs[i] = new Rectangle((10 + (i * 8)) + destinationRectangle.X, destinationRectangle.Y, 6, 4);
+                tabs[i] = new Rectangle(18 + (22 * i) + x, y + 2, 14, 14);
             }
-            exitButton = new Rectangle(x + 282, y + 6, 14, 14);
+            exitButton = new Rectangle(x + 274, y, 22, 24);
 
             currentTab = tabs[0];
             destinationRectangle = new Rectangle(x, y, width, height);
@@ -89,11 +89,11 @@ namespace HackYourSummerProjectTwo
                         destinationRectangle.Y = (int)(difference.Y + previousLocation.Y);
                         for (int i = 0; i < tabs.Length; i++)
                         {
-                            tabs[i].X = (int)destinationRectangle.X + (10 + (i * 8));
-                            tabs[i].Y = (int)destinationRectangle.Y;
+                            tabs[i].X = (int)destinationRectangle.X + 18 + (22 * i);
+                            tabs[i].Y = (int)destinationRectangle.Y + 2;
                         }
-                        exitButton.X = (int)destinationRectangle.X + 282;
-                        exitButton.Y = (int)destinationRectangle.Y + 6;
+                        exitButton.X = (int)destinationRectangle.X + 274;
+                        exitButton.Y = (int)destinationRectangle.Y;
 
                         instructionsVector.X = (int)destinationRectangle.X + 20;
                         instructionsVector.Y = (int)destinationRectangle.Y + 20;
