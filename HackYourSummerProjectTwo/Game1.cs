@@ -276,16 +276,6 @@ namespace HackYourSummerProjectTwo
                         notification.Draw(_spriteBatch);
                     }
 
-                    if (levelFinished || (levelTimeAllotment - (timer / 60) == 0))
-                    {
-                        _spriteBatch.Draw(levelSelectMenuTexture, new Rectangle(125, 119, 550, 242), Color.White);
-
-                        returnToLevelSelectButton.Draw(_spriteBatch);
-                        levelRestartButton.Draw(_spriteBatch);
-                        string score = (assessmentMeter >= minimumAssessmentNum) ? "Level Passed" : "Level Failed";
-                        _spriteBatch.DrawString(font, score, new Vector2(400 - (font.MeasureString(score).X / 2), 220), Color.White);
-                    }
-
                     timerFormatter = new DateTime(2026, 8, 3, 0, 0, levelTimeAllotment - (timer / 60));
                     stopwatch = timerFormatter.ToString("mm:ss");
                     _spriteBatch.DrawString(font, stopwatch, new Vector2(730, 448), Color.White);
@@ -310,6 +300,19 @@ namespace HackYourSummerProjectTwo
 
                         _spriteBatch.Draw(assessmentBarTexture, new Rectangle(142 + (64 * assessmentBar.IndexOf(tracker)), 442, 64, 26), new Rectangle(0, yValue, 64, 26), Color.White);
                     }
+
+                    if (levelFinished || (levelTimeAllotment - (timer / 60) == 0))
+                    {
+                        _spriteBatch.Draw(placeholderTexture, new Rectangle(0, 0, 800, 480), new Rectangle(0, 0, 1, 1), new Color(Color.Gray, 0.25f));
+                        _spriteBatch.Draw(levelSelectMenuTexture, new Rectangle(125, 119, 550, 242), Color.White);
+
+                        returnToLevelSelectButton.Draw(_spriteBatch);
+                        levelRestartButton.Draw(_spriteBatch);
+                        string score = (assessmentMeter >= minimumAssessmentNum) ? "Level Passed" : "Level Failed";
+                        _spriteBatch.DrawString(font, score, new Vector2(400 - (font.MeasureString(score).X / 2), 220), Color.White);
+                    }
+
+
                     break;
                 default:
                     break;
@@ -336,8 +339,8 @@ namespace HackYourSummerProjectTwo
             }
 
             assessmentMeter += (currentClient.IsPhony) ? -1 : 1;
-            timer += (currentClient.IsPhony) ? 60 : -60;
-            timeNotificationArrayList.Add(new Notification(font, (currentClient.IsPhony) ? "-1" : "+1", new Vector2(760, 412)));
+            timer += (currentClient.IsPhony) ? 180 : -180;
+            timeNotificationArrayList.Add(new Notification(font, (currentClient.IsPhony) ? "-3" : "+3", new Vector2(760, 412)));
 
             if (clientList.Count > 0)
             {
@@ -363,8 +366,8 @@ namespace HackYourSummerProjectTwo
             }
 
             assessmentMeter += (currentClient.IsPhony) ? 1 : -1;
-            timer += (currentClient.IsPhony) ? -60 : 60;
-            timeNotificationArrayList.Add(new Notification(font, (currentClient.IsPhony) ? "+1" : "-1", new Vector2(760, 412)));
+            timer += (currentClient.IsPhony) ? -180 : 180;
+            timeNotificationArrayList.Add(new Notification(font, (currentClient.IsPhony) ? "+3" : "-3", new Vector2(760, 412)));
 
             if (clientList.Count > 0)
             {
@@ -402,7 +405,7 @@ namespace HackYourSummerProjectTwo
             levelFinished = false;
             assessmentMeter = 0;
             PopulateClientList();
-            levelTimeAllotment = 10 + (level * 4);
+            levelTimeAllotment = 10 + (level * 2);
             currentGameState = GameState.PrimaryGameScreen;
             foreach (LevelSelector selector in levels)
             {

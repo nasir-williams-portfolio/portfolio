@@ -4,7 +4,8 @@
 [ ] some kind of tutorial or instruction screen
 
 Once again, I come bearing bad news, you will have to go back at some point and adjust ALL of the textures to be the same resolution so you don't have to resize them in the program
-something something, you should have more of a mistake buffer in the levels, not just "miss one restart"
-When you locate a sufficient enough amount of a will to live, delete Textbox.cs and replace all the text with regular Spritefont text
+Ok so change the "after level overlay" buttons to be "restart, progress, and exit", respectively (the progress button should only appear if the level is a pass)
+Brother... you eventually have to correctly implement the first game mode window...like the icons and the stars and the gamemode statistics (will also probably need to add another font for the sake of changing the size)
+Create a dictionary fof the fonts of different sizes and then use the font sizes as the keys and the actual SpriteFont objects as the values
 
 **ctrl+f "MAYDAY" for things that might go bump in the night**
