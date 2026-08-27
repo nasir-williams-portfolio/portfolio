@@ -9,7 +9,7 @@ namespace HackYourSummerProjectTwo
         private Texture2D background;
         private Texture2D foreground;
         private Rectangle destinationRectangle;
-        private Rectangle sourceRectangle;
+        private Rectangle foregroundSourceRectangle, backgroundSourceRectangle;
 
         private double timeCounter, fps, secondsPerFrame;
         private int rgb, foregroundOpacity;
@@ -22,7 +22,8 @@ namespace HackYourSummerProjectTwo
         {
             this.background = background;
             this.foreground = foreground;
-            sourceRectangle = new Rectangle(0, 0, 400, 240);
+            foregroundSourceRectangle = new Rectangle(0, 0, 400, 240);
+            backgroundSourceRectangle = new Rectangle(0, 0, 400, 240);
             destinationRectangle = new Rectangle(0, 0, 800, 480);
             isFading = false;
 
@@ -41,11 +42,17 @@ namespace HackYourSummerProjectTwo
 
             if (timeCounter >= secondsPerFrame)
             {
-                sourceRectangle.Y += 240;
+                foregroundSourceRectangle.Y += 240;
+                backgroundSourceRectangle.X += 2;
 
-                if (sourceRectangle.Y >= 480)
+                if (foregroundSourceRectangle.Y >= 480)
                 {
-                    sourceRectangle.Y = 0;
+                    foregroundSourceRectangle.Y = 0;
+                }
+
+                if (backgroundSourceRectangle.X >= 176)
+                {
+                    backgroundSourceRectangle.X = 0;
                 }
 
                 timeCounter -= secondsPerFrame;
@@ -66,8 +73,8 @@ namespace HackYourSummerProjectTwo
 
         public void Draw(SpriteBatch sb)
         {
-            sb.Draw(background, destinationRectangle, Color.White);
-            sb.Draw(foreground, destinationRectangle, sourceRectangle, new Color(rgb, rgb, rgb, foregroundOpacity));
+            sb.Draw(background, destinationRectangle, backgroundSourceRectangle, Color.White);
+            sb.Draw(foreground, destinationRectangle, foregroundSourceRectangle, new Color(rgb, rgb, rgb, foregroundOpacity));
         }
     }
 }
