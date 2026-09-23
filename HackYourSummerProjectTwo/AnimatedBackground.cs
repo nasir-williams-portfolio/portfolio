@@ -61,7 +61,6 @@ namespace HackYourSummerProjectTwo
             if (Keyboard.GetState().GetPressedKeyCount() > 0)
             {
                 isFading = true;
-
             }
 
             if (isFading)
